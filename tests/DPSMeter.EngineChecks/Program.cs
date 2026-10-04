@@ -41,6 +41,7 @@ if (!Aion2Lz4.TryDecompress(new byte[] { 0x30, 1, 2, 3 }, 3, out var literal) ||
     || Aion2Lz4.TryDecompress(new byte[] { 0x11, 9, 5, 0 }, 10, out _) || Aion2Lz4.TryDecompress([], int.MaxValue, out _))
     throw new Exception("LZ4 bounds/regression.");
 Console.WriteLine("PASS LZ4 decode and bounds");
+LiveMeterChecks.Run(protocol);
 if (args.Length == 0) return;
 if (args.Length != 3 || args[0] != "--probe") throw new ArgumentException("--probe seconds output.json");
 var seconds = Math.Clamp(int.Parse(args[1]), 5, 120);

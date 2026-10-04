@@ -1,6 +1,6 @@
 # Reprendre le projet
 
-État de référence : version 0.4.8, 4 octobre 2026.
+État de référence : version 0.4.9, 4 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 ## Ce qui fonctionne
@@ -16,7 +16,19 @@ archivés, taille automatique, mode compact, verrouillage des clics, aimantation
 placement par coin et recentrage. Hors combat : 15 % d’opacité après 12 secondes sans
 événement, réapparition au combat/survol, fondu de 300 ms. Lecture d’archive toujours lisible.
 
-## Dernier problème traité : « joueurs » supplémentaires
+## Clôture des combats en monde ouvert
+
+Si le personnage local est identifié, `LiveMeter` clôture après 12 secondes sans
+dégâts infligés/reçus ni soin direct vers autrui. Les invocations ne comptent pour
+ce délai que si leur propriétaire est connu. Le farm alentour ne relance pas le délai
+et ne démarre pas de nouveau segment à lui seul. Les soins reçus, personnels et
+périodiques ne maintiennent pas le combat actif.
+Les événements observés pendant le segment restent conservés, sources anonymes comprises :
+ce changement ne filtre pas le classement en groupe confirmé.
+Sans identité locale, le mode d’observation conserve le délai global précédent.
+Une identification tardive recalcule le délai depuis les événements conservés.
+
+## Sources supplémentaires
 
 Certaines sources anonymes n’utilisent que Mur de feu, Tempête glaciale ou Piège explosif.
 Le préfixe de classe d’une compétence ne prouve pas qu’il s’agit d’un joueur.
@@ -37,7 +49,8 @@ les changements d’instance et les IDs réutilisés. Préserver les événement
 
 - Les critiques des autres joueurs peuvent être incomplets.
 - Buff uptime, dos/face, doubles et coups parfaits ne sont pas exposés.
-- Une phase sans événement de 12 secondes peut découper un combat.
+- Une phase sans activité personnelle de 12 secondes peut découper un combat,
+  même si les alliés continuent (mort, attente ou uniquement des soins périodiques).
 - Les joueurs observés ne sont pas un groupe confirmé ; noms et PV peuvent manquer.
 - Npcap n’est pas embarqué ; aucune installation automatique ni approbation NCSOFT.
   L’assistant au lancement guide son installation s’il manque, puis revérifie sa

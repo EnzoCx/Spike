@@ -21,8 +21,14 @@ Npcap existant → TCP serveur → réassemblage → décodeur AION 2
 `EncounterSources.cs` distingue les sources anonymes suspectées d’être des effets.
 
 La capture alimente une file bornée ; le timer de présentation appelle `LiveMeter.Poll`
-chaque seconde. Un segment finit après 12 secondes sans événement, à la demande ou à
-une limite de taille/durée. Le dernier combat reste affiché, mais ne signifie pas
+chaque seconde. Si le personnage est identifié, un segment commence et se prolonge
+avec ses dégâts infligés/reçus (invocations au propriétaire connu incluses) et ses soins
+directs vers autrui. Il finit après 12 secondes sans cette activité personnelle :
+les événements alentour sont conservés pendant le segment mais ne prolongent pas le délai.
+Les soins reçus, personnels et périodiques ne le relancent pas. Sans identité locale,
+le délai global de 12 secondes sans événement reste le recours. Une identification tardive
+recalcule le délai à partir des événements conservés. Un segment finit aussi à la demande
+ou à une limite de taille/durée. Le dernier combat reste affiché, mais ne signifie pas
 qu’un combat est actif. Un point de reprise est enregistré toutes les 10 secondes.
 
 Les sauvegardes sont sérialisées par un sémaphore. Le dernier enregistrement attendu

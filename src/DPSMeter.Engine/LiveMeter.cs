@@ -11,7 +11,8 @@ public sealed class LiveMeter : IDisposable
     private readonly Aion2PacketCombatSource source;
     private readonly List<DamageEvent> events = new();
     private readonly Aion2Protocol protocol;
-    private DateTime first, last;
+    private DateTime first, last, lastActivity;
+    private int activityPlayer = -1;
     private Guid id;
     public SourceState State { get; private set; }
     public bool Paused { get; private set; }
@@ -30,21 +31,61 @@ public sealed class LiveMeter : IDisposable
         source.StatusChanged += status => { State = status.State; if (status.State == SourceState.Error) Error = status.Message; };
     }
 
+    internal LiveMeter(Aion2PacketCombatSource source, Aion2Protocol protocol)
+    {
+        this.source = source;
+        this.protocol = protocol;
+    }
+
     public void Start() => source.Start();
 
-    public void Poll()
+    public void Poll() => Process(source.Poll(Paused).Damage, DateTime.Now);
+
+    internal void Process(IReadOnlyList<DamageEvent> damage, DateTime now)
     {
-        foreach (var hit in source.Poll(Paused).Damage)
+        var directory = (Aion2EntityDirectory)source.Entities;
+        var localPlayer = directory.LocalPlayerId;
+        if (localPlayer != activityPlayer)
+        {
+            activityPlayer = localPlayer;
+            if (HasCombat)
+            {
+                // Identity can arrive after the first hits. Rebuild the clock from retained events.
+                var activity = events.Where(hit => KeepsCombatActive(hit, directory)).ToArray();
+                if (activity.Length == 0) Finish("idle");
+                else lastActivity = activity.Max(hit => hit.Timestamp);
+            }
+        }
+        foreach (var hit in damage)
         {
             if (hit.Amount < 0 || hit.Amount > 1_000_000_000_000) continue;
-            if (events.Count > 0 && (hit.Timestamp - last).TotalSeconds > 12) Finish("idle");
+            if (HasCombat && (hit.Timestamp - lastActivity).TotalSeconds >= 12) Finish("idle");
             if (events.Count >= 250_000 || (events.Count > 0 && (hit.Timestamp - first).TotalHours >= 23)) Finish("limit");
-            if (events.Count == 0) { first = last = hit.Timestamp; id = Guid.NewGuid(); }
+            var active = KeepsCombatActive(hit, directory);
+            if (!HasCombat)
+            {
+                if (!active) continue;
+                first = last = lastActivity = hit.Timestamp;
+                id = Guid.NewGuid();
+            }
             if (hit.Timestamp < first) continue;
             last = hit.Timestamp > last ? hit.Timestamp : last;
+            if (active && hit.Timestamp > lastActivity) lastActivity = hit.Timestamp;
             events.Add(hit);
         }
-        if (events.Count > 0 && (DateTime.Now - last).TotalSeconds >= 12) Finish("idle");
+        if (HasCombat && (now - lastActivity).TotalSeconds >= 12) Finish("idle");
+    }
+
+    private bool KeepsCombatActive(DamageEvent hit, Aion2EntityDirectory directory)
+    {
+        // Without a local identity retain the observation mode; never guess a party or pet owner.
+        if (activityPlayer < 0) return true;
+        if (hit.Amount <= 0) return false;
+        var actor = directory.SummonOwnerOf(hit.SourceObjectId) ?? hit.SourceObjectId;
+        if (hit.IsHeal)
+            return actor == activityPlayer && hit.TargetObjectId != activityPlayer && !hit.IsTick;
+        var target = directory.SummonOwnerOf(hit.TargetObjectId) ?? hit.TargetObjectId;
+        return actor == activityPlayer || target == activityPlayer;
     }
 
     public void TogglePause()
