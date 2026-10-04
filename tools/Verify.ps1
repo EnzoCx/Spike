@@ -25,6 +25,7 @@ try {
     Get-Content -LiteralPath (Join-Path $previewPath 'result.txt')
     Get-Content -LiteralPath (Join-Path $previewPath 'setup-result.txt')
     Get-Content -LiteralPath (Join-Path $previewPath 'idle-fade-result.txt')
+    Get-Content -LiteralPath (Join-Path $previewPath 'idle-collapse-result.txt')
     Get-Content -LiteralPath (Join-Path $previewPath 'placement-result.txt')
 } finally {
     Pop-Location

@@ -44,6 +44,7 @@ public static class Text
         ["overlayOptions"] = ["Présentation de l’overlay", "Overlay appearance", "Aspecto del overlay"],
         ["autoFit"] = ["Adapter la hauteur au groupe", "Fit height to players", "Ajustar altura al grupo"],
         ["compactRows"] = ["Lignes compactes", "Compact rows", "Filas compactas"],
+        ["expandIdleOverlay"] = ["Déplier le compteur · réduit après 2 min hors combat", "Expand meter · reduced after 2 min out of combat", "Expandir medidor · reducido tras 2 min fuera de combate"],
         ["fadeWhenIdle"] = ["Presque transparent hors combat", "Nearly transparent out of combat", "Casi transparente fuera de combate"],
         ["snapEdges"] = ["Aimantation aux bords · Maj pour libérer", "Snap to edges · hold Shift to bypass", "Ajustar a bordes · Mayús para liberar"],
         ["overlayPosition"] = ["Placer sur cet écran", "Place on this screen", "Colocar en esta pantalla"],

@@ -1,6 +1,6 @@
 # Reprendre le projet
 
-État de référence : version 0.4.10, 4 octobre 2026.
+État de référence : version 0.4.11, 4 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 ## Ce qui fonctionne
@@ -17,6 +17,11 @@ Overlay séparé au premier plan : survol détaillé, compétences au clic, acc�
 archivés, taille automatique, mode compact, verrouillage des clics, aimantation aux bords,
 placement par coin et recentrage. Hors combat : 15 % d’opacité après 12 secondes sans
 événement, réapparition au combat/survol, fondu de 300 ms. Lecture d’archive toujours lisible.
+Après deux minutes hors combat, l’overlay se réduit à sa barre de titre (44 px de haut).
+Le survol ne le déplie pas ; le bouton flèche donne deux nouvelles minutes de lecture.
+Le prochain combat restaure la taille précédente. Les archives restent dépliées, les
+menus et déplacements en cours retardent la réduction. La taille réduite n’est pas
+enregistrée comme préférence ; la transparence hors combat reste indépendante.
 
 ## Clôture des combats en monde ouvert
 

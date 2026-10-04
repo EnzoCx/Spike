@@ -77,6 +77,8 @@ public sealed partial class OverlayWindow : Window
         close = SmallButton("×", Close); DockPanel.SetDock(close, Dock.Right); header.Children.Add(close);
         locking = SmallButton("◇", Lock); DockPanel.SetDock(locking, Dock.Right); header.Children.Add(locking);
         options = SmallButton("···", ShowOptions); DockPanel.SetDock(options, Dock.Right); header.Children.Add(options);
+        expand = SmallButton("▾", ExpandIdle); expand.Visibility = Visibility.Collapsed;
+        DockPanel.SetDock(expand, Dock.Right); header.Children.Add(expand);
         duration.Margin = new Thickness(8, 0, 8, 0); DockPanel.SetDock(duration, Dock.Right); header.Children.Add(duration);
         var brand = new DockPanel { Cursor = Cursors.SizeAll, Background = Brushes.Transparent };
         brand.Children.Add(new BrandMark { Width = 20, Height = 20, Margin = new Thickness(0, 0, 6, 0) }); brand.Children.Add(heading);
@@ -136,7 +138,7 @@ public sealed partial class OverlayWindow : Window
     }
 
     private static double Bounded(double value, double fallback, double min, double max) => Math.Clamp(double.IsFinite(value) ? value : fallback, min, Math.Max(min, max));
-    private void SaveLayout() => LayoutSaved?.Invoke(Left, Top, Width, Height);
+    private void SaveLayout() => LayoutSaved?.Invoke(Left, idleCollapsed ? expandedTop + Top - collapsedTop : Top, Width, idleCollapsed ? expandedHeight : Height);
     private Button SmallButton(string text, Action action)
     {
         var button = new Button { Content = text, FontSize = 11, Padding = new Thickness(6, 3, 6, 3), Margin = new Thickness(0, 0, 4, 0), MinWidth = 24 };
@@ -153,6 +155,8 @@ public sealed partial class OverlayWindow : Window
         health.Foreground = status.Foreground = hint.Foreground = columns.Foreground = Themes.Brush(theme.Muted);
         hpBar.Background = Themes.Brush(theme.Border); hpBar.Foreground = Themes.Brush(theme.Accent);
         locking.ToolTip = T("lockOverlay"); close.ToolTip = T("closeOverlay"); options.ToolTip = T("overlayOptions"); grip.ToolTip = T("resizeOverlay");
+        expand.ToolTip = T("expandIdleOverlay");
+        System.Windows.Automation.AutomationProperties.SetName(expand, T("expandIdleOverlay"));
         back.ToolTip = T("back"); picker.ToolTip = T("fightPicker"); report.Content = T("fightDetails");
         copy.Content = T("copy"); copy.ToolTip = T("copyHint");
         damage.ToolTip = T("damage"); healing.ToolTip = T("heals"); Render();
@@ -184,6 +188,7 @@ public sealed partial class OverlayWindow : Window
 
     private void UpdateVisibility()
     {
+        UpdateIdleLayout(DateTimeOffset.UtcNow);
         // A retained last encounter is not proof that a fight is still active.
         var reading = !locked && (pointerInside || manipulating || openMenus > 0);
         var opacity = !preferences.OverlayFadeWhenIdle || captureStatus == "capturing" || archived is not null || reading ? 1 : IdleOpacity;
@@ -249,6 +254,7 @@ public sealed partial class OverlayWindow : Window
         var handle = new WindowInteropHelper(this).Handle;
         if (locked && handle != 0) SetWindowLongPtr(handle, -20, GetWindowLongPtr(handle, -20) & ~(nint)(0x20 | 0x08000000));
         locked = false; locking.Visibility = close.Visibility = grip.Visibility = options.Visibility = Visibility.Visible;
+        ExpandIdle();
         Render(); placement.Place("centerOverlay", reference);
     }
     private async Task ShowHistory()
@@ -275,7 +281,7 @@ public sealed partial class OverlayWindow : Window
     {
         var handle = new WindowInteropHelper(this).Handle; if (handle == IntPtr.Zero) return;
         SetWindowLongPtr(handle, -20, GetWindowLongPtr(handle, -20) | 0x20 | 0x08000000);
-        locked = true; locking.Visibility = close.Visibility = grip.Visibility = options.Visibility = Visibility.Collapsed; Render();
+        locked = true; locking.Visibility = close.Visibility = grip.Visibility = options.Visibility = expand.Visibility = Visibility.Collapsed; Render();
     }
 
     private void Render()
@@ -368,7 +374,7 @@ public sealed partial class OverlayWindow : Window
         }
         total.Text = $"{N(people.Sum(p => p.PerSecond))} {(heals ? "HPS" : "DPS")}";
         total.ToolTip = fight is null ? "" : $"{N(people.Sum(p => p.Total))} {T(heals ? "heals" : "damage")} · {T(target is null ? "allTargets" : "scopeBoss")}";
-        if (preferences.OverlayAutoFit)
+        if (preferences.OverlayAutoFit && !idleCollapsed)
         {
             var desired = 144 + Math.Max(1, Math.Min(8, wanted.Count)) * (preferences.OverlayCompact ? 30 : 44) + (showSources ? 24 : 0);
             placement.SetHeight(desired);

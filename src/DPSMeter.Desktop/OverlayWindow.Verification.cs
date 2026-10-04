@@ -62,6 +62,7 @@ public sealed partial class OverlayWindow
 
     internal static void VerifyPreview(Preferences preferences, Encounter encounter, string directory, Style buttonStyle)
     {
+        VerifyIdleCollapse(preferences, encounter, directory, buttonStyle);
         var window = new OverlayWindow(preferences with { OverlayWidth = 460 }, buttonStyle);
         window.CopySummary(_ => throw new InvalidOperationException("Empty overlay must not copy."));
         if (window.copy.IsEnabled) throw new InvalidOperationException("Empty overlay enables copy.");
