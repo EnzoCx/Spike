@@ -20,6 +20,7 @@
 <p align="center">
   <a href="#installation">Installer</a> ·
   <a href="#aperçu">Voir l’interface</a> ·
+  <a href="#détail-des-sorts">Détail des sorts</a> ·
   <a href="#premier-combat">Premier combat</a> ·
   <a href="#questions-fréquentes">Questions fréquentes</a> ·
   <a href="https://github.com/Phobie53/DPSMeter/issues">Signaler un problème</a>
@@ -29,17 +30,51 @@
 
 ## Aperçu
 
-**Pendant le combat : l’essentiel, sans quitter le jeu.** Un overlay compact affiche le DPS, les dégâts et la contribution de chaque joueur observé. Survolez une ligne pour en savoir plus, cliquez pour explorer ses compétences.
+### Le classement en jeu
+
+**Pendant le combat : l’essentiel, sans quitter le jeu.** L’overlay discret affiche une ligne par joueur observé, avec son DPS et sa contribution. Sa hauteur s’adapte au classement et les valeurs sont abrégées pour rester lisibles. Survolez un joueur pour retrouver ses dégâts totaux, ses critiques observés et ses principales compétences.
 
 <p align="center">
-  <img src="docs/images/overlay-demo.png" alt="Démonstration de l’overlay : classement de quatre personnages fictifs, DPS et contribution" width="460">
+  <img src="docs/images/overlay-demo.png" alt="Overlay discret actuel : quatre personnages fictifs, DPS abrégé, contribution et boutons Copier et Rapport" width="360">
 </p>
 
-**Après le combat : comprenez ce qui a fait la différence.** Retrouvez le détail des compétences, les critiques observés, les soins et le rythme du combat dans un rapport conservé sur votre PC.
+### Détail des sorts
 
-![Rapport de démonstration : classement des personnages et détail des compétences du sorcier](docs/images/rapport-demo.png)
+**Cliquez sur un joueur : ses sorts remplacent le classement dans l’overlay.** Chaque ligne indique le DPS du sort et sa part dans les dégâts de ce joueur. La flèche **←** ramène au classement. Le total en bas reste celui de l’ensemble des participants observés.
 
-> Ces aperçus utilisent exclusivement des **données fictives de démonstration**. Ils ne représentent ni une performance réelle ni un classement de classes.
+<p align="center">
+  <img src="docs/images/sorts-demo.png" alt="Overlay ouvert sur Aster : deux sorts de démonstration avec leur DPS et leur contribution respective de 50,3 % et 49,7 %" width="460">
+</p>
+
+**Cliquez sur un sort ou sur Rapport pour ouvrir l’analyse complète.** Le joueur et le périmètre choisis dans l’overlay sont conservés. Dans l’application, un clic sur un autre joueur actualise le panneau **Compétences** ; le champ de recherche permet de retrouver un sort par son nom.
+
+![Rapport actuel : Lyra sélectionnée, dégâts et DPS de chaque sort, contribution, coups, ticks et critiques observés](docs/images/rapport-demo.png)
+
+| Pour chaque sort | Ce que vous lisez dans le rapport |
+| --- | --- |
+| **Dégâts** | Le total infligé par ce sort sur le périmètre sélectionné, ticks compris. |
+| **Contribution (%)** | La part de ce sort dans les dégâts du joueur sélectionné. |
+| **DPS** | Les dégâts du sort divisés par la durée du combat retenue pour ce périmètre. |
+| **Coups** | Le nombre d’impacts observés hors ticks ; ce n’est pas un compteur de lancements. |
+| **Ticks** | Le nombre d’événements périodiques observés, comptés séparément des coups. |
+| **Critiques (%)** | La proportion de coups critiques observés, hors ticks. |
+
+Dans cet exemple fictif, **Flamme de démonstration** représente **4 130 091 dégâts**, soit **50,2 %** des dégâts de Lyra et **34 707 DPS**. Les **50,0 % de critiques** concernent les 60 coups de ce sort, pas sa contribution au total.
+
+Le résumé au-dessus des sorts donne les dégâts, les coups, les critiques, le **plus gros impact** et l’**impact moyen** du joueur sur le périmètre affiché. Les deux dernières valeurs portent sur les événements reçus, ticks compris. L’onglet **Soins** propose la même lecture avec les soins bruts et le HPS. Dépliez **Rythme du combat** pour afficher la courbe des participants observés ou du joueur sélectionné.
+
+### Retrouver un combat
+
+**L’historique conserve vos rapports sur votre PC.** Recherchez un boss ou un joueur, filtrez les combats de boss, puis double-cliquez sur un combat ou sélectionnez **Rapport complet** pour retrouver le classement et les sorts. Vous pouvez consulter une archive pendant que la capture continue.
+
+<details>
+<summary><strong>Voir l’historique</strong></summary>
+
+![Historique de démonstration : recherche, filtre des combats de boss et ouverture du rapport complet](docs/images/historique-demo.png)
+
+</details>
+
+> Captures régénérées depuis la version **0.4.13**, en français et avec le thème Graphite. Elles utilisent exclusivement des **données fictives de démonstration**, y compris les noms de sorts et leurs icônes génériques. Elles ne représentent ni une performance réelle ni un classement de classes.
 
 | Pendant votre session | Pour analyser votre progression |
 | --- | --- |
@@ -47,6 +82,7 @@
 | **Boss ou toutes les cibles** — choisissez le périmètre | **Rythme du combat** — courbe du groupe observé ou d’un joueur |
 | **Overlay discret** — compact, déplaçable, clics traversants | **Historique** — recherche par boss ou joueur, filtre des combats de boss |
 | **Trois thèmes** — Graphite, Ivoire, Contraste élevé | **Import / export** — fichiers JSON v2, export sans les noms |
+| **Réduction automatique** — barre de titre après deux minutes hors combat | **Copier** — résumé compact dans la langue de l’interface, prêt pour le chat du jeu |
 
 ## Installation
 
@@ -81,8 +117,8 @@ La première installation de cette version doit être manuelle : les versions 0.
 
 1. **Lancez DPSMeter.** La capture et l’overlay démarrent automatiquement avec les réglages par défaut. Aucun redémarrage du jeu n’est nécessaire.
 2. **Jouez normalement.** Les données apparaissent lorsque des événements de combat sont reçus. Choisissez **DPS** ou **HPS** et le périmètre **Boss** ou **Toutes les cibles**.
-3. **Explorez une ligne.** Le survol donne un résumé ; un clic ouvre les compétences du joueur. **Rapport complet** ouvre l’analyse détaillée.
-4. **Retrouvez votre combat.** Après 12 secondes sans événement, il est archivé dans **Historique**. La capture continue pendant que vous consultez un ancien rapport.
+3. **Explorez une ligne.** Le survol donne un résumé ; un clic ouvre les compétences du joueur. Cliquez sur un sort ou sur **Rapport** pour ouvrir l’analyse détaillée.
+4. **Retrouvez votre combat.** Au repos, il est sauvegardé dans **Historique**. En monde ouvert, le délai est de 12 secondes sans activité personnelle pertinente si votre personnage est identifié ; le farm alentour ne le prolonge pas. Pour un boss engagé, les dégâts des participants sur ce boss maintiennent le combat, et une reprise après une phase silencieuse complète la même archive. La capture continue pendant que vous consultez un ancien rapport.
 
 Dans **Réglages**, choisissez la langue, le thème et, si vous le souhaitez, le nom de votre personnage. Ce nom s’applique à la prochaine capture.
 
@@ -96,8 +132,13 @@ Dans **Réglages**, choisissez la langue, le thème et, si vous le souhaitez, le
 | Cliquer dans le jeu à travers le meter | Activez le verrouillage **◇** ; masquez puis réaffichez avec **`Ctrl+Alt+M`** pour le déverrouiller |
 | Le repositionner | Ouvrez **···** pour les coins et le centre, ou **Réglages → Recentrer l’overlay** |
 | Consulter un ancien combat | Ouvrez le menu **En direct ▾** de l’overlay |
+| Voir les sorts d’un joueur | Cliquez sur sa ligne ; **←** ramène au classement |
+| Ouvrir le détail des dégâts par sort | Depuis les sorts, cliquez sur une ligne ou sur **Rapport** |
+| Copier le résumé du combat | Cliquez sur **Copier** dans l’overlay ou le rapport |
 
 La position et la taille sont mémorisées. Par défaut, l’overlay passe à **15 % d’opacité hors combat**, après 12 secondes sans événement, puis redevient lisible au combat ou au survol lorsqu’il est déverrouillé. La lecture d’un combat archivé reste lisible. L’option se règle dans **··· → Presque transparent hors combat**.
+
+Après **deux minutes hors combat**, il se réduit à sa barre de titre. Le survol ne le déplie pas : utilisez le bouton flèche pour deux nouvelles minutes de lecture, ou laissez le prochain combat restaurer sa taille. Les archives restent dépliées. Le menu **···** permet aussi de quitter la présentation discrète pour retrouver les lignes détaillées.
 
 ## Comprendre vos chiffres
 
@@ -109,7 +150,7 @@ La position et la taille sont mémorisées. Par défaut, l’overlay passe à **
 - **Participants :** joueurs identifiés dans le flux reçu, pas une composition de groupe confirmée. Des noms ou des PV peuvent manquer.
 - **Sources à identifier :** certaines sources anonymes restent séparées des joueurs. Leurs dégâts restent dans le total et leurs détails sont consultables ; aucun propriétaire n’est deviné.
 
-Les buffs, leur durée d’activité, les attaques de dos/de face, les doubles et les coups parfaits ne sont pas encore exposés. Une phase de 12 secondes sans événement peut séparer une rencontre en plusieurs combats. Une mise à jour du jeu peut nécessiter une adaptation du décodeur.
+Les buffs, leur durée d’activité, les attaques de dos/de face, les doubles et les coups parfaits ne sont pas encore exposés. Sans boss identifié, 12 secondes sans activité pertinente peuvent séparer une rencontre en plusieurs combats. Pour un boss, une mort ou un reset non reçu peut au contraire fusionner des tentatives ; une remontée complète de ses PV peut être prise pour un reset. La reprise d’un boss ne traverse pas le redémarrage du meter. Une mise à jour du jeu peut nécessiter une adaptation du décodeur.
 
 ## Questions fréquentes
 
@@ -127,7 +168,9 @@ Ils restent sur votre PC, dans `%LOCALAPPDATA%\DPSMeter\fights\`. Les préféren
 
 ### Puis-je partager un rapport ?
 
-Oui, avec **Exporter sans les noms** : l’export JSON v2 remplace les noms et identifiants des joueurs. Vous choisissez ensuite où partager ce fichier ; DPSMeter ne l’envoie pas en ligne. Les sauvegardes locales, elles, conservent les noms. L’import accepte le format v2 de ce projet et le marque non vérifié ; les fichiers NotMeter et ceux de l’ancien prototype v1 ne sont pas pris en charge.
+Oui. **Copier**, dans l’overlay ou le rapport, place dans le presse-papiers une ligne compacte avec la cible, la durée, le DPS ou HPS global et le classement, selon le filtre affiché et dans la langue de l’interface. Les valeurs sont abrégées en k/M et les noms sont conservés. Collez-la ensuite vous-même dans le chat du jeu.
+
+Pour transmettre le fichier complet, **Exporter sans les noms** produit un JSON v2 qui remplace les noms et identifiants des joueurs. Vous choisissez ensuite où partager ce fichier ; DPSMeter ne l’envoie pas en ligne. Les sauvegardes locales, elles, conservent les noms. L’import accepte le format v2 de ce projet et le marque non vérifié ; les fichiers NotMeter et ceux de l’ancien prototype v1 ne sont pas pris en charge.
 
 ### Que font « Pause » et « Nouveau combat » ?
 
