@@ -1,8 +1,10 @@
+**DPSMeter is now Spike.** [Visit the website](https://phobie53.github.io/DPSMeter/) · [Download for Windows](https://github.com/Phobie53/DPSMeter/releases/latest/download/DPSMeter.exe)
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="brand/logo-light.svg">
-    <img src="brand/logo-light.svg" alt="DPSMeter" width="360">
+    <img src="brand/logo-light.svg" alt="Spike" width="360">
   </picture>
 </p>
 
@@ -100,7 +102,7 @@ The executable is self-contained: **you do not need to install .NET to use it**.
 
 1. Download **DPSMeter.exe** from the [latest release](https://github.com/Phobie53/DPSMeter/releases/latest) and save it in a personal folder.
 2. Open the executable. If Npcap is missing, setup asks you to close the game and download the installer from the official website.
-3. Install Npcap, return to DPSMeter, click **Check installation**, then **Continue**. Launch the game afterward.
+3. Install Npcap, return to Spike, click **Check installation**, then **Continue**. Launch the game afterward.
 
 Already have Npcap? Setup is skipped. **Later** lets you browse saved fights and settings without capture; **Start** reopens setup if Npcap is still missing. Detecting the driver alone does not guarantee that combat events are being received.
 
@@ -117,7 +119,7 @@ Users of version 0.4.5 or earlier must update manually once, as those versions h
 
 ## Your first fight
 
-1. **Launch DPSMeter.** Capture and the overlay start automatically with the default settings. You do not need to restart the game.
+1. **Launch Spike.** Capture and the overlay start automatically with the default settings. You do not need to restart the game.
 2. **Play normally.** Data appears as combat events arrive. Choose **DPS** or **HPS**, and **Boss** or **All** targets in the overlay.
 3. **Explore a row.** Hover for a summary; click to see the player's skills. Click a skill or **Report** to open the detailed analysis.
 4. **Revisit your fight.** When combat goes idle, the fight is saved in **History**. In the open world, the timeout is 12 seconds without relevant personal activity when your character is identified; nearby farming does not extend it. For an engaged boss, participants' damage to that boss keeps the fight active, and resuming after a quiet phase updates the same saved fight. Capture continues while you read an older report.
@@ -172,7 +174,7 @@ They stay on your PC in `%LOCALAPPDATA%\DPSMeter\fights\`. Preferences are in `%
 
 Yes. **Copy**, in the overlay or report, puts a compact line on your clipboard with the target, duration, overall DPS or HPS, and ranking. It follows the displayed filter and interface language. Values are abbreviated as k/M, and player names are retained. Paste it into game chat yourself.
 
-To share the full file, **Export without names** creates a JSON v2 file with player names and identifiers replaced. You choose where to share it; DPSMeter does not upload it. Local saves retain names. Import accepts this project's v2 format and marks imported fights as unverified; NotMeter files and the legacy v1 prototype format are not supported.
+To share the full file, **Export without names** creates a JSON v2 file with player names and identifiers replaced. You choose where to share it; Spike does not upload it. Local saves retain names. Import accepts this project's v2 format and marks imported fights as unverified; NotMeter files and the legacy v1 prototype format are not supported.
 
 ### What do Pause and New fight do?
 
@@ -180,7 +182,7 @@ To share the full file, **Export without names** creates a JSON v2 file with pla
 
 ### Is this an official tool or approved by NCSOFT?
 
-No. DPSMeter is an **independent project** and does not claim NCSOFT approval. It uses passive capture through Npcap: no injection, game-memory access, packet modification, gameplay automation, or protection bypass. This method does not guarantee compliance with the game's rules.
+No. Spike is an **independent project** and does not claim NCSOFT approval. It uses passive capture through Npcap: no injection, game-memory access, packet modification, gameplay automation, or protection bypass. This method does not guarantee compliance with the game's rules.
 
 ### Is my data sent over the Internet?
 

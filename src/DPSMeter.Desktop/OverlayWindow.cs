@@ -65,7 +65,7 @@ public sealed partial class OverlayWindow : Window
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/CommonStyles.xaml") });
         Resources[typeof(ScrollBar)] = Resources["MeterScrollBar"];
         if (buttonStyle is not null) Resources[typeof(Button)] = buttonStyle;
-        Title = "DPSMeter · Overlay"; MinWidth = 320; MinHeight = ExpandedMinHeight; MaxWidth = 800; MaxHeight = 1000;
+        Title = Text.ProductName; MinWidth = 320; MinHeight = ExpandedMinHeight; MaxWidth = 800; MaxHeight = 1000;
         Width = Bounded(preferences.OverlayWidth, 460, MinWidth, MaxWidth);
         Height = Bounded(preferences.OverlayHeight, 460, MinHeight, MaxHeight);
         Left = double.IsFinite(preferences.OverlayLeft) ? preferences.OverlayLeft : 40;
@@ -156,6 +156,7 @@ public sealed partial class OverlayWindow : Window
     public void Apply(Preferences value)
     {
         preferences = value; var theme = Themes.Get(value.Theme);
+        Title = $"{Text.ProductName} · {T("overlay")}";
         foreach (var (key, color) in new[] { ("Background", theme.Background), ("Surface", theme.Surface), ("Foreground", theme.Foreground), ("Muted", theme.Muted), ("Border", theme.Border), ("Accent", theme.Accent) }) Resources[key] = Themes.Brush(color);
         frame.Background = Themes.Brush(theme.Background); frame.BorderBrush = Themes.Brush(theme.Border); Foreground = Themes.Brush(theme.Foreground);
         frame.Background.Opacity = Bounded(value.OverlayOpacity, .94, .65, 1);
@@ -301,7 +302,7 @@ public sealed partial class OverlayWindow : Window
         UpdateVisibility();
         var fight = Selected; var target = Target;
         var boss = fight is null ? null : EncounterMath.PrimaryBoss(fight);
-        heading.Text = actor is null ? (boss?.Name ?? (fight?.Title is { } title && title != "—" ? title : "DPSMeter")) : fight?.Participants.FirstOrDefault(p => p.Id == actor)?.Name ?? "DPSMeter";
+        heading.Text = actor is null ? (boss?.Name ?? (fight?.Title is { } title && title != "—" ? title : Text.ProductName)) : fight?.Participants.FirstOrDefault(p => p.Id == actor)?.Name ?? Text.ProductName;
         heading.ToolTip = heading.Text + "\n" + T("dragOverlayHint");
         if (actor is { } selected && fight?.Participants.FirstOrDefault(p => p.Id == selected)?.IsUnidentifiedSource == true)
             heading.Text = $"{T("sourceLabel")} #{selected}";

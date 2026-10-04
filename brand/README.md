@@ -1,10 +1,10 @@
-# DPSMeter — Instrument de combat
+# Spike — Instrument de combat
 
-Une identité sobre, précise et immédiatement reconnaissable pour un outil consulté pendant une partie. Le nom DPSMeter est conservé. Signature française : **Le combat, en clair.** Anglais : **Your combat, clearly.** Espagnol : **Tu combate, claro.**
+Une identité sobre, précise et immédiatement reconnaissable pour un outil consulté pendant une partie. Le nom commercial est Spike depuis la version 0.5.0. Signature française : **Le combat, en clair.** Anglais : **Your combat, clearly.** Espagnol : **Tu combate, claro.**
 
 ## Le symbole
 
-Un D segmenté en trois barres horizontales, tirées du classement du meter. Les deux coupes à 45° ferment sa silhouette et évoquent l’impact. Le tracé reste identique dans l’application, l’overlay, l’icône Windows et les fichiers du site. Il ne reprend aucun emblème ou visuel d’AION.
+Un S segmenté en trois barres horizontales, tirées du classement du meter. Les coupes à 45° dessinent sa silhouette et évoquent l’impact. Le tracé reste identique dans l’application, l’overlay, l’icône Windows et les fichiers du site. Il ne reprend aucun emblème ou visuel d’AION.
 
 Source unique : `symbol.path`, grille 64 × 64. `tools/Build-Brand.ps1` génère les SVG, PNG et ICO à partir de ce fichier ; le contrôle WPF lit directement ce même tracé.
 
@@ -40,15 +40,15 @@ Le fond sombre est le choix par défaut pour limiter la gêne pendant le jeu. Le
 - Aucun clignotement ni animation décorative pendant le combat. Aucune décoration derrière les chiffres.
 - Le logo reste dans les zones d’identité : en-tête, navigation, icône. Il ne remplace pas les icônes fonctionnelles.
 
-## Application au futur site
+## Application au site
 
 Depuis 0.4.1, les repères de combat utilisent les emblèmes AION 2 et les couleurs
 de classes du site NotMeter : voir `src/DPSMeter.Desktop/GameArt/sources.json` et
 `CREDITS.txt`. Ces couleurs de classes sont des conventions NotMeter, pas une
-palette officielle NCSOFT. La marque DPSMeter et les thèmes restent graphite /
+palette officielle NCSOFT. La marque Spike et les thèmes restent graphite /
 bronze / ivoire. Les illustrations du jeu ne sont pas couvertes par notre licence MIT.
 
-Reprendre la signature, la palette et la typographie. La liste de combats, les classements et les détails utilisent les mêmes codes que l’application. Un libellé visible distingue toujours un exemple d’un parse réel. `tokens.css` fournit les thèmes et les espacements ; les polices doivent être servies avec leurs notices OFL. Aucun site n’est publié par cette livraison.
+Reprendre la signature, la palette et la typographie. La liste de combats, les classements et les détails utilisent les mêmes codes que l’application. Un libellé visible distingue toujours un exemple d’un parse réel. `tokens.css` fournit les thèmes et les espacements ; les polices doivent être servies avec leurs notices OFL. Le site GitHub Pages reprend ces ressources ; voir `site/README.md`.
 
 ## Fichiers et génération
 
@@ -68,4 +68,4 @@ Régénération sous Windows, sans accès réseau :
 powershell -NoProfile -STA -File tools/Build-Brand.ps1
 ```
 
-Les éléments dessinés pour ce projet suivent sa licence MIT. Le nom est conservé à titre de travail ; aucune recherche d’antériorité de marque n’a été effectuée.
+Les éléments dessinés pour ce projet suivent sa licence MIT. Spike est le nom du produit ; aucune recherche juridique d’antériorité de marque n’a été effectuée. Le dépôt, le nom technique DPSMeter.exe et les chemins de sauvegarde restent stables pour les mises à jour.

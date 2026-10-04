@@ -2,7 +2,7 @@
  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
  xmlns:local="clr-namespace:DPSMeter.Desktop"
- Title="DPSMeter" Width="1120" Height="820" MinWidth="900" MinHeight="640"
+ Title="{x:Static local:Text.ProductName}" Width="1120" Height="820" MinWidth="900" MinHeight="640"
  Icon="Brand/dpsmeter.ico"
  Background="{DynamicResource Background}" Foreground="{DynamicResource Foreground}"
  FontFamily="./Fonts/#Barlow" FontSize="14" WindowStartupLocation="CenterScreen">
@@ -58,10 +58,10 @@
   <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="18,26">
    <DockPanel>
     <StackPanel DockPanel.Dock="Top" Margin="0,0,0,40">
-     <StackPanel Orientation="Horizontal"><local:BrandMark Width="32" Height="32" Margin="0,0,7,0"/><TextBlock Text="DPSMeter" FontFamily="./Fonts/#Barlow Condensed SemiBold" FontSize="25" FontWeight="SemiBold"/></StackPanel>
+     <StackPanel Orientation="Horizontal"><local:BrandMark Width="32" Height="32" Margin="0,0,7,0"/><TextBlock Text="{x:Static local:Text.ProductName}" FontFamily="./Fonts/#Barlow Condensed SemiBold" FontSize="25" FontWeight="SemiBold"/></StackPanel>
      <TextBlock Text="AION 2 / GLOBAL" Style="{StaticResource MutedText}" Margin="0,8,0,0" FontSize="10"/>
     </StackPanel>
-    <StackPanel DockPanel.Dock="Bottom"><TextBlock Text="0.4 · LOCAL" FontSize="10" Foreground="{DynamicResource Muted}"/><TextBlock x:Name="SidebarFoot" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,8,0,0"/></StackPanel>
+    <StackPanel DockPanel.Dock="Bottom"><TextBlock Text="0.5 · LOCAL" FontSize="10" Foreground="{DynamicResource Muted}"/><TextBlock x:Name="SidebarFoot" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,8,0,0"/></StackPanel>
     <StackPanel><Button x:Name="LiveNav" Style="{StaticResource Nav}" Click="ShowLive"/><Button x:Name="HistoryNav" Style="{StaticResource Nav}" Click="ShowHistory"/><Button x:Name="SettingsNav" Style="{StaticResource Nav}" Click="ShowSettings"/></StackPanel>
    </DockPanel>
   </Border>
@@ -157,7 +157,7 @@
   <Border x:Name="SetupPanel" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource Background}" KeyboardNavigation.TabNavigation="Cycle">
    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
     <StackPanel MaxWidth="680" Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center">
-     <StackPanel Orientation="Horizontal" Margin="0,0,0,20"><local:BrandMark Width="36" Height="36" Margin="0,0,12,0"/><TextBlock Text="DPSMeter" FontSize="28" FontWeight="SemiBold"/></StackPanel>
+     <StackPanel Orientation="Horizontal" Margin="0,0,0,20"><local:BrandMark Width="36" Height="36" Margin="0,0,12,0"/><TextBlock Text="{x:Static local:Text.ProductName}" FontSize="28" FontWeight="SemiBold"/></StackPanel>
      <WrapPanel x:Name="SetupLanguages" Margin="0,0,0,16"/>
      <TextBlock x:Name="SetupTitle" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap"/>
      <TextBlock x:Name="SetupIntro" TextWrapping="Wrap" LineHeight="22" Margin="0,12,0,16" Foreground="{DynamicResource Muted}"/>

@@ -4,7 +4,10 @@
     <TargetFramework>net9.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <AssemblyName>DPSMeter</AssemblyName>
-    <Version>0.4.14</Version>
+    <Version>0.5.0</Version>
+    <Product>Spike</Product>
+    <Title>Spike</Title>
+    <Description>Spike — combat analysis for AION 2 Global</Description>
     <ApplicationIcon>Brand/dpsmeter.ico</ApplicationIcon>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>

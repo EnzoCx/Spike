@@ -42,7 +42,7 @@ function Label($dc, [string]$text, [double]$x, [double]$y, [double]$size = 16, [
 }
 
 # SVG lockups use outlined glyphs, so no font install is needed to display them.
-$word = (TextShape 'DPSMeter' 64 $true).BuildGeometry([Windows.Point]::new(0, 0))
+$word = (TextShape 'Spike' 64 $true).BuildGeometry([Windows.Point]::new(0, 0))
 $outline = $word.GetOutlinedPathGeometry()
 $wordPath = $outline.ToString($culture) -replace '^F[01]', ''
 $fillRule = if ($outline.FillRule -eq [Windows.Media.FillRule]::Nonzero) { 'nonzero' } else { 'evenodd' }
@@ -56,10 +56,10 @@ foreach ($variant in @(
     @{ Name = 'mono'; Symbol = 'currentColor'; Text = 'currentColor' }
 )) {
     $svg = @"
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 $lockupWidth 64" role="img" aria-label="DPSMeter"><title>DPSMeter</title><path fill="$($variant.Symbol)" d="$symbolPath"/><path fill="$($variant.Text)" fill-rule="$fillRule" transform="translate($tx $ty)" d="$wordPath"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 $lockupWidth 64" role="img" aria-label="Spike"><title>Spike</title><path fill="$($variant.Symbol)" d="$symbolPath"/><path fill="$($variant.Text)" fill-rule="$fillRule" transform="translate($tx $ty)" d="$wordPath"/></svg>
 "@
     [IO.File]::WriteAllText((Join-Path $brand "logo-$($variant.Name).svg"), $svg)
-    [IO.File]::WriteAllText((Join-Path $brand "symbol-$($variant.Name).svg"), "<svg xmlns=`"http://www.w3.org/2000/svg`" viewBox=`"0 0 64 64`" role=`"img`" aria-label=`"DPSMeter`"><title>DPSMeter</title><path fill=`"$($variant.Symbol)`" d=`"$symbolPath`"/></svg>")
+    [IO.File]::WriteAllText((Join-Path $brand "symbol-$($variant.Name).svg"), "<svg xmlns=`"http://www.w3.org/2000/svg`" viewBox=`"0 0 64 64`" role=`"img`" aria-label=`"Spike`"><title>Spike</title><path fill=`"$($variant.Symbol)`" d=`"$symbolPath`"/></svg>")
     $symbolColor = if ($variant.Name -eq 'mono') { '#242720' } else { $variant.Symbol }
     $textColor = if ($variant.Name -eq 'mono') { '#242720' } else { $variant.Text }
     $visual = [Windows.Media.DrawingVisual]::new(); $dc = $visual.RenderOpen()
@@ -103,7 +103,7 @@ $visual = [Windows.Media.DrawingVisual]::new(); $dc = $visual.RenderOpen()
 $dc.DrawRectangle((Brush '#191A18'), $null, [Windows.Rect]::new(0, 0, 1280, 640))
 Label $dc 'AION 2  /  COMBAT ANALYTICS' 72 62 18 '#B1B1A5'
 DrawMark $dc 44 195 160 '#DDA66A'
-Label $dc 'DPSMeter' 230 176 132 '#F3F0E8' $true
+Label $dc 'Spike' 230 176 132 '#F3F0E8' $true
 Label $dc 'Le combat, en clair.' 236 336 32 '#B1B1A5'
 $dc.DrawLine([Windows.Media.Pen]::new((Brush '#3D4038'), 1), [Windows.Point]::new(72, 488), [Windows.Point]::new(1208, 488))
 Label $dc 'OVERLAY   /   HISTORIQUE   /   ANALYSE' 72 534 22 '#DDA66A'
@@ -113,14 +113,14 @@ $dc.Close(); SavePng $visual 1280 640 (Join-Path $brand 'social-cover.png')
 $visual = [Windows.Media.DrawingVisual]::new(); $dc = $visual.RenderOpen()
 $dc.DrawRectangle((Brush '#191A18'), $null, [Windows.Rect]::new(0, 0, 1600, 1100))
 $dc.DrawRectangle((Brush '#F3F0E8'), $null, [Windows.Rect]::new(1080, 0, 520, 1100))
-Label $dc 'DPSMETER  /  IDENTITÉ VISUELLE' 64 46 15
+Label $dc 'SPIKE  /  IDENTITÉ VISUELLE' 64 46 15
 Label $dc '01 — INSTRUMENT DE COMBAT' 64 114 14 '#DDA66A'
 DrawMark $dc 44 194 160 '#DDA66A'
-Label $dc 'DPSMeter' 230 188 108 '#F3F0E8' $true
+Label $dc 'Spike' 230 188 108 '#F3F0E8' $true
 Label $dc 'Le combat, en clair.' 237 325 27 '#B1B1A5'
 $dc.DrawLine([Windows.Media.Pen]::new((Brush '#3D4038'), 1), [Windows.Point]::new(64, 421), [Windows.Point]::new(1016, 421))
 Label $dc 'UN SIGNE ISSU DE L''INTERFACE' 64 458 15 '#DDA66A'
-Label $dc 'Trois barres. Un D.' 64 496 60 '#F3F0E8' $true
+Label $dc 'Trois barres. Un S.' 64 496 60 '#F3F0E8' $true
 Label $dc 'Le classement devient le symbole de l''application.' 64 579 23 '#B1B1A5'
 Label $dc 'Une silhouette franche, lisible dans un overlay comme dans la barre des tâches.' 64 614 20 '#B1B1A5'
 Label $dc '02 — TYPOGRAPHIE' 64 721 14 '#DDA66A'
@@ -142,7 +142,7 @@ for ($i = 0; $i -lt 3; $i++) {
     Label $dc $swatches[$i][1] $x 217 15 '#5F6257'
 }
 DrawMark $dc 1124 290 52 '#85501F'
-Label $dc 'DPSMeter' 1198 281 48 '#242720' $true
+Label $dc 'Spike' 1198 281 48 '#242720' $true
 Label $dc 'Déclinaison claire / même identité' 1124 362 18 '#5F6257'
 Label $dc 'DANS L''OVERLAY' 1124 453 15 '#5F6257'
 if ($OverlayPreview -and (Test-Path -LiteralPath $OverlayPreview)) {
@@ -153,7 +153,7 @@ if ($OverlayPreview -and (Test-Path -LiteralPath $OverlayPreview)) {
     Label $dc 'Barres de classe, chiffres lisibles,' 1124 512 20 '#242720'
     Label $dc 'bronze réservé aux commandes.' 1124 545 20 '#242720'
 }
-Label $dc 'DPSMETER  /  LOCAL FIRST' 64 1061 12 '#B1B1A5'
+Label $dc 'SPIKE  /  LOCAL FIRST' 64 1061 12 '#B1B1A5'
 Label $dc 'DIRECTION 01  ·  OCTOBRE 2026' 1124 1061 12 '#5F6257'
 $dc.Close(); SavePng $visual 1600 1100 (Join-Path $brand 'direction-graphique.png')
 Write-Output 'Brand kit generated: SVG lockups, transparent PNG, 7 icon sizes, Windows ICO and art-direction sheet.'

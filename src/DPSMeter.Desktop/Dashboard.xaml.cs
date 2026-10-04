@@ -110,6 +110,7 @@ public partial class Dashboard : Window
 
     private void Translate()
     {
+        Title = Text.ProductName;
         LiveNav.Content = T("live"); HistoryNav.Content = T("history"); SettingsNav.Content = T("settings");
         SidebarFoot.Text = T("localHistory"); PageTitle.Text = T(page);
         StartButton.Content = T(meter is null ? "start" : "stop"); PauseButton.Content = T(meter?.Paused == true ? "resume" : "pause");
@@ -352,7 +353,7 @@ public partial class Dashboard : Window
     }
     private async void Import(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFileDialog { Filter = "DPSMeter (*.json)|*.json" };
+        var dialog = new OpenFileDialog { Filter = T("fightFileFilter") };
         if (dialog.ShowDialog(this) != true) return;
         try
         {
@@ -373,7 +374,7 @@ public partial class Dashboard : Window
     private async void Export(object sender, RoutedEventArgs e)
     {
         if (shown is null) return;
-        var dialog = new SaveFileDialog { Filter = "DPSMeter (*.json)|*.json", FileName = $"combat-{shown.StartedAt:yyyyMMdd-HHmm}.json" };
+        var dialog = new SaveFileDialog { Filter = T("fightFileFilter"), FileName = $"combat-{shown.StartedAt:yyyyMMdd-HHmm}.json" };
         if (dialog.ShowDialog(this) != true) return;
         try { await File.WriteAllTextAsync(dialog.FileName, JsonSerializer.Serialize(EncounterFile.PrivateExport(shown), EncounterFile.Json)); SetNotice("exported"); }
         catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }

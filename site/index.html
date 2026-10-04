@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Spike, le compteur de dégâts et de soins pour AION 2 Global. Un overlay discret, des rapports détaillés et vos combats conservés sur votre PC.">
+  <meta name="theme-color" content="#191a18">
+  <meta property="og:title" content="Spike — Le combat, en clair.">
+  <meta property="og:description" content="Votre compteur de dégâts et de soins pour AION 2 Global. Windows · Gratuit · Sans compte.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://phobie53.github.io/DPSMeter/">
+  <meta property="og:image" content="https://phobie53.github.io/DPSMeter/assets/social-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://phobie53.github.io/DPSMeter/">
+  <link rel="icon" type="image/png" href="assets/icon-32.png">
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+  <title>Spike — Le combat, en clair.</title>
+</head>
+<body>
+  <a class="skip" href="#main" data-i18n="skip">Aller au contenu</a>
+  <header class="masthead wrap">
+    <a class="wordmark" href="#" aria-label="Spike"><img src="assets/symbol-dark.svg" width="36" height="36" alt=""><span>Spike</span></a>
+    <nav aria-label="Navigation">
+      <a href="#apercu" data-i18n="navPreview">Aperçu</a>
+      <a href="#installation" data-i18n="navInstall">Installation</a>
+      <a href="https://github.com/Phobie53/DPSMeter" class="source-link">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+    <label class="language" hidden><span class="sr-only" data-i18n="language">Langue</span><select id="language"><option value="fr">FR</option><option value="en">EN</option><option value="es">ES</option></select></label>
+  </header>
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">AION 2 GLOBAL <span>/</span> <span data-i18n="eyebrow">COMPTEUR DE COMBAT</span></p>
+        <h1 id="hero-title"><span data-i18n="headline1">Le combat,</span><br><span class="accent" data-i18n="headline2">en clair.</span></h1>
+        <p class="intro" data-i18n="intro">Gardez un œil sur vos dégâts. Comprenez chaque compétence. Retrouvez vos combats, à votre rythme.</p>
+        <a class="button primary" href="https://github.com/Phobie53/DPSMeter/releases/latest/download/DPSMeter.exe"><span aria-hidden="true">↓</span><span data-i18n="download">Télécharger pour Windows</span></a>
+        <p class="download-note" data-i18n="downloadNote">Windows x64 · Gratuit · Sans compte</p>
+        <a class="text-link" href="#installation"><span data-i18n="firstTime">Première utilisation ? Le guide d’installation</span> <span aria-hidden="true">↗</span></a>
+      </div>
+      <figure class="instrument">
+        <div class="instrument-top"><span class="eyebrow" data-i18n="overlayLabel">LE MINI-METER</span><span class="demo-label" data-i18n="demo">DÉMO</span></div>
+        <div class="overlay-stage"><img id="overlay-preview" src="assets/overlay-fr-dark.png" width="460" height="244" alt="Mini-meter Spike : classement de quatre personnages fictifs." fetchpriority="high"></div>
+        <figcaption><span class="caption-index">01 /</span><span data-i18n="overlayCaption">L’essentiel pendant le combat.<br>Le détail, quand vous le décidez.</span></figcaption>
+        <fieldset class="themes" hidden><legend data-i18n="themeLegend">Même application. Votre ambiance.</legend><div class="theme-options"><button type="button" data-theme-choice="dark" aria-pressed="true"><span class="swatch graphite"></span><span data-i18n="dark">Graphite</span></button><button type="button" data-theme-choice="light" aria-pressed="false"><span class="swatch ivory"></span><span data-i18n="light">Ivoire</span></button><button type="button" data-theme-choice="contrast" aria-pressed="false"><span class="swatch contrast"></span><span data-i18n="contrast">Contraste élevé</span></button></div></fieldset>
+      </figure>
+    </section>
+    <div class="spec-strip wrap"><span data-i18n="spec1">Dégâts & soins</span><span data-i18n="spec2">Overlay discret</span><span data-i18n="spec3">Historique local</span><span data-i18n="spec4">3 langues · 3 thèmes</span></div>
+    <section class="analysis-section wrap" id="apercu" aria-labelledby="analysis-title">
+      <div class="section-heading"><p class="eyebrow" data-i18n="analysisEyebrow">APRÈS L’IMPACT</p><h2 id="analysis-title" data-i18n="analysisTitle">Chaque combat a<br>quelque chose à vous dire.</h2><p data-i18n="analysisIntro">Du premier coup au dernier, retrouvez ce qui a fait la différence.</p></div>
+      <div class="analysis-layout">
+        <figure class="report"><div class="report-bar"><span>Spike <span class="muted">/</span> <span data-i18n="reportLabel">Rapport de combat</span></span><span class="demo-label" data-i18n="demo">DÉMO</span></div><a id="report-link" href="assets/report-fr-dark.png"><img id="report-preview" src="assets/report-fr-dark.png" width="1100" height="780" loading="lazy" alt="Rapport Spike sur un combat fictif : dégâts, compétences et durée."></a><figcaption data-i18n="reportCaption">Aperçu de l’application · données fictives · cliquez pour agrandir</figcaption></figure>
+        <div class="feature-list">
+          <article><span class="caption-index">01</span><h3 data-i18n="feature1Title">À la bonne échelle.</h3><p data-i18n="feature1">DPS, soins et part des dégâts. Passez du boss à toutes les cibles pour lire le combat dans son contexte.</p></article>
+          <article><span class="caption-index">02</span><h3 data-i18n="feature2Title">Au-delà du classement.</h3><p data-i18n="feature2">Sélectionnez un joueur. Explorez ses compétences, leurs dégâts et les critiques observés.</p></article>
+          <article><span class="caption-index">03</span><h3 data-i18n="feature3Title">Votre prochaine progression.</h3><p data-i18n="feature3">Relisez vos combats enregistrés pendant que la capture continue. Copiez un résumé à partager vous-même.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="quiet-section"><div class="wrap quiet-inner"><p class="eyebrow" data-i18n="quietEyebrow">PRÉSENT QUAND IL FAUT</p><h2 data-i18n="quietTitle">Dans votre champ de vision.<br>Pas dans votre chemin.</h2><div class="quiet-details"><p data-i18n="quietBody">Déplacez l’overlay, verrouillez les clics et gardez le contrôle du jeu. Hors combat, il s’estompe, puis se réduit. Au prochain combat, il reprend sa place.</p><div class="shortcut"><kbd>Ctrl</kbd><span>+</span><kbd>Alt</kbd><span>+</span><kbd>M</kbd><span data-i18n="shortcut">Afficher / masquer</span></div></div></div></section>
+    <section class="install wrap" id="installation" aria-labelledby="install-title">
+      <div class="section-heading"><p class="eyebrow" data-i18n="installEyebrow">VOTRE PROCHAIN COMBAT</p><h2 id="install-title" data-i18n="installTitle">Trois étapes.<br>Et vous jouez.</h2><p data-i18n="installIntro">Un exécutable autonome pour Windows x64. Aucun compte à créer, aucun runtime .NET à installer.</p><a class="text-link" href="https://github.com/Phobie53/DPSMeter/releases/latest"><span data-i18n="release">Voir la dernière version</span> ↗</a></div>
+      <ol class="steps">
+        <li><span class="step-number">01</span><div><h3 data-i18n="step1Title">Téléchargez Spike.</h3><p data-i18n="step1">Enregistrez DPSMeter.exe dans un dossier personnel, puis ouvrez-le. C’est le nom du fichier de Spike, conservé pour les mises à jour.</p><a class="text-link" href="https://github.com/Phobie53/DPSMeter/releases/latest/download/DPSMeter.exe" data-i18n="downloadFile">Télécharger l’exécutable ↓</a></div></li>
+        <li><span class="step-number">02</span><div><h3 data-i18n="step2Title">Préparez Npcap, une seule fois.</h3><p data-i18n="step2">S’il manque, Spike vous guide. Fermez le jeu avant d’installer Npcap depuis son site officiel, puis revenez vérifier l’installation.</p><a class="text-link" href="https://npcap.com/#download" data-i18n="npcap">Site officiel de Npcap ↗</a></div></li>
+        <li><span class="step-number">03</span><div><h3 data-i18n="step3Title">Lancez le jeu. Entrez en combat.</h3><p data-i18n="step3">Utilisez le mode fenêtré ou sans bordure pour voir l’overlay. Avec les réglages par défaut, la capture démarre automatiquement.</p></div></li>
+      </ol>
+    </section>
+    <section class="faq wrap" aria-labelledby="faq-title"><div class="section-heading"><p class="eyebrow" data-i18n="faqEyebrow">BON À SAVOIR</p><h2 id="faq-title" data-i18n="faqTitle">Avant de vous lancer.</h2></div><div class="questions">
+      <details><summary data-i18n="q1">Mes combats restent-ils privés ?</summary><p data-i18n="a1">Les combats et préférences restent sur votre PC. Aucune télémétrie ni envoi automatique de combats. Seul le système de mise à jour contacte GitHub pour rechercher et télécharger une nouvelle version.</p></details>
+      <details><summary data-i18n="q2">Est-ce un outil officiel ?</summary><p data-i18n="a2">Spike est un projet indépendant, sans affiliation ni approbation de NCSOFT. Il utilise la capture passive via Npcap, sans injection ni lecture de la mémoire du jeu. La conformité aux règles du jeu n’est pas garantie.</p></details>
+      <details><summary data-i18n="q3">Pourquoi Windows affiche-t-il un avertissement ?</summary><p data-i18n="a3">L’exécutable n’a pas encore de signature numérique d’éditeur. Téléchargez-le uniquement depuis les releases du dépôt officiel lié sur cette page.</p></details>
+      <details><summary data-i18n="q4">Les résultats sont-ils toujours complets ?</summary><p data-i18n="a4">Non. Des noms, PV ou critiques d’autres joueurs peuvent manquer. Les participants observés ne constituent pas un groupe confirmé. Les sources non identifiées restent distinctes et leurs dégâts sont conservés. Les évolutions du jeu peuvent nécessiter une mise à jour du décodeur.</p></details>
+      <details><summary data-i18n="q5">J’utilise déjà DPSMeter. Que devient mon historique ?</summary><p data-i18n="a5">Spike est le nouveau nom de DPSMeter. Vos préférences, combats et fichiers JSON v2 restent compatibles. À partir de DPSMeter 0.4.6, la mise à jour est téléchargée en arrière-plan et appliquée à la prochaine ouverture. Aucun redémarrage n’est imposé.</p></details>
+    </div></section>
+    <section class="closing wrap"><div><p class="eyebrow">SPIKE / AION 2 GLOBAL</p><h2 data-i18n="closing">À vous de jouer.</h2></div><a class="button primary" href="https://github.com/Phobie53/DPSMeter/releases/latest/download/DPSMeter.exe"><span aria-hidden="true">↓</span><span data-i18n="download">Télécharger pour Windows</span></a></section>
+  </main>
+  <footer class="wrap"><div class="footer-main"><a class="wordmark" href="#" aria-label="Spike"><img src="assets/symbol-dark.svg" width="28" height="28" alt=""><span>Spike</span></a><p data-i18n="footerLine">Le combat, en clair. Vos données, chez vous.</p><a href="https://github.com/Phobie53/DPSMeter/issues" data-i18n="feedback">Un problème ou une idée ? ↗</a></div><p class="legal"><span data-i18n="legal">Projet indépendant. AION 2 et ses visuels appartiennent à NCSOFT. Code sous licence MIT ; ressources tierces sous leurs licences respectives.</span> <a href="assets/THIRD-PARTY-NOTICES.md" data-i18n="credits">Crédits et licences</a> · <a href="assets/Fonts/Barlow-OFL.txt">Barlow OFL</a> · <a href="assets/Fonts/BarlowCondensed-OFL.txt">Barlow Condensed OFL</a> · <a href="assets/LICENSE">MIT</a></p></footer>
+</body>
+</html>

@@ -38,7 +38,7 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           $version = $env:RELEASE_TAG.Substring(1)
-          gh release create $env:RELEASE_TAG artifacts/windows/DPSMeter.exe --verify-tag --draft --title "DPSMeter $version" --notes-file "docs/RELEASE-$version.md"
+          gh release create $env:RELEASE_TAG artifacts/windows/DPSMeter.exe --verify-tag --draft --title "Spike $version" --notes-file "docs/RELEASE-$version.md"
           if ($LASTEXITCODE -ne 0) { throw 'Release creation failed.' }
           gh release edit $env:RELEASE_TAG --draft=false --latest
           if ($LASTEXITCODE -ne 0) { throw 'Release publication failed.' }

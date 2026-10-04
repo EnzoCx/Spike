@@ -17,7 +17,7 @@ public sealed class BrandMark : FrameworkElement
     {
         SetResourceReference(FillProperty, "Accent");
         IsHitTestVisible = false;
-        System.Windows.Automation.AutomationProperties.SetName(this, "DPSMeter");
+        System.Windows.Automation.AutomationProperties.SetName(this, Text.ProductName);
     }
 
     private static Geometry LoadSymbol()
