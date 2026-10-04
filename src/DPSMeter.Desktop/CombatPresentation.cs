@@ -5,6 +5,13 @@ namespace DPSMeter.Desktop;
 
 internal static class CombatPresentation
 {
+    public static string Compact(double value, string language)
+    {
+        var culture = CultureInfo.GetCultureInfo(language);
+        return value >= 1_000_000 ? (value / 1_000_000).ToString("0.##", culture) + "M"
+            : value >= 1000 ? (value / 1000).ToString("0.#", culture) + "k" : value.ToString("0", culture);
+    }
+
     public static string Duration(long milliseconds) => TimeSpan.FromMilliseconds(milliseconds).ToString(milliseconds >= 3_600_000 ? @"hh\:mm\:ss" : @"mm\:ss");
     public static string Short(double number, string language)
     {

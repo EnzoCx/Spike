@@ -1,6 +1,6 @@
 # Reprendre le projet
 
-État de référence : version 0.4.12, 4 octobre 2026.
+État de référence : version 0.4.13, 4 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 ## Ce qui fonctionne
@@ -11,8 +11,14 @@ import/export JSON v2. Interface FR/EN/ES, trois thèmes et identité graphique 
 Bouton Copier dans le rapport et l’overlay : une ligne compacte pour le chat du jeu,
 dans la langue de l’interface, avec noms, cible, durée, DPS/HPS global et classement
 selon le filtre affiché, y compris dans l’historique. Valeurs abrégées en k/M,
-pourcentages conservés ; pas de répétition de la cible ou de l’unité par joueur.
+sans rangs ni pourcentages dans le texte copié ; tous les noms sont conservés.
 Les sources non identifiées et les données de démonstration restent signalées.
+Présentation discrète activée par défaut : une ligne par joueur, valeurs abrégées,
+barres fines, commandes sans aplats et hauteur ajustée au classement (défilement
+au-delà de huit lignes). Le fond Graphite est atténué, puis renforcé au survol ;
+les textes restent opaques pendant le combat. Ivoire et Contraste élevé conservent
+leur lisibilité. Les détails restent au survol et au clic. Les options permettent
+de retrouver la présentation détaillée ; les anciens réglages sont conservés.
 Overlay séparé au premier plan : survol détaillé, compétences au clic, accès aux combats
 archivés, taille automatique, mode compact, verrouillage des clics, aimantation aux bords,
 placement par coin et recentrage. Hors combat : 15 % d’opacité après 12 secondes sans

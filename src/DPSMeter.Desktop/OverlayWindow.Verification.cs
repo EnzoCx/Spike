@@ -56,13 +56,15 @@ public sealed partial class OverlayWindow
         IdleFadeChanged -= PreferenceChanged;
         ChangeAppearance(true, false, .75); Check(IdleOpacity, "background setting remains independent");
         Update(encounter, "capturing"); Check(1, "combat restores full text opacity");
-        if (frame.Background.Opacity != .75) throw new InvalidOperationException("Combat changed background preference.");
+        if (Math.Abs(frame.Background.Opacity - .64) > .001 || preferences.OverlayOpacity != .75)
+            throw new InvalidOperationException("Discreet surface changed the saved opacity preference.");
         File.WriteAllText(Path.Combine(directory, "idle-fade-result.txt"), $"PASS: {checks} visibility checks; preference propagation and JSON round-trip. Routed mouse/menu/resize events tested offscreen; no desktop input or game interaction.");
     }
 
     internal static void VerifyPreview(Preferences preferences, Encounter encounter, string directory, Style buttonStyle)
     {
         VerifyIdleCollapse(preferences, encounter, directory, buttonStyle);
+        VerifyDiscreet(preferences, encounter, directory, buttonStyle);
         var window = new OverlayWindow(preferences with { OverlayWidth = 460 }, buttonStyle);
         window.CopySummary(_ => throw new InvalidOperationException("Empty overlay must not copy."));
         if (window.copy.IsEnabled) throw new InvalidOperationException("Empty overlay enables copy.");
@@ -126,7 +128,7 @@ public sealed partial class OverlayWindow
             {
                 window.Apply(preferences with { Language = language, Theme = theme }); window.SetMetric(false); window.Update(encounter);
                 window.CopySummary(value => copied = value);
-                if (copied != FightSummary.Format(encounter, false, window.Target, language) || !copied.Contains(Text.Get("groupDps", language)))
+                if (copied != FightSummary.Format(encounter, false, window.Target, language) || !copied.Contains(Text.Get("shareDps", language)))
                     throw new InvalidOperationException("Overlay copy must follow interface language changes.");
                 window.copyNotice = null; window.Render();
                 window.SavePreview(directory, $"overlay-{language}-{theme}.png");

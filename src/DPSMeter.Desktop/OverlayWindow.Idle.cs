@@ -42,7 +42,7 @@ public sealed partial class OverlayWindow
         // the reduced bounds rather than WPF's already-coerced minimum height.
         MinHeight = 44;
         placement.SetHeight(value ? 44 : expandedHeight);
-        if (!value) MinHeight = 180;
+        if (!value) MinHeight = ExpandedMinHeight;
         if (value) collapsedTop = Top;
     }
 

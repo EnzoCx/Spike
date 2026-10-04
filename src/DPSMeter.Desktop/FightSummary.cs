@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Runtime.InteropServices;
 using DPSMeter.Core;
 
@@ -10,25 +9,22 @@ internal static class FightSummary
     {
         if (heals) target = null;
         string T(string key) => Text.Get(key, language);
-        var culture = CultureInfo.GetCultureInfo(language);
-        string N(double value) => value >= 1_000_000 ? (value / 1_000_000).ToString("0.##", culture) + "M"
-            : value >= 1000 ? (value / 1000).ToString("0.#", culture) + "k" : value.ToString("0", culture);
+        string N(double value) => CombatPresentation.Compact(value, language);
         var scope = target is { } id ? SingleLine(fight.Participants.First(p => p.Id == id).Name)
             : fight.Title == "—" ? T("allTargets") : $"{SingleLine(fight.Title)} / {T("allTargets")}";
         var rows = EncounterMath.Players(fight, heals, target);
         var total = rows.Sum(row => row.Total);
         var duration = EncounterMath.Window(fight, target).DurationMs;
-        var parts = new List<string> { "DPSMeter" };
+        var parts = new List<string>();
         if (fight.Origin == "demo") parts.Add(T("demoLabel"));
         else if (fight.Origin.Contains("unverified")) parts.Add(T("importLabel"));
         parts.Add($"{scope} {(duration < 1000 ? "<1s" : CombatPresentation.Duration(duration))}");
-        parts.Add($"{T(heals ? "groupHps" : "groupDps")} {N(total / EncounterMath.Seconds(fight, target))}");
-        var rank = 0;
+        parts.Add($"{T(heals ? "shareHps" : "shareDps")} {N(total / EncounterMath.Seconds(fight, target))}");
         foreach (var row in rows)
         {
             var person = fight.Participants.First(p => p.Id == row.Id);
-            var label = person.IsUnidentifiedSource ? T("unidentifiedSource") : $"{++rank}.{SingleLine(row.Name)}";
-            parts.Add($"{label} {N(row.PerSecond)} ({row.Share.ToString("0.#", culture)}%)");
+            var label = person.IsUnidentifiedSource ? T("unidentifiedSource") : SingleLine(row.Name);
+            parts.Add($"{label} {N(row.PerSecond)}");
         }
         if (heals) parts.Add(T("shareRawHealing"));
         return string.Join(" | ", parts);

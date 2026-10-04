@@ -24,12 +24,14 @@ public sealed partial class OverlayWindow : Window
     private readonly TextBlock heading = new() { FontSize = 16, FontWeight = FontWeights.SemiBold, TextTrimming = TextTrimming.CharacterEllipsis };
     private readonly TextBlock duration = new() { FontSize = 16, FontWeight = FontWeights.SemiBold };
     private readonly TextBlock health = new() { FontSize = 10 }, status = new() { FontSize = 10 };
-    private readonly TextBlock hint = new() { FontSize = 10, TextTrimming = TextTrimming.CharacterEllipsis }, total = new() { FontSize = 16, FontWeight = FontWeights.SemiBold };
+    private readonly TextBlock hint = new() { FontSize = 10, TextTrimming = TextTrimming.CharacterEllipsis }, total = new() { FontSize = 16, FontWeight = FontWeights.SemiBold, TextTrimming = TextTrimming.CharacterEllipsis };
     private readonly ProgressBar hpBar = new() { Height = 3, Minimum = 0, Maximum = 100, BorderThickness = new Thickness(0) };
     private readonly TextBlock empty = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(8), FontSize = 12 };
     private readonly TextBlock columns = new() { FontSize = 10, Margin = new Thickness(4, 0, 4, 4) };
     private readonly TextBlock rateHead = new() { FontSize = 10, Width = 120, HorizontalAlignment = HorizontalAlignment.Right, TextAlignment = TextAlignment.Right, Margin = new Thickness(0, 0, 6, 4) };
     private readonly ScrollViewer scroll;
+    private readonly StackPanel healthArea;
+    private readonly DockPanel columnHead;
     private readonly Button picker, damage, healing, scope, back, report, copy, locking, close, options, unresolvedToggle;
     private readonly Thumb grip;
     private readonly OverlayPlacement placement;
@@ -48,12 +50,14 @@ public sealed partial class OverlayWindow : Window
     private string T(string key) => Text.Get(key, preferences.Language);
     private CultureInfo Culture => CultureInfo.GetCultureInfo(preferences.Language);
     private string N(double value) => value.ToString("N0", Culture);
+    private string Rate(double value) => preferences.OverlayDiscreet ? CombatPresentation.Compact(value, preferences.Language) : N(value);
     public event Action<Encounter, int?, bool, int?>? DetailsRequested;
     public event Action<double, double, double, double>? LayoutSaved;
     public event Action<bool, bool, double>? AppearanceChanged;
     public event Action? NewFightRequested;
     public event Action<bool>? SnappingChanged;
     public event Action<bool>? IdleFadeChanged;
+    public event Action<bool>? DiscreetChanged;
 
     public OverlayWindow(Preferences preferences, Style? buttonStyle = null, EncounterStore? store = null)
     {
@@ -61,7 +65,7 @@ public sealed partial class OverlayWindow : Window
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/CommonStyles.xaml") });
         Resources[typeof(ScrollBar)] = Resources["MeterScrollBar"];
         if (buttonStyle is not null) Resources[typeof(Button)] = buttonStyle;
-        Title = "DPSMeter · Overlay"; MinWidth = 360; MinHeight = 180; MaxWidth = 800; MaxHeight = 1000;
+        Title = "DPSMeter · Overlay"; MinWidth = 320; MinHeight = ExpandedMinHeight; MaxWidth = 800; MaxHeight = 1000;
         Width = Bounded(preferences.OverlayWidth, 460, MinWidth, MaxWidth);
         Height = Bounded(preferences.OverlayHeight, 460, MinHeight, MaxHeight);
         Left = double.IsFinite(preferences.OverlayLeft) ? preferences.OverlayLeft : 40;
@@ -96,7 +100,7 @@ public sealed partial class OverlayWindow : Window
         };
         header.MouseRightButtonUp += (_, e) => { if (!locked) ShowOptions(); e.Handled = true; };
         header.Children.Add(brand); layout.Children.Add(header);
-        var healthArea = new StackPanel { Margin = new Thickness(2, 0, 2, 4) };
+        healthArea = new StackPanel { Margin = new Thickness(2, 0, 2, 4) };
         var healthLine = new DockPanel { Margin = new Thickness(0, 0, 0, 3) };
         health.TextTrimming = TextTrimming.CharacterEllipsis;
         DockPanel.SetDock(status, Dock.Right); healthLine.Children.Add(status); healthLine.Children.Add(health);
@@ -108,11 +112,11 @@ public sealed partial class OverlayWindow : Window
         back = SmallButton("←", () => { actor = null; Render(); }); DockPanel.SetDock(back, Dock.Left); controls.Children.Add(back);
         picker = SmallButton("", () => _ = ShowHistory()); picker.HorizontalContentAlignment = HorizontalAlignment.Left; controls.Children.Add(picker);
         Grid.SetRow(controls, 2); layout.Children.Add(controls);
-        var columnHead = new DockPanel();
+        columnHead = new DockPanel();
         rateHead.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); DockPanel.SetDock(rateHead, Dock.Right); columnHead.Children.Add(rateHead);
         columns.TextTrimming = TextTrimming.CharacterEllipsis; columnHead.Children.Add(columns);
         Grid.SetRow(columnHead, 3); layout.Children.Add(columnHead);
-        scroll = new ScrollViewer { Content = rows, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
+        scroll = new ScrollViewer { Content = rows, Padding = new Thickness(0), BorderThickness = new Thickness(0), VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
         unresolvedToggle = SmallButton("", () => { showUnidentified = !showUnidentified; Render(); });
         unresolvedToggle.HorizontalContentAlignment = HorizontalAlignment.Left;
         Grid.SetRow(scroll, 4); layout.Children.Add(scroll);
@@ -120,7 +124,7 @@ public sealed partial class OverlayWindow : Window
         grip = new Thumb { Width = 16, Height = 24, Cursor = Cursors.SizeNWSE, Background = Brushes.Transparent };
         var glyph = new FrameworkElementFactory(typeof(TextBlock)); glyph.SetValue(TextBlock.TextProperty, "◢"); glyph.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
         grip.Template = new ControlTemplate(typeof(Thumb)) { VisualTree = glyph };
-        grip.DragDelta += (_, e) => { Width = Math.Clamp(Width + e.HorizontalChange, MinWidth, MaxWidth); Height = Math.Clamp(Height + e.VerticalChange, MinHeight, MaxHeight); };
+        grip.DragDelta += (_, e) => { Width = Math.Clamp(Width + e.HorizontalChange, MinWidth, MaxWidth); if (!preferences.OverlayDiscreet) Height = Math.Clamp(Height + e.VerticalChange, MinHeight, MaxHeight); };
         grip.DragStarted += (_, _) => { SetManipulating(true); ChangeAppearance(false, preferences.OverlayCompact, preferences.OverlayOpacity); };
         grip.DragCompleted += (_, _) => { SetManipulating(false); placement.EnsureVisible(); SaveLayout(); };
         DockPanel.SetDock(grip, Dock.Right); footer.Children.Add(grip);
@@ -133,12 +137,14 @@ public sealed partial class OverlayWindow : Window
         var root = new Grid(); root.Children.Add(frame); Content = root;
         MouseEnter += (_, _) => { pointerInside = true; UpdateVisibility(); };
         MouseLeave += (_, _) => { pointerInside = false; UpdateVisibility(); };
+        IsKeyboardFocusWithinChanged += (_, _) => UpdateSurface();
         PreviewKeyDown += (_, e) => { if (e.Key == Key.Escape && actor is not null) { actor = null; Render(); e.Handled = true; } };
         Closing += (_, _) => SaveLayout(); Apply(preferences);
     }
 
     private static double Bounded(double value, double fallback, double min, double max) => Math.Clamp(double.IsFinite(value) ? value : fallback, min, Math.Max(min, max));
-    private void SaveLayout() => LayoutSaved?.Invoke(Left, idleCollapsed ? expandedTop + Top - collapsedTop : Top, Width, idleCollapsed ? expandedHeight : Height);
+    private void SaveLayout() => LayoutSaved?.Invoke(Left, idleCollapsed ? expandedTop + Top - collapsedTop : Top, Width,
+        preferences.OverlayDiscreet ? detailedHeight ?? preferences.OverlayHeight : idleCollapsed ? expandedHeight : Height);
     private Button SmallButton(string text, Action action)
     {
         var button = new Button { Content = text, FontSize = 11, Padding = new Thickness(6, 3, 6, 3), Margin = new Thickness(0, 0, 4, 0), MinWidth = 24 };
@@ -189,6 +195,7 @@ public sealed partial class OverlayWindow : Window
     private void UpdateVisibility()
     {
         UpdateIdleLayout(DateTimeOffset.UtcNow);
+        UpdateSurface();
         // A retained last encounter is not proof that a fight is still active.
         var reading = !locked && (pointerInside || manipulating || openMenus > 0);
         var opacity = !preferences.OverlayFadeWhenIdle || captureStatus == "capturing" || archived is not null || reading ? 1 : IdleOpacity;
@@ -220,7 +227,9 @@ public sealed partial class OverlayWindow : Window
         {
             var item = new MenuItem { Header = label, IsCheckable = check is not null, IsChecked = check == true }; item.Click += (_, _) => action(); menu.Items.Add(item);
         }
-        Item(T("autoFit"), () => ChangeAppearance(!preferences.OverlayAutoFit, preferences.OverlayCompact, preferences.OverlayOpacity), preferences.OverlayAutoFit);
+        Item(T("discreetOverlay"), ToggleDiscreet, preferences.OverlayDiscreet);
+        if (!preferences.OverlayDiscreet)
+            Item(T("autoFit"), () => ChangeAppearance(!preferences.OverlayAutoFit, preferences.OverlayCompact, preferences.OverlayOpacity), preferences.OverlayAutoFit);
         Item(T("compactRows"), () => ChangeAppearance(preferences.OverlayAutoFit, !preferences.OverlayCompact, preferences.OverlayOpacity), preferences.OverlayCompact);
         Item(T("fadeWhenIdle"), ToggleIdleFade, preferences.OverlayFadeWhenIdle);
         Item(T("snapEdges"), ToggleSnapping, preferences.OverlaySnapToEdges);
@@ -330,7 +339,7 @@ public sealed partial class OverlayWindow : Window
                     if (person.CombatPower is { } power) subtitle += $" · {CombatPresentation.Short(power, preferences.Language)} {T("powerShort")}";
                     if (person.IsUnidentifiedSource) subtitle = T("unidentifiedSource");
                     var title = person.IsUnidentifiedSource ? $"{T("sourceLabel")} #{row.Id}" : $"{rank}. {row.Name}" + (person.IsSelf ? $" · {T("you")}" : "");
-                    control.Update(title, subtitle, N(row.PerSecond), row.Share.ToString("N1", Culture) + "%",
+                    control.Update(title, subtitle, Rate(row.PerSecond), row.Share.ToString("N1", Culture) + "%",
                         $"{CombatPresentation.Short(row.Total, preferences.Language)} {T(heals ? "heals" : "damage")}", row.MaximumShare, person.IsUnidentifiedSource ? "" : row.ClassName, preferences, person.IsSelf);
                     control.Selected = () => { actor = row.Id; Render(); };
                     control.HoverContent = () => CombatHoverCard.Create(Selected!, row.Id, heals, Target, preferences);
@@ -345,7 +354,7 @@ public sealed partial class OverlayWindow : Window
                 Entry("s" + spell.Id + ":" + spell.Name, control =>
                 {
                     control.Update(Aion2SkillNames.Display(spell.Name), $"{N(spell.Hits)} {T("hits")} · {spell.CriticalRate.ToString("N1", Culture)} % {T("criticalShort")}",
-                        N(spell.PerSecond), spell.Share.ToString("N1", Culture) + "%", CombatPresentation.Short(spell.Total, preferences.Language), spell.Total * 100d / maximum, className, preferences, skillId: fight.Origin == "demo" ? 0 : spell.Id);
+                        Rate(spell.PerSecond), spell.Share.ToString("N1", Culture) + "%", CombatPresentation.Short(spell.Total, preferences.Language), spell.Total * 100d / maximum, className, preferences, skillId: fight.Origin == "demo" ? 0 : spell.Id);
                     control.Selected = OpenReport; control.HoverContent = () => CombatHoverCard.Create(Selected!, id, heals, Target, preferences);
                 });
         }
@@ -372,9 +381,16 @@ public sealed partial class OverlayWindow : Window
             hint.Text = T(copyNotice);
             hint.ToolTip = hint.Text;
         }
-        total.Text = $"{N(people.Sum(p => p.PerSecond))} {(heals ? "HPS" : "DPS")}";
+        total.Text = $"{Rate(people.Sum(p => p.PerSecond))} {(heals ? "HPS" : "DPS")}";
         total.ToolTip = fight is null ? "" : $"{N(people.Sum(p => p.Total))} {T(heals ? "heals" : "damage")} · {T(target is null ? "allTargets" : "scopeBoss")}";
-        if (preferences.OverlayAutoFit && !idleCollapsed)
+        ApplyPresentation();
+        if (preferences.OverlayDiscreet && !idleCollapsed)
+        {
+            var rowsHeight = (wanted.Count == 0 ? 64 : Math.Min(8, wanted.Count) * (preferences.OverlayCompact ? 26 : 32)) + (showSources ? 28 : 0);
+            scroll.MaxHeight = rowsHeight + 1;
+            placement.SetHeight(100 + (healthArea.Visibility == Visibility.Visible ? 16 : 0) + rowsHeight);
+        }
+        else if (preferences.OverlayAutoFit && !idleCollapsed)
         {
             var desired = 144 + Math.Max(1, Math.Min(8, wanted.Count)) * (preferences.OverlayCompact ? 30 : 44) + (showSources ? 24 : 0);
             placement.SetHeight(desired);

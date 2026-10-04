@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace DPSMeter.Desktop;
 
@@ -57,20 +58,25 @@ internal sealed class CombatantRow : Button
         string className, Preferences preferences, bool self = false, int? skillId = null)
     {
         var palette = Themes.Get(preferences.Theme);
-        Height = preferences.OverlayCompact ? 28 : 42;
+        var discreet = preferences.OverlayDiscreet;
+        Height = discreet ? (preferences.OverlayCompact ? 24 : 30) : preferences.OverlayCompact ? 28 : 42;
         layout.Margin = new Thickness(6, 2, 6, 2);
-        rate.FontSize = preferences.OverlayCompact ? 15 : 17;
-        detail.Visibility = total.Visibility = preferences.OverlayCompact ? Visibility.Collapsed : Visibility.Visible;
+        rate.FontSize = discreet || preferences.OverlayCompact ? 15 : 17;
+        name.FontWeight = discreet && !self ? FontWeights.Medium : FontWeights.SemiBold;
+        detail.Visibility = total.Visibility = discreet || preferences.OverlayCompact ? Visibility.Collapsed : Visibility.Visible;
         name.VerticalAlignment = VerticalAlignment.Center;
         name.Text = title; rate.Text = number; share.Text = percentage; detail.Text = subtitle; total.Text = amount;
         name.Foreground = rate.Foreground = Themes.Brush(palette.Foreground);
         share.Foreground = detail.Foreground = total.Foreground = Themes.Brush(palette.Muted);
-        Background = Themes.Brush(palette.Surface);
-        BorderBrush = Themes.Brush(self ? palette.Accent : palette.Border); BorderThickness = new Thickness(self ? 1 : 0);
-        bar.Background = Dashboard.ClassColor(className); bar.Opacity = preferences.Theme == "contrast" ? 0.13 : 0.2;
+        Background = discreet ? Brushes.Transparent : Themes.Brush(palette.Surface);
+        BorderBrush = Themes.Brush(self ? palette.Accent : palette.Border); BorderThickness = new Thickness(!discreet && self ? 1 : 0);
+        bar.Background = Dashboard.ClassColor(className);
+        bar.Height = discreet ? 1 : double.NaN;
+        bar.VerticalAlignment = discreet ? VerticalAlignment.Bottom : VerticalAlignment.Stretch;
+        bar.Opacity = discreet ? (preferences.Theme == "contrast" ? .8 : .35) : preferences.Theme == "contrast" ? .13 : .2;
         fill.Width = new GridLength(Math.Max(.001, fraction), GridUnitType.Star);
         rest.Width = new GridLength(Math.Max(.001, 100 - fraction), GridUnitType.Star);
-        var iconSize = preferences.OverlayCompact ? 20 : 24;
+        var iconSize = discreet ? 18 : preferences.OverlayCompact ? 20 : 24;
         emblem.Content = skillId is { } id ? GameArtwork.SkillIcon(id, title, iconSize) : CombatPresentation.Emblem(className, iconSize);
         System.Windows.Automation.AutomationProperties.SetName(this, title + ", " + subtitle + ", " + number);
     }

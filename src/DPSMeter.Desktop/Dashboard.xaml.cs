@@ -407,6 +407,11 @@ public partial class Dashboard : Window
             if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
         };
         overlay.NewFightRequested += () => { meter?.Finish(); Tick(); };
+        overlay.DiscreetChanged += enabled =>
+        {
+            preferences = preferences with { OverlayDiscreet = enabled };
+            if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
+        };
         overlay.SnappingChanged += enabled =>
         {
             preferences = preferences with { OverlaySnapToEdges = enabled };
