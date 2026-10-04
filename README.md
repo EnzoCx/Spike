@@ -48,7 +48,9 @@
 
 **Click a skill or Report to open the full analysis.** The selected player and target scope carry over from the overlay. In the app, selecting another player updates the **Skills** panel; use the search field to find a skill by name.
 
-![Current report with Lyra selected: damage and DPS per skill, damage share, hits, ticks, and observed critical hits](docs/images/rapport-demo.png)
+![Original Atiel fight report in French: Soras selected, game skill icons, damage and DPS per skill, hits, ticks, and observed critical hits](docs/images/rapport-atiel.png)
+
+*Original screenshot from an earlier version, kept in French with the original player names. It shows a real fight and the game's skill icons.*
 
 | Per-skill metric | What the report shows |
 | --- | --- |
@@ -59,7 +61,7 @@
 | **Ticks** | Periodic events counted separately from direct hits. |
 | **Critical hits (%)** | The proportion of observed hits that were critical, excluding ticks. |
 
-In this fictional example, **Demo flame** deals **4,130,091 damage**, accounting for **50.2%** of Lyra's damage and **34,707 DPS**. Its **50.0% critical rate** applies to the skill's 60 hits, not its share of total damage.
+In the report above, **Feu de l'enfer - MAX** deals **162,658 damage**, accounting for **12.4%** of Soras's damage and **1,351 DPS**. Its **12.5% critical rate** applies to the skill's 8 hits, not its share of total damage.
 
 The summary above the skills shows the player's damage, hits, critical rate, **Largest event**, and **Average event** within the displayed scope. The last two values include ticks. Switch to **Healing** for the same breakdown using raw healing and HPS. Expand **Fight timeline** to chart all observed participants or the selected player.
 
@@ -74,7 +76,7 @@ The summary above the skills shows the player's damage, hits, critical rate, **L
 
 </details>
 
-> Screenshots rendered from version **0.4.13**, in English with the Graphite theme. All data is **fictional demonstration data**, including skill names and generic skill icons. These examples do not represent real performance or class rankings.
+> The overlay and history previews use **fictional demonstration data**, rendered in English from version **0.4.13** with the Graphite theme. The Atiel report is an original French screenshot of a real fight, published with permission. None of these screenshots should be used to compare class performance.
 
 | During your session | When reviewing your performance |
 | --- | --- |
