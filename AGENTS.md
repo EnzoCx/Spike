@@ -55,8 +55,15 @@ Do not claim exhaustive protocol correctness or guaranteed CGU compliance.
 
 ## Git and publication
 
-The initial public publication is authorized by the project owner. This does not authorize
-future deployments, paid services, messages to others or automatic publication of fights.
+The project owner authorizes and requires publication of every completed new feature on
+`main`, without asking for confirmation again. After the required checks pass, review the
+staged files, commit and push the feature to `main`, bump the application version, and
+publish the matching `vX.Y.Z` tag and GitHub Release with the verified `DPSMeter.exe`.
+Include the version bump and release notes in the feature commit. Check that the release
+workflow succeeds and the executable is available before reporting publication complete.
+Do not publish failing or incomplete work; report any blocker. Never force-push `main`.
+This standing authorization is limited to this repository's code and application releases;
+it does not authorize paid services, other deployments, messages to others or publication of fights.
 Review the staged files before pushing. Preserve third-party notices: our MIT license does
 not relicense NCSOFT artwork/catalogs, PacketDotNet (MPL-2.0), or OFL fonts.
 Use concise commits that explain the resulting behavior; never commit build outputs.

@@ -11,6 +11,7 @@ try {
     Invoke-Dotnet @('build', 'DPSMeter.sln', '-c', 'Release', '--no-restore', '-m:1')
     Invoke-Dotnet @('run', '--project', 'tests/DPSMeter.Checks', '-c', 'Release', '--no-build')
     Invoke-Dotnet @('run', '--project', 'tests/DPSMeter.EngineChecks', '-c', 'Release', '--no-build')
+    & (Join-Path $PSScriptRoot 'Verify-Updates.ps1')
     Invoke-Dotnet @('publish', 'src/DPSMeter.Desktop', '-c', 'Release', '--no-restore', '-o', 'artifacts/windows', '-m:1')
     $previewPath = Join-Path $project 'artifacts/verification'
     $executable = Join-Path $project 'artifacts/windows/DPSMeter.exe'

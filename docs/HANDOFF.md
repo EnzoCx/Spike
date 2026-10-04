@@ -1,6 +1,6 @@
 # Reprendre le projet
 
-État de référence : version 0.4.5, 4 octobre 2026.
+État de référence : version 0.4.6, 4 octobre 2026.
 Ouvrir le dossier du dépôt dans la nouvelle conversation et lire `AGENTS.md` en premier.
 
 ## Ce qui fonctionne
@@ -37,7 +37,10 @@ les changements d’instance et les IDs réutilisés. Préserver les événement
 - Une phase sans événement de 12 secondes peut découper un combat.
 - Les joueurs observés ne sont pas un groupe confirmé ; noms et PV peuvent manquer.
 - Npcap n’est pas embarqué ; aucune installation automatique ni approbation NCSOFT.
-- Pas de site communautaire, classements en ligne, auto-update ou signature Windows.
+- Pas de site communautaire, classements en ligne ou signature Windows.
+- Mise à jour automatique depuis GitHub Releases : téléchargement en arrière-plan,
+  installation au lancement suivant, ancienne version conservée. Voir `docs/UPDATES.md`.
+  Première installation manuelle requise pour les utilisateurs de 0.4.5 ou antérieur.
 - SDK/runtime .NET 9 : migration LTS à planifier séparément, pas intégrée à ce nettoyage.
 
 ## Fichiers d’entrée
@@ -49,6 +52,11 @@ Capture : `LiveMeter.cs`, `Vendor/Aion2/Protocol/Aion2FrameDecoder.cs`,
 `Vendor/Aion2/Aion2EntityDirectory.cs`.
 
 ## Validation et données
+
+Chaque nouvelle fonctionnalité terminée et validée doit être commitée et poussée sur `main`,
+avec incrément de version, notes de release, tag et publication de l'EXE sur GitHub Releases.
+Cette publication est autorisée sans nouvelle confirmation ; vérifier sa réussite avant de
+l'annoncer. Voir `AGENTS.md` et `docs/UPDATES.md`. Ne pas publier un travail incomplet ou en échec.
 
 `tools/Verify.ps1` lance les tests hors ligne et les rendus hors écran. Aucun clic ni fenêtre
 visible au-dessus du jeu. La CI Windows utilise le même script.

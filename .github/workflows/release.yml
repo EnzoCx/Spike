@@ -1,0 +1,44 @@
+name: Publish release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: windows-2025
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+      - name: Validate version and release notes
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          [xml]$project = Get-Content src/DPSMeter.Desktop/DPSMeter.Desktop.csproj
+          $version = $project.Project.PropertyGroup.Version
+          if ($env:RELEASE_TAG -cne "v$version" -or $version -notmatch '^\d+\.\d+\.\d+$') {
+            throw 'Release tag must match the stable project version.'
+          }
+          if (!(Test-Path "docs/RELEASE-$version.md")) { throw 'Missing release notes.' }
+      - name: Verify offline and publish executable
+        shell: pwsh
+        run: ./tools/Verify.ps1
+      - name: Publish verified executable on GitHub Releases
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          $version = $env:RELEASE_TAG.Substring(1)
+          gh release create $env:RELEASE_TAG artifacts/windows/DPSMeter.exe --verify-tag --draft --title "DPSMeter $version" --notes-file "docs/RELEASE-$version.md"
+          if ($LASTEXITCODE -ne 0) { throw 'Release creation failed.' }
+          gh release edit $env:RELEASE_TAG --draft=false --latest
+          if ($LASTEXITCODE -ne 0) { throw 'Release publication failed.' }

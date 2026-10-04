@@ -47,6 +47,12 @@ catalogue : URLs et empreintes sont conservées, les changements distants sont r
 
 ## Compatibilité
 
+`Desktop/Updates` gère les releases GitHub, le téléchargement vérifié, le cache par
+chemin d'installation et le remplacement atomique au lancement suivant. `App` traite
+le mode assistant avant toute création de fenêtre ou capture. Les tests hors ligne
+de téléchargement utilisent un transport HTTP simulé et des fichiers temporaires.
+Contrat et publication : `docs/UPDATES.md`.
+
 Le contrat actif est JSON v2. Le v1 subsiste seulement dans les anciennes fixtures,
 sans chemin d’import dans l’interface. Le site futur devra utiliser des contrats
 validés côté serveur et ne jamais supposer qu’un import prouve un combat authentique.

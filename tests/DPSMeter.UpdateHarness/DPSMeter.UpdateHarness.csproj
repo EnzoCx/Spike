@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Match WPF implicit usings so formatting linked sources remains safe. -->
+    <Using Remove="System.IO" />
+    <Using Remove="System.Net.Http" />
+    <Compile Include="../../src/DPSMeter.Desktop/Updates/*.cs" Link="Updates/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

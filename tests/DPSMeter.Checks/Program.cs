@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text.Json;
 using DPSMeter.Core;
 
@@ -146,4 +147,5 @@ for (var i = 0; i < 500; i++) store.Save(fight with { Id = Guid.NewGuid(), Start
 Check(new EncounterStore(testFolder).List().Count == 501, "History keeps older fights accessible beyond 500 entries");
 foreach (var file in Directory.EnumerateFiles(testFolder)) File.Delete(file);
 Directory.Delete(testFolder);
+await UpdateChecks.Run(Check);
 Console.WriteLine($"{count} checks passed.");

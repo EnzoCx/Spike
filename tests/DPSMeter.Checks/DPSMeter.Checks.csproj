@@ -1,4 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup><ProjectReference Include="../../src/DPSMeter.Core/DPSMeter.Core.csproj" /></ItemGroup>
+  <ItemGroup>
+    <!-- Match WPF implicit usings so formatting linked sources remains safe. -->
+    <Using Remove="System.IO" />
+    <Using Remove="System.Net.Http" />
+    <Compile Include="../../src/DPSMeter.Desktop/Updates/UpdatePackage.cs" Link="Updates/UpdatePackage.cs" />
+    <Compile Include="../../src/DPSMeter.Desktop/Updates/UpdateStore.cs" Link="Updates/UpdateStore.cs" />
+  </ItemGroup>
 </Project>
