@@ -2,7 +2,7 @@
   <ItemGroup>
     <ProjectReference Include="../DPSMeter.Core/DPSMeter.Core.csproj" />
     <PackageReference Include="SharpPcap" Version="6.3.0" />
-    <PackageReference Include="PacketDotNet" Version="1.4.7" />
+    <PackageReference Include="PacketDotNet" Version="1.4.8" />
     <EmbeddedResource Include="assets/**/*.json" LogicalName="assets/%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>

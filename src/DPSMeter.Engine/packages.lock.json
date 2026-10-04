@@ -4,9 +4,9 @@
     "net9.0": {
       "PacketDotNet": {
         "type": "Direct",
-        "requested": "[1.4.7, )",
-        "resolved": "1.4.7",
-        "contentHash": "xh4MGjkDFhJfFtAr6IEwg3ocPm3TO0/AxbYeCVoh9BaVT0xeWJB1p0nwKQ9olsQiQtSqF8M0UXz97U2VnOYY0w==",
+        "requested": "[1.4.8, )",
+        "resolved": "1.4.8",
+        "contentHash": "j4C4QaJmaPCk0KXsIdsZqmBteKWj5znXBmfbPpu48rE5SW2xwXKVlRf7C3g7VM9aZqMHIQedApEuC71nNX5PaQ==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
