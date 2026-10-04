@@ -1,4 +1,4 @@
-**DPSMeter is now Spike.** [Visit the website](https://phobie53.github.io/DPSMeter/) · [Download for Windows](https://github.com/Phobie53/DPSMeter/releases/latest/download/DPSMeter.exe)
+**DPSMeter is now Spike.** [Visit the website](https://enzocx.github.io/Spike/) · [Download for Windows](https://github.com/EnzoCx/Spike/releases/latest/download/DPSMeter.exe)
 
 <p align="center">
   <picture>
@@ -25,7 +25,7 @@
   <a href="#skill-breakdown">Skill breakdown</a> ·
   <a href="#your-first-fight">Your first fight</a> ·
   <a href="#frequently-asked-questions">FAQ</a> ·
-  <a href="https://github.com/Phobie53/DPSMeter/issues">Report an issue</a>
+  <a href="https://github.com/EnzoCx/Spike/issues">Report an issue</a>
 </p>
 
 ---
@@ -100,7 +100,7 @@ The executable is self-contained: **you do not need to install .NET to use it**.
 
 ### Download and launch
 
-1. Download **DPSMeter.exe** from the [latest release](https://github.com/Phobie53/DPSMeter/releases/latest) and save it in a personal folder.
+1. Download **DPSMeter.exe** from the [latest release](https://github.com/EnzoCx/Spike/releases/latest) and save it in a personal folder.
 2. Open the executable. If Npcap is missing, setup asks you to close the game and download the installer from the official website.
 3. Install Npcap, return to Spike, click **Check installation**, then **Continue**. Launch the game afterward.
 
@@ -112,6 +112,8 @@ The app is not yet signed, so Windows may display a security warning. Check that
 <summary><strong>Automatic updates: version 0.4.6 and later</strong></summary>
 
 Starting with version 0.4.6, the app checks for stable releases on launch, downloads them in the background, and installs them the next time you launch it. No restart is forced; your fights and preferences are preserved.
+
+After the account and repository rename, users of 0.5.0 or earlier must download 0.5.1 manually once. Their strict updater rejects the new repository's asset URLs. Automatic updates resume with 0.5.1.
 
 Users of version 0.4.5 or earlier must update manually once, as those versions have no updater. Installing updates requires a writable folder. The meter remains usable without a network connection or an available release.
 
@@ -160,7 +162,7 @@ Buffs, buff uptime, back/front attacks, double hits, and perfect hits are not ye
 
 ### No damage appears. What should I check?
 
-Check that Npcap is installed, capture is not paused, and combat events are occurring. Look at the capture status in the app. If the problem persists, [report an issue](https://github.com/Phobie53/DPSMeter/issues/new?template=bug_report.md) with your app version and the displayed message, without private data.
+Check that Npcap is installed, capture is not paused, and combat events are occurring. Look at the capture status in the app. If the problem persists, [report an issue](https://github.com/EnzoCx/Spike/issues/new?template=bug_report.md) with your app version and the displayed message, without private data.
 
 ### Why are some player or boss names missing?
 
@@ -190,7 +192,7 @@ No. Spike is an **independent project** and does not claim NCSOFT approval. It u
 
 ## Contributing
 
-Found a problem or have an idea? [Open an issue](https://github.com/Phobie53/DPSMeter/issues). Include your app version, what you expected, and what you observed. Do not attach real fights, raw network traffic, or screenshots containing private information.
+Found a problem or have an idea? [Open an issue](https://github.com/EnzoCx/Spike/issues). Include your app version, what you expected, and what you observed. Do not attach real fights, raw network traffic, or screenshots containing private information.
 
 <details>
 <summary><strong>Developers: documentation and verification</strong></summary>
@@ -209,7 +211,7 @@ This script restores locked dependencies, builds the app, checks calculations an
 - [JSON v2 fight format](docs/FORMAT.md)
 - [Technical decisions](docs/DECISIONS.md)
 - [Brand identity and assets](brand/README.md)
-- [Automated checks on GitHub](https://github.com/Phobie53/DPSMeter/actions/workflows/build.yml)
+- [Automated checks on GitHub](https://github.com/EnzoCx/Spike/actions/workflows/build.yml)
 
 </details>
 

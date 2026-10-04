@@ -7,7 +7,7 @@ Sans JavaScript, le contenu français, les téléchargements et la FAQ restent d
 
 `tools/Build-Site.ps1` assemble une liste explicite de fichiers publics dans
 `artifacts/site`. Le workflow `pages.yml` ne publie que ce dossier sur GitHub Pages :
-https://phobie53.github.io/DPSMeter/. Aucun domaine personnalisé n’est nécessaire.
+https://enzocx.github.io/Spike/. Aucun domaine personnalisé n’est nécessaire.
 
 Pour prévisualiser : exécuter le script, servir `artifacts/site` avec un serveur
 statique local, puis ouvrir son adresse. Ne jamais servir la racine du dépôt.
@@ -22,7 +22,7 @@ Seuls ces fichiers synthétiques explicitement nommés sont copiés. Ne jamais c
 un répertoire de diagnostics, un combat réel ou `docs/images/rapport-atiel.png` sur le site.
 Les aperçus sont signalés comme fictifs et ne comparent pas les performances des classes.
 
-Le nom technique `DPSMeter.exe` et l’adresse du dépôt sont conservés pour les
+Le nom technique `DPSMeter.exe` est conservé pour les
 mises à jour des installations existantes. Le bouton de téléchargement cible
 `releases/latest/download/DPSMeter.exe`, sans numéro de version figé ni appel API.
 

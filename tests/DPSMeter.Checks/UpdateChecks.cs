@@ -21,7 +21,7 @@ internal static class UpdateChecks
                 draft,
                 assets = new[] { new { name = "DPSMeter.exe", state = "uploaded", size = size ?? bytes.Length,
                     digest = digest ?? "sha256:" + hash,
-                    browser_download_url = url ?? $"https://github.com/Phobie53/DPSMeter/releases/download/{tag}/DPSMeter.exe" } }
+                    browser_download_url = url ?? $"https://github.com/EnzoCx/Spike/releases/download/{tag}/DPSMeter.exe" } }
             });
         check(UpdatePackage.FromRelease(Release(), current)?.Version == new Version(0, 4, 7, 0), "Accept newer stable GitHub release");
         foreach (var tag in new[] { "v0.4.6", "v0.4.5", "v0.4.7-beta", "invalid" })
@@ -31,6 +31,8 @@ internal static class UpdateChecks
         check(UpdatePackage.FromRelease(Release("v0.10.0"), current) is not null, "Compare versions numerically");
         check(UpdatePackage.FromRelease(Release(url: "https://example.org/DPSMeter.exe"), current) is null,
             "Reject downloads outside the official repository");
+        check(UpdatePackage.FromRelease(Release(url: "https://github.com/Phobie53/DPSMeter/releases/download/v0.4.7/DPSMeter.exe"), current) is null,
+            "Reject the old repository after migration");
         check(UpdatePackage.FromRelease(Release(digest: "sha256:broken"), current) is null &&
             UpdatePackage.FromRelease(Release(size: UpdatePackage.MaximumSize + 1), current) is null,
             "Require SHA256 and bounded asset size");

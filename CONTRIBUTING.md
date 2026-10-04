@@ -5,8 +5,8 @@ Prérequis : Windows x64, SDK .NET 9.0.304 (global.json) et Git. Npcap et le jeu
 pour compiler ou exécuter les contrôles hors ligne.
 
 ```powershell
-git clone https://github.com/Phobie53/DPSMeter.git
-cd DPSMeter
+git clone https://github.com/EnzoCx/Spike.git
+cd Spike
 powershell -NoProfile -File tools/Verify.ps1
 ```
 

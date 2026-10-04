@@ -1,16 +1,17 @@
 # Reprendre le projet
 
-État de référence : version 0.5.0, 4 octobre 2026.
+État de référence : version 0.5.1, 4 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 ## Identité et site
 
 Le produit s’appelle **Spike** depuis 0.5.0, avec un symbole S en trois barres.
-Le dépôt, l’exécutable `DPSMeter.exe`, les espaces de noms et les chemins locaux
+Le dépôt s'appelle `EnzoCx/Spike`. L’exécutable `DPSMeter.exe`, les espaces de noms et les chemins locaux
 restent inchangés pour préserver sauvegardes et mises à jour.
-Landing page FR/EN/ES et trois thèmes : https://phobie53.github.io/DPSMeter/.
+Landing page FR/EN/ES et trois thèmes : https://enzocx.github.io/Spike/.
 Sources dans `site/`, publication limitée au dossier assemblé par `tools/Build-Site.ps1`.
 Les aperçus proviennent uniquement des fixtures démo hors écran. Voir `site/README.md`.
+La migration vers 0.5.1 nécessite un téléchargement manuel pour les anciennes installations.
 
 ## Ce qui fonctionne
 

@@ -1,7 +1,11 @@
 # Mises à jour automatiques
 
-L'EXE autonome consulte `https://api.github.com/repos/Phobie53/DPSMeter/releases/latest`
+L'EXE autonome consulte `https://api.github.com/repos/EnzoCx/Spike/releases/latest`
 une fois à chaque démarrage normal, sans authentification ni données de combat.
+Après le changement de compte et de dépôt, les versions 0.5.0 et antérieures doivent
+télécharger manuellement la version 0.5.1 une fois : leur validation stricte refuse
+les assets dont l'adresse utilise le nouveau dépôt. Les versions suivantes utilisent
+la nouvelle adresse sans assouplir la vérification du dépôt officiel.
 Les diagnostics et builds de développement ne consultent pas GitHub.
 Le démarrage et la capture n'attendent pas le réseau. Aucun dialogue ni redémarrage forcé.
 

@@ -23,7 +23,7 @@ if (args.Length == 3 && args[0] == "--stage")
         prerelease = false,
         assets = new[] { new { name = "DPSMeter.exe", state = "uploaded", size = payload.Length,
             digest = "sha256:" + Convert.ToHexString(SHA256.HashData(payload)),
-            browser_download_url = $"https://github.com/Phobie53/DPSMeter/releases/download/{tag}/DPSMeter.exe" } }
+            browser_download_url = $"https://github.com/EnzoCx/Spike/releases/download/{tag}/DPSMeter.exe" } }
     });
     File.WriteAllText(Path.Combine(store.Folder, "pending.json"), release);
     File.WriteAllText(args[1] + ".cache", store.Folder);

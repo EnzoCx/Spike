@@ -7,7 +7,7 @@ namespace DPSMeter.Desktop.Updates;
 
 internal sealed record UpdatePackage(Version Version, Uri Url, long Size, string Sha256)
 {
-    internal const string Repository = "Phobie53/DPSMeter";
+    internal const string Repository = "EnzoCx/Spike";
     internal const long MaximumSize = 300 * 1024 * 1024;
 
     internal static UpdatePackage? FromRelease(string json, Version current)
