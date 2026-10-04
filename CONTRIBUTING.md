@@ -1,6 +1,6 @@
 # Contribuer
 
-Lire `AGENTS.md` et `docs/HANDOFF.md` avant toute modification.
+Lire `docs/HANDOFF.md` et `docs/ARCHITECTURE.md` avant toute modification.
 Prérequis : Windows x64, SDK .NET 9.0.304 (global.json) et Git. Npcap et le jeu ne sont pas nécessaires
 pour compiler ou exécuter les contrôles hors ligne.
 
@@ -18,7 +18,7 @@ un pilote ou redémarrer le jeu pour une vérification de code.
 ## Changements
 
 - Une correction ciblée, des noms explicites et peu d’abstractions.
-- Lire les fichiers concernés ; ne pas utiliser de worktree sans demande explicite.
+- Lire les fichiers concernés avant de les modifier.
 - Conserver le JSON v2 existant, les langues FR/EN/ES et les trois thèmes.
 - Tester les régressions fonctionnelles significatives, notamment les calculs.
 - Préserver les notices amont. Éviter les reformatages de `Vendor/`.

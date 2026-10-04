@@ -36,8 +36,7 @@ en cas de régression fonctionnelle de la nouvelle version.
 
 1. Augmenter `Version` dans `src/DPSMeter.Desktop/DPSMeter.Desktop.csproj` et rédiger
    `docs/RELEASE-X.Y.Z.md`.
-2. Exécuter `tools/Verify.ps1` et examiner les changements indexés. Chaque nouvelle fonctionnalité
-   terminée doit être publiée sur `main` sans redemander confirmation, conformément à `AGENTS.md`.
+2. Exécuter `tools/Verify.ps1` et examiner les changements indexés.
    Ne pas publier si les vérifications échouent ou si le travail est incomplet.
 3. Pousser le commit sur `main` puis son tag `vX.Y.Z`. Le workflow `release.yml` vérifie la correspondance
    du tag et de la version, exécute les contrôles hors ligne et construit l'EXE autonome.

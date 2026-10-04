@@ -1,7 +1,7 @@
 # Reprendre le projet
 
 État de référence : version 0.4.6, 4 octobre 2026.
-Ouvrir le dossier du dépôt dans la nouvelle conversation et lire `AGENTS.md` en premier.
+Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 ## Ce qui fonctionne
 
@@ -53,10 +53,7 @@ Capture : `LiveMeter.cs`, `Vendor/Aion2/Protocol/Aion2FrameDecoder.cs`,
 
 ## Validation et données
 
-Chaque nouvelle fonctionnalité terminée et validée doit être commitée et poussée sur `main`,
-avec incrément de version, notes de release, tag et publication de l'EXE sur GitHub Releases.
-Cette publication est autorisée sans nouvelle confirmation ; vérifier sa réussite avant de
-l'annoncer. Voir `AGENTS.md` et `docs/UPDATES.md`. Ne pas publier un travail incomplet ou en échec.
+Le fonctionnement des mises à jour et la procédure de publication sont décrits dans `docs/UPDATES.md`.
 
 `tools/Verify.ps1` lance les tests hors ligne et les rendus hors écran. Aucun clic ni fenêtre
 visible au-dessus du jeu. La CI Windows utilise le même script.
@@ -65,6 +62,4 @@ Les données réelles restent dans `%LOCALAPPDATA%/DPSMeter`, jamais dans Git.
 Les tests sont des programmes console : leur code de sortie est l’autorité, pas `dotnet test`.
 Les comptes rendus de validation passée ne sont pas une certification du protocole.
 
-L’utilisateur peut jouer pendant les travaux : ne pas fermer son meter ni son jeu.
-Ne pas redemander les décisions déjà présentes ici ; demander seulement une information
-manquante qui conditionne réellement le travail.
+Les vérifications ordinaires doivent rester hors ligne et ne pas interrompre les applications ouvertes.

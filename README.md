@@ -152,7 +152,7 @@ Un problème ou une idée ? [Ouvrez une issue](https://github.com/Phobie53/DPSMe
 
 Prérequis : Windows et SDK .NET 9. Une migration LTS reste à planifier.
 
-Lisez [AGENTS.md](AGENTS.md), le [guide de reprise](docs/HANDOFF.md) et le [guide de contribution](CONTRIBUTING.md) avant de modifier le projet.
+Lisez le [guide de reprise](docs/HANDOFF.md) et le [guide de contribution](CONTRIBUTING.md) avant de modifier le projet.
 
 ```powershell
 powershell -NoProfile -File tools/Verify.ps1

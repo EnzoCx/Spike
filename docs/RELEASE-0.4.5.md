@@ -8,7 +8,7 @@
 - Bornes explicites pour le nombre d’intervalles d’une courbe ; tests de régression.
 - Mode de vérification indépendant des préférences personnelles du poste.
 - SDK et dépendances verrouillés ; script de validation partagé avec la CI Windows.
-- AGENTS.md, guide de reprise, architecture, contribution, signalement de sécurité,
+- Guide de reprise, architecture, contribution, signalement de sécurité,
   modèles d’issue/PR et notices tierces.
 - Notes publiques débarrassées des pseudonymes de parties réelles ; planche de marque
   régénérée sans capture personnelle.
