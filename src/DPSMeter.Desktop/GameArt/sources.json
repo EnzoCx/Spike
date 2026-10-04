@@ -1,0 +1,69 @@
+{
+  "snapshot": "2026-10-04",
+  "owner": "AION 2 artwork: NCSOFT; source host: NotMeter",
+  "paletteSource": "https://notmeter.com/assets/app.js?v=20261004-ranker-region",
+  "paletteMeaning": "NotMeter class conventions, not an official NCSOFT color specification",
+  "files": [
+    {
+      "url": "https://notmeter.com/assets/global-details/icons.json?v=20261004-ui-bindings",
+      "sha256": "5dcd37daab9e248ad108b624da158faf6d7087406421a1b389f83a0b7393133e",
+      "bytes": 274568
+    },
+    {
+      "url": "https://notmeter.com/assets/global-details/icons.webp?v=20261004-ui-bindings",
+      "sha256": "1794ce299c11d5116572e7629800e94d074415185a892b36912f9008aa209970",
+      "bytes": 2644102
+    },
+    {
+      "url": "https://notmeter.com/assets/app.js?v=20261004-ranker-region",
+      "sha256": "01546c0e7c4493a00492686be91c310f071df63832541dec9ac886944b4b39b9",
+      "bytes": 449161
+    },
+    {
+      "url": "https://notmeter.com/assets/jobs/%EA%B2%80%EC%84%B1.png",
+      "sha256": "c44cd2bdc37f6364568a36da4655cab809708d21e646f041959b65e3eca0361b",
+      "bytes": 13925
+    },
+    {
+      "url": "https://notmeter.com/assets/jobs/%EC%88%98%ED%98%B8%EC%84%B1.png",
+      "sha256": "297cb993fb43ba7a5ffaba4d2217a52f2ebddf8aa2dfde9a825e95505a14f423",
+      "bytes": 14717
+    },
+    {
+      "url": "https://notmeter.com/assets/jobs/%EC%82%B4%EC%84%B1.png",
+      "sha256": "4c0ed2ecff9cc5b0b269c50d981de498d3b1eec87387837e8be93f0a0838520a",
+      "bytes": 15296
+    },
+    {
+      "url": "https://notmeter.com/assets/jobs/%EA%B6%81%EC%84%B1.png",
+      "sha256": "3f65a7d4db0396b8508a33f2a664ea38b48211149ff6e91b8a0d77821aa2a7c9",
+      "bytes": 13830
+    },
+    {
+      "url": "https://notmeter.com/assets/jobs/%EB%A7%88%EB%8F%84%EC%84%B1.png",
+      "sha256": "59e895a427a7165d40899af63f6743b8631ad9ceeaec152abcef96dd28bb9707",
+      "bytes": 16141
+    },
+    {
+      "url": "https://notmeter.com/assets/jobs/%EC%A0%95%EB%A0%B9%EC%84%B1.png",
+      "sha256": "0253fd69038a1322fa5bbc2e6cfe8c9b1f54f0ae60ab229eeddb3bce4c7b8ce4",
+      "bytes": 15827
+    },
+    {
+      "url": "https://notmeter.com/assets/jobs/%EC%B9%98%EC%9C%A0%EC%84%B1.png",
+      "sha256": "ffb804677ec9739b1ec517a92a94edc530d01d482dc83e9a4dcd4b2f70dfa0fb",
+      "bytes": 16088
+    },
+    {
+      "url": "https://notmeter.com/assets/jobs/%ED%98%B8%EB%B2%95%EC%84%B1.png",
+      "sha256": "1b5e1ee1321f8a6ea87e1140e3dd337d6177ded7029f397d8cc1f10346400c9d",
+      "bytes": 15328
+    },
+    {
+      "url": "https://notmeter.com/assets/jobs/%EA%B6%8C%EC%84%B1.png",
+      "sha256": "6d68d7a0a209084d49101db16a8da12b3b875a1336e52e9f0f79b51bc928e0b4",
+      "bytes": 15223
+    }
+  ],
+  "pngSha256": "ec32fcd67abbcb55b8d7eeee0afc2952175418cdcc5624e51ee0bb7d9289970c"
+}

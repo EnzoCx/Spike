@@ -1,0 +1,63 @@
+/* DPSMeter — shared web foundation. Bundled fonts are licensed under SIL OFL. */
+@font-face {
+  font-family: "Barlow";
+  src: url("./Fonts/Barlow-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("./Fonts/BarlowCondensed-SemiBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+:root,
+[data-theme="dark"] {
+  /* NotMeter class conventions, snapshot 2026-10-04. GameArt/sources.json. */
+  --class-gladiator: #69bcd0;
+  --class-templar: #84aef0;
+  --class-assassin: #9ccc63;
+  --class-ranger: #5dc79a;
+  --class-sorcerer: #b392e8;
+  --class-spiritmaster: #d17acb;
+  --class-cleric: #e2c56d;
+  --class-chanter: #d9a95f;
+  --class-brawler: #e48870;
+  color-scheme: dark;
+  --color-background: #191a18;
+  --color-surface: #252722;
+  --color-text: #f3f0e8;
+  --color-muted: #b1b1a5;
+  --color-accent: #dda66a;
+  --color-border: #3d4038;
+  --font-body: "Barlow", sans-serif;
+  --font-brand: "Barlow Condensed", sans-serif;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --radius-control: 7px;
+  --radius-window: 8px;
+}
+[data-theme="light"] {
+  color-scheme: light;
+  --color-background: #f3f0e8;
+  --color-surface: #e5e1d7;
+  --color-text: #242720;
+  --color-muted: #5f6257;
+  --color-accent: #85501f;
+  --color-border: #c7c9be;
+}
+[data-theme="contrast"] {
+  color-scheme: dark;
+  --color-background: #10120f;
+  --color-surface: #1c201a;
+  --color-text: #fcfaf2;
+  --color-muted: #e2e5d7;
+  --color-accent: #ffd398;
+  --color-border: #929b87;
+}

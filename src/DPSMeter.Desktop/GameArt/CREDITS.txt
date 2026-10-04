@@ -1,0 +1,25 @@
+AION 2 game artwork © NCSOFT. Not affiliated with or endorsed by NCSOFT or NotMeter.
+
+Source snapshot: 2026-10-04, https://notmeter.com/
+Class emblems: /assets/jobs/{Korean class name}.png (9 classes).
+Global skill/buff atlas: /assets/global-details/icons.webp?v=20261004-ui-bindings
+Global ID mappings: /assets/global-details/icons.json?v=20261004-ui-bindings
+Class colors: PERFORMANCE_JOB_COLORS in /assets/app.js?v=20261004-ranker-region.
+These are NotMeter's visual conventions, not an official NCSOFT color specification.
+
+Atlas transcoded from WebP to PNG without changing decoded pixels, for native WPF.
+No recoloring, no AI recreation, no replacement by AION 1 icons.
+Full source URLs and SHA-256 hashes: GameArt/sources.json in the source project.
+Build-time fetch script: tools/Fetch-GameArtwork.py. No runtime image download.
+
+The project's MIT license applies to our code, not to third-party game artwork or catalogs.
+Original rights are retained by their respective owners.
+
+FR : Illustrations du jeu © NCSOFT, récupérées depuis les ressources publiques de
+NotMeter. Couleurs de classes issues des conventions de NotMeter. Images conservées
+dans l'exécutable ; aucune requête Internet à l'affichage. La licence MIT de notre
+code ne couvre pas ces illustrations. Aucun partenariat ou agrément revendiqué.
+
+ES : Ilustraciones del juego © NCSOFT, obtenidas de los recursos públicos de NotMeter.
+Colores de clase según NotMeter. Imágenes incluidas en el ejecutable, sin descargas
+al mostrarlas. La licencia MIT del código no cubre estas ilustraciones.

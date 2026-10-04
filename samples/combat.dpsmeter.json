@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "sample-10s",
+  "region": "Global",
+  "patch": "synthetic-v1",
+  "boss": "Training target (fictional)",
+  "difficulty": "Demo",
+  "durationMs": 10000,
+  "isDemo": true,
+  "actors": [
+    {"id": "a", "name": "Aster", "className": "Gladiator"},
+    {"id": "b", "name": "Lyra", "className": "Sorcerer"}
+  ],
+  "hits": [
+    {"id": "1", "offsetMs": 0, "actorId": "a", "skill": "Sample strike", "damage": 10000, "critical": false},
+    {"id": "2", "offsetMs": 1000, "actorId": "b", "skill": "Sample flame", "damage": 12000, "critical": true},
+    {"id": "3", "offsetMs": 5000, "actorId": "a", "skill": "Sample strike", "damage": 20000, "critical": true},
+    {"id": "4", "offsetMs": 9000, "actorId": "b", "skill": "Sample flame", "damage": 8000, "critical": false}
+  ]
+}
