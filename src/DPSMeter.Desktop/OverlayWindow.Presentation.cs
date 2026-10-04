@@ -43,12 +43,18 @@ public sealed partial class OverlayWindow
         heading.FontSize = duration.FontSize = discreet ? 14 : 16;
         total.FontSize = discreet ? 13 : 16;
         duration.FontWeight = discreet ? FontWeights.Normal : FontWeights.SemiBold;
-        foreach (var button in new[] { picker, damage, healing, scope, back, report, copy, locking, close, options, expand })
+        foreach (var button in new[] { picker, historyPicker, damage, healing, scope, back, report, copy, locking, close, options, expand })
         {
             button.BorderThickness = new Thickness(discreet ? 0 : 1);
             button.Background = (Brush)Resources["Surface"];
             button.Foreground = (Brush)Resources["Foreground"];
             if (discreet) button.Background = Brushes.Transparent;
+        }
+        picker.FontWeight = archived is null ? FontWeights.Normal : FontWeights.SemiBold;
+        if (archived is not null)
+        {
+            picker.Background = (Brush)Resources["Accent"];
+            picker.Foreground = (Brush)Resources["Background"];
         }
         var active = heals ? healing : damage;
         active.Background = discreet ? Brushes.Transparent : (Brush)Resources["Accent"];

@@ -32,7 +32,7 @@ public sealed partial class OverlayWindow : Window
     private readonly ScrollViewer scroll;
     private readonly StackPanel healthArea;
     private readonly DockPanel columnHead;
-    private readonly Button picker, damage, healing, scope, back, report, copy, locking, close, options, unresolvedToggle;
+    private readonly Button picker, historyPicker, damage, healing, scope, back, report, copy, locking, close, options, unresolvedToggle;
     private readonly Thumb grip;
     private readonly OverlayPlacement placement;
     private Encounter? live, archived;
@@ -109,8 +109,10 @@ public sealed partial class OverlayWindow : Window
         healing = SmallButton("HPS", () => SetMetric(true)); DockPanel.SetDock(healing, Dock.Right); controls.Children.Add(healing);
         damage = SmallButton("DPS", () => SetMetric(false)); DockPanel.SetDock(damage, Dock.Right); controls.Children.Add(damage);
         scope = SmallButton("", () => { bossOnly = !bossOnly; Render(); }); DockPanel.SetDock(scope, Dock.Right); controls.Children.Add(scope);
+        historyPicker = SmallButton("▾", () => _ = ShowHistory()); DockPanel.SetDock(historyPicker, Dock.Right); controls.Children.Add(historyPicker);
         back = SmallButton("←", () => { actor = null; Render(); }); DockPanel.SetDock(back, Dock.Left); controls.Children.Add(back);
-        picker = SmallButton("", () => _ = ShowHistory()); picker.HorizontalContentAlignment = HorizontalAlignment.Left; controls.Children.Add(picker);
+        picker = SmallButton("", () => { if (archived is not null) SelectFight(null); else _ = ShowHistory(); });
+        picker.HorizontalContentAlignment = HorizontalAlignment.Left; controls.Children.Add(picker);
         Grid.SetRow(controls, 2); layout.Children.Add(controls);
         columnHead = new DockPanel();
         rateHead.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); DockPanel.SetDock(rateHead, Dock.Right); columnHead.Children.Add(rateHead);
@@ -163,7 +165,8 @@ public sealed partial class OverlayWindow : Window
         locking.ToolTip = T("lockOverlay"); close.ToolTip = T("closeOverlay"); options.ToolTip = T("overlayOptions"); grip.ToolTip = T("resizeOverlay");
         expand.ToolTip = T("expandIdleOverlay");
         System.Windows.Automation.AutomationProperties.SetName(expand, T("expandIdleOverlay"));
-        back.ToolTip = T("back"); picker.ToolTip = T("fightPicker"); report.Content = T("fightDetails");
+        back.ToolTip = T("back"); historyPicker.ToolTip = T("fightPicker"); report.Content = T("fightDetails");
+        System.Windows.Automation.AutomationProperties.SetName(historyPicker, T("fightPicker"));
         copy.Content = T("copy"); copy.ToolTip = T("copyHint");
         damage.ToolTip = T("damage"); healing.ToolTip = T("heals"); Render();
     }
@@ -268,7 +271,7 @@ public sealed partial class OverlayWindow : Window
     }
     private async Task ShowHistory()
     {
-        var menu = Menu(); menu.PlacementTarget = picker;
+        var menu = Menu(); menu.PlacementTarget = archived is null ? picker : historyPicker;
         var current = new MenuItem { Header = T("currentFight"), IsCheckable = true, IsChecked = archived is null };
         current.Click += (_, _) => SelectFight(null); menu.Items.Add(current); menu.Items.Add(new Separator());
         var loading = new MenuItem { Header = T("loading"), IsEnabled = false }; menu.Items.Add(loading); menu.IsOpen = true;
@@ -309,7 +312,9 @@ public sealed partial class OverlayWindow : Window
         health.Text = boss?.CurrentHp is { } hp ? $"{T("hpObserved")} {N(hp)}" + (boss.HighestHp is { } max ? $" / {N(max)}" : "") : T("hpUnavailable");
         health.ToolTip = T("hpHint"); hpBar.Value = boss is { CurrentHp: { } current, HighestHp: > 0 } ? Math.Clamp(current * 100d / boss.HighestHp.Value, 0, 100) : 0;
         back.Visibility = actor is null ? Visibility.Collapsed : Visibility.Visible;
-        picker.Content = T(archived is null ? "live" : "history") + " ▾";
+        picker.Content = archived is null ? T("live") + " ▾" : "← " + T("returnToCurrent");
+        picker.ToolTip = T(archived is null ? "fightPicker" : "returnToCurrent");
+        historyPicker.Visibility = archived is null ? Visibility.Collapsed : Visibility.Visible;
         scope.Content = T(target is null ? "scopeAll" : "scopeBoss"); scope.ToolTip = T("scopeHint"); scope.IsEnabled = boss is not null && !heals;
         report.IsEnabled = fight is not null;
         copy.IsEnabled = fight is not null;

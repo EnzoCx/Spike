@@ -71,7 +71,7 @@ internal sealed class CombatantRow : Button
         Background = discreet ? Brushes.Transparent : Themes.Brush(palette.Surface);
         BorderBrush = Themes.Brush(self ? palette.Accent : palette.Border); BorderThickness = new Thickness(!discreet && self ? 1 : 0);
         bar.Background = Dashboard.ClassColor(className);
-        bar.Height = discreet ? 1 : double.NaN;
+        bar.Height = discreet ? 3 : double.NaN;
         bar.VerticalAlignment = discreet ? VerticalAlignment.Bottom : VerticalAlignment.Stretch;
         bar.Opacity = discreet ? (preferences.Theme == "contrast" ? .8 : .35) : preferences.Theme == "contrast" ? .13 : .2;
         fill.Width = new GridLength(Math.Max(.001, fraction), GridUnitType.Star);

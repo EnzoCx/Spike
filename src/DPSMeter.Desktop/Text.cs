@@ -22,6 +22,7 @@ public static class Text
         ["history"] = ["Historique", "History", "Historial"],
         ["fightPicker"] = ["Choisir un combat", "Choose a fight", "Elegir un combate"],
         ["currentFight"] = ["Dernier combat / en cours", "Latest / current fight", "Último combate / actual"],
+        ["returnToCurrent"] = ["Retour à l’actuel", "Back to current", "Volver al actual"],
         ["fightDetails"] = ["Rapport complet", "Full report", "Informe completo"],
         ["resizeOverlay"] = ["Redimensionner", "Resize", "Cambiar tamaño"],
         ["overlayDrill"] = ["Cliquez sur un joueur pour ses compétences", "Click a player to see skills", "Pulsa un jugador para ver habilidades"],

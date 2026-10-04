@@ -118,7 +118,9 @@ public sealed partial class OverlayWindow
         window.CopySummary(value => copied = value);
         if (copied != FightSummary.Format(encounter, true, null, preferences.Language)) throw new InvalidOperationException("Overlay copy lost healing mode.");
         window.copyNotice = null;
-        window.SelectFight(null); if (window.Selected?.Id == encounter.Id) throw new InvalidOperationException("Return to live failed.");
+        window.picker.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        if (window.Selected?.Id == encounter.Id || window.historyPicker.Visibility != Visibility.Collapsed)
+            throw new InvalidOperationException("Return to live failed.");
         window.SetMetric(false); window.Update(encounter);
         var fullHeight = window.Height;
         window.ChangeAppearance(true, true, .75); window.SavePreview(directory, "overlay-compact.png");
@@ -139,6 +141,9 @@ public sealed partial class OverlayWindow
                     window.SavePreview(directory, $"overlay-narrow-{language}-{theme}-{compact}.png");
                     if (window.scroll.ScrollableHeight > 1)
                         throw new InvalidOperationException("Minimum-width overlay clips party rows.");
+                    window.SelectFight(encounter);
+                    window.SavePreview(directory, $"overlay-archive-{language}-{theme}-{compact}.png");
+                    window.picker.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 }
                 window.Width = 460;
             }
