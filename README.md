@@ -1,104 +1,173 @@
-# DPSMeter
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="brand/logo-light.svg">
+    <img src="brand/logo-light.svg" alt="DPSMeter" width="360">
+  </picture>
+</p>
 
-Application Windows pour **AION 2 Global**, avec capture passive, analyse des combats et historique local. Projet indépendant de NCSOFT.
+<h1 align="center">Le combat, en clair.</h1>
 
-Identité graphique : **Instrument de combat**, graphite / bronze / ivoire. Logo vectoriel, icône Windows, déclinaisons et règles d’utilisation dans `brand/README.md`. **Version 0.4.5** : préparation du dépôt public, code organisé, dépendances verrouillées et validation automatisée. Les sources non identifiées sont séparées des joueurs, avec leurs dégâts conservés. Transparence hors combat depuis 0.4.3, aimantation et gestes rapides depuis 0.4.2 ; véritables emblèmes AION 2, icônes de compétences et couleurs de classes issues de NotMeter depuis 0.4.1. Voir `docs/RELEASE-0.4.4.md`.
+<p align="center">
+  <strong>Votre DPS meter pour AION 2 Global.</strong><br>
+  Suivez vos dégâts et vos soins en jeu, explorez vos compétences et retrouvez vos combats.
+</p>
 
-## Reprendre le développement
+<p align="center">
+  Windows x64 · Français / English / Español · 3 thèmes · Historique local
+</p>
 
-Lire [AGENTS.md](AGENTS.md), puis [le guide de reprise](docs/HANDOFF.md).
-Voir aussi [architecture](docs/ARCHITECTURE.md), [contribution](CONTRIBUTING.md),
-[format JSON](docs/FORMAT.md) et [notices tierces](THIRD-PARTY-NOTICES.md).
+<p align="center">
+  <a href="#installation">Installer</a> ·
+  <a href="#aperçu">Voir l’interface</a> ·
+  <a href="#premier-combat">Premier combat</a> ·
+  <a href="#questions-fréquentes">Questions fréquentes</a> ·
+  <a href="https://github.com/Phobie53/DPSMeter/issues">Signaler un problème</a>
+</p>
+
+---
+
+## Aperçu
+
+**Pendant le combat : l’essentiel, sans quitter le jeu.** Un overlay compact affiche le DPS, les dégâts et la contribution de chaque joueur observé. Survolez une ligne pour en savoir plus, cliquez pour explorer ses compétences.
+
+<p align="center">
+  <img src="docs/images/overlay-demo.png" alt="Démonstration de l’overlay : classement de quatre personnages fictifs, DPS et contribution" width="460">
+</p>
+
+**Après le combat : comprenez ce qui a fait la différence.** Retrouvez le détail des compétences, les critiques observés, les soins et le rythme du combat dans un rapport conservé sur votre PC.
+
+![Rapport de démonstration : classement des personnages et détail des compétences du sorcier](docs/images/rapport-demo.png)
+
+> Ces aperçus utilisent exclusivement des **données fictives de démonstration**. Ils ne représentent ni une performance réelle ni un classement de classes.
+
+| Pendant votre session | Pour analyser votre progression |
+| --- | --- |
+| **DPS et HPS** — dégâts et soins par seconde | **Compétences** — contribution, coups, ticks et critiques observés |
+| **Boss ou toutes les cibles** — choisissez le périmètre | **Rythme du combat** — courbe du groupe observé ou d’un joueur |
+| **Overlay discret** — compact, déplaçable, clics traversants | **Historique** — recherche par boss ou joueur, filtre des combats de boss |
+| **Trois thèmes** — Graphite, Ivoire, Contraste élevé | **Import / export** — fichiers JSON v2, export sans les noms |
+
+## Installation
+
+### Ce qu’il vous faut
+
+- **Windows x64** et AION 2 Global.
+- **Npcap déjà installé** sur le PC : il permet la capture passive et n’est pas fourni avec DPSMeter.
+- Le jeu en **mode fenêtré ou sans bordure** pour utiliser l’overlay de bureau au premier plan.
+
+L’exécutable est autonome : **aucune installation de .NET n’est nécessaire pour jouer**.
+
+### Télécharger et lancer
+
+Les versions destinées aux joueurs seront disponibles sur la page [Releases](https://github.com/Phobie53/DPSMeter/releases).
+
+**En attendant la première release**, un build de développement est disponible dans GitHub Actions :
+
+1. Connectez-vous à GitHub et ouvrez [Build and verify](https://github.com/Phobie53/DPSMeter/actions/workflows/build.yml).
+2. Choisissez une exécution **réussie sur `main`**, puis téléchargez **DPSMeter-windows-x64** dans la section **Artifacts**.
+3. Extrayez le ZIP dans un dossier personnel, puis ouvrez **`DPSMeter.exe`**.
+
+Les artefacts expirent après 14 jours. Ce sont des builds de développement, pas des versions stables. L’application n’est pas encore signée : Windows peut afficher un avertissement de sécurité. Vérifiez que le fichier provient bien de ce dépôt.
+
+<details>
+<summary><strong>Mises à jour : à partir de la version 0.4.6</strong></summary>
+
+La version 0.4.6 introduit la recherche de nouvelles releases stables au démarrage, leur téléchargement en arrière-plan et leur installation au lancement suivant. Aucun redémarrage n’est imposé ; les combats et préférences sont conservés.
+
+La première installation de cette version doit être manuelle : les versions 0.4.5 et antérieures ne disposent pas du mécanisme. L’installation des mises à jour nécessite un dossier accessible en écriture. Sans réseau ou sans release disponible, le meter reste utilisable.
+
+</details>
+
+## Premier combat
+
+1. **Lancez DPSMeter.** La capture et l’overlay démarrent automatiquement avec les réglages par défaut. Aucun redémarrage du jeu n’est nécessaire.
+2. **Jouez normalement.** Les données apparaissent lorsque des événements de combat sont reçus. Choisissez **DPS** ou **HPS** et le périmètre **Boss** ou **Toutes les cibles**.
+3. **Explorez une ligne.** Le survol donne un résumé ; un clic ouvre les compétences du joueur. **Rapport complet** ouvre l’analyse détaillée.
+4. **Retrouvez votre combat.** Après 12 secondes sans événement, il est archivé dans **Historique**. La capture continue pendant que vous consultez un ancien rapport.
+
+Dans **Réglages**, choisissez la langue, le thème et, si vous le souhaitez, le nom de votre personnage. Ce nom s’applique à la prochaine capture.
+
+### Les gestes utiles de l’overlay
+
+| Vous voulez… | Faites ceci |
+| --- | --- |
+| Afficher ou masquer le meter | **`Ctrl+Alt+M`**, ou **Afficher / Masquer l’overlay** dans l’application |
+| Le déplacer | Glissez sa barre de titre ; maintenez **Maj** pour désactiver temporairement l’aimantation |
+| Changer sa taille | Glissez le coin inférieur droit ; double-cliquez sur le titre pour le mode compact |
+| Cliquer dans le jeu à travers le meter | Activez le verrouillage **◇** ; masquez puis réaffichez avec **`Ctrl+Alt+M`** pour le déverrouiller |
+| Le repositionner | Ouvrez **···** pour les coins et le centre, ou **Réglages → Recentrer l’overlay** |
+| Consulter un ancien combat | Ouvrez le menu **En direct ▾** de l’overlay |
+
+La position et la taille sont mémorisées. Par défaut, l’overlay passe à **15 % d’opacité hors combat**, après 12 secondes sans événement, puis redevient lisible au combat ou au survol lorsqu’il est déverrouillé. La lecture d’un combat archivé reste lisible. L’option se règle dans **··· → Presque transparent hors combat**.
+
+## Comprendre vos chiffres
+
+**Le DPS dépend de la cible choisie.** Sur un boss, il utilise la durée entre le premier et le dernier dégât des joueurs sur ce boss, avec un minimum d’une seconde. L’attente des 12 secondes de fin de combat ne fait pas baisser le résultat. Les pauses entre les attaques restent incluses. En mode toutes les cibles, le calcul utilise le premier et le dernier événement du segment.
+
+- **Soins :** valeurs brutes, sans déduction du sursoin. Le HPS ne mesure donc pas les seuls soins utiles.
+- **Critiques :** statistiques observées ; les données des autres joueurs peuvent être incomplètes.
+- **Ticks :** leurs dégâts sont comptés sans augmenter artificiellement le nombre de coups ou de critiques.
+- **Participants :** joueurs identifiés dans le flux reçu, pas une composition de groupe confirmée. Des noms ou des PV peuvent manquer.
+- **Sources à identifier :** certaines sources anonymes restent séparées des joueurs. Leurs dégâts restent dans le total et leurs détails sont consultables ; aucun propriétaire n’est deviné.
+
+Les buffs, leur durée d’activité, les attaques de dos/de face, les doubles et les coups parfaits ne sont pas encore exposés. Une phase de 12 secondes sans événement peut séparer une rencontre en plusieurs combats. Une mise à jour du jeu peut nécessiter une adaptation du décodeur.
+
+## Questions fréquentes
+
+### Aucun dégât ne s’affiche : que vérifier ?
+
+Vérifiez que Npcap est installé, que la capture n’est pas en pause et que des événements de combat se produisent. Consultez l’état de capture dans l’application. En cas de problème persistant, [ouvrez un signalement](https://github.com/Phobie53/DPSMeter/issues/new?template=bug_report.md) avec votre version et le message affiché, sans données privées.
+
+### Pourquoi certains joueurs ou boss n’ont-ils pas de nom ?
+
+Si le meter démarre en cours de partie, il peut devoir attendre que le jeu renvoie leur identité. Il conserve les dégâts reçus sans inventer les informations manquantes.
+
+### Où sont mes combats ?
+
+Ils restent sur votre PC, dans `%LOCALAPPDATA%\DPSMeter\fights\`. Les préférences sont dans `%LOCALAPPDATA%\DPSMeter\settings.json`. Aucun combat n’est supprimé automatiquement ; une collection très volumineuse peut demander plus de temps à charger.
+
+### Puis-je partager un rapport ?
+
+Oui, avec **Exporter sans les noms** : l’export JSON v2 remplace les noms et identifiants des joueurs. Vous choisissez ensuite où partager ce fichier ; DPSMeter ne l’envoie pas en ligne. Les sauvegardes locales, elles, conservent les noms. L’import accepte le format v2 de ce projet et le marque non vérifié ; les fichiers NotMeter et ceux de l’ancien prototype v1 ne sont pas pris en charge.
+
+### Que font « Pause » et « Nouveau combat » ?
+
+**Pause** ignore les événements reçus pendant la pause : ils ne seront pas rejoués. **Nouveau combat** archive le segment actuel ; le suivant commence au prochain événement.
+
+### Est-ce un outil officiel ou approuvé par NCSOFT ?
+
+Non. DPSMeter est un **projet indépendant**, sans approbation de NCSOFT revendiquée. Il utilise une capture passive via Npcap : aucune injection, lecture de mémoire du jeu, modification de paquets, automatisation du gameplay ou contournement de protection. Cette méthode ne garantit pas la conformité aux règles du jeu.
+
+### Mes données sont-elles envoyées sur Internet ?
+
+**Aucune télémétrie ni aucun envoi automatique de combats.** L’application ne conserve pas les paquets bruts, les IP ou le compte du jeu. Le mécanisme de mise à jour de la version 0.4.6 contacte GitHub pour les versions et téléchargements, sans transmettre de données de combat. Il n’y a pas de site communautaire ni de classement en ligne intégré.
+
+## Contribuer au projet
+
+Un problème ou une idée ? [Ouvrez une issue](https://github.com/Phobie53/DPSMeter/issues). Indiquez la version utilisée, ce que vous attendiez et ce que vous avez observé. Ne joignez pas de combat réel, de trafic réseau brut ni de capture contenant des informations privées.
+
+<details>
+<summary><strong>Développeurs : documentation et vérifications</strong></summary>
+
+Prérequis : Windows et SDK .NET 9. Une migration LTS reste à planifier.
+
+Lisez [AGENTS.md](AGENTS.md), le [guide de reprise](docs/HANDOFF.md) et le [guide de contribution](CONTRIBUTING.md) avant de modifier le projet.
 
 ```powershell
 powershell -NoProfile -File tools/Verify.ps1
 ```
 
-La CI Windows produit un exécutable autonome dans les artefacts d’une exécution réussie
-[Build and verify](https://github.com/Phobie53/DPSMeter/actions/workflows/build.yml).
-Ces builds ne sont pas signés. Le dépôt ne contient aucun combat réel ni paquet réseau.
+Ce script restaure les dépendances verrouillées, compile, vérifie les calculs et le protocole, produit l’exécutable et contrôle l’interface hors écran dans les trois langues et les trois thèmes. Il ne lance pas de capture et n’interagit pas avec le jeu. Les résultats restent dans `artifacts/`, ignoré par Git. Ces contrôles ne certifient pas l’intégralité du protocole.
 
-## Utilisation
+- [Architecture](docs/ARCHITECTURE.md)
+- [Format des combats JSON v2](docs/FORMAT.md)
+- [Décisions techniques](docs/DECISIONS.md)
+- [Identité graphique et ressources](brand/README.md)
+- [Vérifications automatiques sur GitHub](https://github.com/Phobie53/DPSMeter/actions/workflows/build.yml)
 
-Ouvrir `DPSMeter.exe` à la racine du projet ou dans `artifacts/windows`.
-La capture démarre automatiquement ; jouer normalement. Aucun redémarrage du jeu nécessaire.
-L’overlay s’ouvre également au démarrage à partir de la version 0.3.2. Le bouton **Afficher / Masquer l’overlay**, en haut à droite de tous les écrans, et `Ctrl+Alt+M` permettent de le retrouver. L’ouverture automatique peut être désactivée dans les réglages.
-Npcap doit déjà être installé : il n'est pas redistribué. L'application embarque .NET et ses tables dans un EXE.
+</details>
 
-- **En direct / Rapport** : classement et compétences côte à côte, dégâts/soins, DPS/HPS observés, filtre de cible, recherche de compétences, critiques, ticks, plus gros impact et impact moyen. Déplier **Rythme du combat** pour la courbe du groupe ou du joueur sélectionné.
-- **Historique** : sauvegarde après 12 secondes sans événement, point de reprise toutes les 10 secondes, recherche ; sélectionner un combat puis **Rapport complet**, double-clic ou Entrée. Joueurs, compétences, critiques, ticks, cibles, soins et courbe restent consultables après fermeture. La capture continue pendant la consultation.
-- **Mini-meter** : boss et durée, emblèmes et couleurs de classe, DPS/HPS, dégâts, contribution et critiques observés. Le survol affiche une fiche avec les huit principales compétences, coups, ticks et critiques. Cliquer sur un joueur affiche ses compétences ; la flèche revient au classement et **Rapport complet** ouvre l’analyse du joueur avec le même périmètre. Le menu **En direct ▾** permet de sélectionner les combats enregistrés, même après redémarrage. Les lignes sont actualisées sans être recréées à chaque seconde.
-- **Présentation** : menu **···**, hauteur automatique (jusqu’à huit lignes), mode compact, opacité du fond sans rendre les chiffres transparents. Les cinq joueurs d’un groupe tiennent dans l’overlay par défaut. PV observés et puissance du personnage s’affichent lorsqu’ils ont été reçus ; les anciennes sauvegardes ne contiennent pas ces informations.
-- **Discrétion hors combat** : l’ensemble de l’overlay passe à 15 % d’opacité après la fin du combat détectée (12 secondes sans événement), avec une transition de 300 ms. Il redevient immédiatement lisible à la reprise du combat ou au survol si déverrouillé. Déplacement, redimensionnement, menus et consultation d’un combat archivé restent lisibles. Option activée par défaut, mémorisée dans **··· → Presque transparent hors combat**. Le verrouillage conserve les clics traversants et le retour automatique en combat.
-- **Retrouver un combat** : recherche par boss ou nom de joueur, filtre **Combats de boss**, durée, participants et DPS directement dans l’historique.
-- **Placement de l’overlay** : glisser le titre, redimensionner par le coin inférieur droit ; taille et position sont mémorisées. Le bouton ◇ verrouille la fenêtre pour laisser les clics traverser. `Ctrl+Alt+M` la masque ; un second appui la rouvre déverrouillée. Overlay de bureau toujours au premier plan, prévu pour le mode fenêtré / sans bordure du jeu.
-- **Aimantation** : à proximité d’un bord, la fenêtre s’aligne sur l’écran concerné, en tenant compte de sa barre des tâches. Maintenir **Maj** pour un déplacement libre ; option persistante dans **···**. Clic droit sur le titre pour les options, double-clic pour le mode compact. Le menu de position propose les quatre coins et le centre. **Réglages → Recentrer l’overlay** le ramène sur l’écran du logiciel et le déverrouille. Après changement d’affichage, une fenêtre hors écran est ramenée dans une zone accessible. La hauteur automatique conserve l’alignement inférieur lorsqu’il est utilisé.
-- **Réglages** : français/anglais/espagnol, trois thèmes, nom facultatif du personnage, démarrage automatique et maintien au premier plan.
-- **Pause** : les événements pendant la pause sont ignorés, jamais rejoués.
-- **Nouveau combat** : archive le segment actuel ; le suivant commence au prochain événement.
-- **Export** : JSON v2 avec remplacement des noms/identifiants des joueurs. Aucun envoi en ligne.
-- **Import** : JSON v2 du projet, marqué non vérifié. Pas d'import NotMeter ou v1 du prototype précédent.
+---
 
-Au démarrage en milieu de partie, des joueurs/boss restent inconnus jusqu'à ce que le jeu renvoie leur identité. Les noms de compétences disposent de tables FR/EN/ES avec repli anglais. Le nom facultatif s'applique à la prochaine capture.
-
-Les sources anonymes ne lançant que Mur de feu, Tempête glaciale ou Piège explosif sont provisoirement classées **Sources à identifier**, sans affirmer qu’elles sont des joueurs ou leur attribuer un propriétaire. Les entités apparues comme PNJ utilisant des compétences de classe restent également séparées tant que leur propriétaire est inconnu. Dans l’overlay, une ligne dépliable conserve leurs détails et leur contribution ; leurs dégâts restent inclus dans le total, leur nombre est exclu du nombre de joueurs. Un véritable joueur sans nom utilisant d’autres compétences reste affiché. Les anciens rapports locaux bénéficient de cette distinction à la lecture, sans modification de fichier. Cela ne constitue pas un filtre exhaustif du groupe ni une résolution complète des invocations.
-
-## Mesures et limites
-
-DPS = dégâts / durée, minimum une seconde. Par défaut, les dégâts portent sur le boss principal : durée entre le premier et le dernier dégât des joueurs sur cette cible. Les soins et les dégâts ailleurs ne prolongent pas ce temps. Le mode **Tout / Toutes les cibles** conserve la durée entre le premier et le dernier événement du segment. L’attente de fin de combat ne fait plus baisser le DPS. Les périodes entre attaques restent incluses. Les ticks ajoutent des dégâts, sans gonfler le nombre de coups ni les critiques. Les soins sont bruts, sursoins non retranchés.
-
-Les variantes de niveau/spécialisation d’une compétence de classe sont regroupées par ID de base et nom ; les événements originaux sont conservés. Les PV maximum affichés sont le maximum **observé**, qui peut être inférieur au maximum réel. Les buffs, attaques de dos/de face, doubles et coups parfaits ne sont pas encore exposés par ce moteur : aucune statistique de remplacement n’est inventée.
-
-Les joueurs affichés sont ceux identifiés dans le flux observé, pas nécessairement uniquement le groupe. Les critiques reçus pour les autres joueurs peuvent être incomplets. Une longue phase sans événements peut séparer un combat : la segmentation n'est pas une reconnaissance exhaustive des rencontres/phases. Les invocations reconnues sont attribuées à leur propriétaire par le moteur amont. Une mise à jour du jeu peut nécessiter d'adapter le décodeur.
-
-Le site communautaire, les classements, la signature Windows et la redistribution Npcap restent à développer. Aucun service n'est provisionné ou facturé.
-
-## Stockage
-
-- `%LOCALAPPDATA%/DPSMeter/settings.json` : préférences.
-- `%LOCALAPPDATA%/DPSMeter/fights/` : combats locaux, noms inclus.
-- `%LOCALAPPDATA%/DPSMeter/engine/` : tables embarquées, extraites au premier lancement.
-
-Tous les combats valides du dossier sont listés, sans limite de 500 ni suppression automatique. Le chargement s’effectue en arrière-plan ; une très grande collection peut prendre plus de temps. Les fichiers invalides sont ignorés. Aucun paquet brut, IP, compte du jeu ou télémétrie n'est conservé par l'application.
-
-## Validation du 4 octobre 2026
-
-- 53 contrôles de calcul, import/export, séparation soins/dégâts, cibles et historique : fenêtre du boss, regroupement des variantes, métadonnées facultatives, anciens fichiers, réouverture du stockage et accès à plus de 500 combats.
-- Régressions protocole : exemples de trames dégâts/critiques/soins, fragmentation TCP, retransmissions, pause et décompression LZ4 bornée.
-- 27 rendus du tableau de bord et 12 rendus d’overlay hors écran en FR/EN/ES et dans les trois thèmes. Interactions vérifiées : compétences au clic, contenu du survol, retour, recherche, filtres, passage dégâts/soins, hauteur automatique/compacte et rapport archivé pendant les mises à jour du direct.
-- Aperçu de l’overlay généré avec un combat réel déjà enregistré. Placement par-dessus le jeu et clics traversants non testés en situation, pour ne pas interrompre la partie.
-- Test passif Global : 3 541 événements en 120 secondes, aucune erreur de capture ni événement abandonné.
-- Chaîne application : 3 075 événements, sauvegarde et relecture des mêmes totaux, six joueurs affichables dont cinq nommés. Aucune fenêtre affichée au-dessus du jeu.
-- Comparaison avec la capture NotMeter fournie sur Atiel : les cinq DPS arrondis et les 52,08 k DPS du groupe correspondent ; Coup au cœur totalise 630 666 dégâts et 123 coups après regroupement. Ce résultat ne constitue pas une validation exhaustive de toutes les classes, rencontres, flags critiques, durées ou configurations VPN. Le survol physique pendant le jeu n’a pas été testé ; ses composants et son branchement ont été vérifiés hors écran.
-
-## Développement
-
-SDK .NET 9 sous Windows. Prévoir .NET 10 LTS avant une diffusion durable.
-
-```powershell
-dotnet build DPSMeter.sln -c Release -m:1
-dotnet run --project tests/DPSMeter.Checks -c Release
-dotnet run --project tests/DPSMeter.EngineChecks -c Release
-dotnet publish src/DPSMeter.Desktop -c Release -o artifacts/windows -m:1
-```
-
-Les tests ordinaires sont hors ligne. La capture de diagnostic nécessite `--probe` (EngineChecks) ou `--verify-live` (application). Ne pas installer de pilote ni modifier le réseau pendant une partie.
-`--verify-views <dossier>` rend les écrans hors fenêtre ; `--render-file <combat.json> <dossier>` rend un combat sauvegardé sans capture ni fenêtre.
-
-## Licence et règles
-
-Visuels AION 2 © NCSOFT, récupérés sur les ressources publiques de NotMeter.
-Le catalogue Global embarqué associe 15 671 identifiants de compétences et 3 693
-identifiants de buffs aux tuiles d’un atlas ; ce ne sont pas autant d’images distinctes.
-Neuf emblèmes de classes sont inclus. Les icônes s’affichent sans accès réseau,
-par identifiant et non par traduction du nom. Un identifiant inconnu garde un repère
-neutre. Les images de buffs sont prêtes, mais le suivi d’uptime reste à développer.
-Sources et empreintes : `src/DPSMeter.Desktop/GameArt/sources.json`. Notices dans
-les réglages et `GameArt/CREDITS.txt`. Réimport pour développeurs :
-`python tools/Fetch-GameArtwork.py` (Pillow nécessaire uniquement à la construction).
-Les empreintes bloquent les changements distants silencieux. Les illustrations
-du jeu ne relèvent pas de la licence MIT de notre code.
-
-MIT pour notre code et le moteur dérivé de SkeeveTV : voir `src/DPSMeter.Engine/Vendor/ORIGIN.md` et `Vendor/LICENSE`.
-Polices Barlow/Barlow Condensed sous SIL OFL 1.1 ; notices consultables dans les réglages. Les noms/données du jeu restent la propriété de NCSOFT.
-La capture passive n’est pas une garantie de conformité aux CGU. Aucune approbation de NCSOFT revendiquée. Aucune injection, lecture mémoire du jeu, modification de paquet, automatisation ou contournement de protection.
+Code du projet sous [licence MIT](LICENSE). Visuels et données AION 2 : © NCSOFT, hors licence MIT du projet. Moteur dérivé de SkeeveTV sous MIT, PacketDotNet sous MPL-2.0 et polices Barlow sous SIL OFL 1.1. Voir les [notices tierces](THIRD-PARTY-NOTICES.md) et l’[origine du moteur](src/DPSMeter.Engine/Vendor/ORIGIN.md).
