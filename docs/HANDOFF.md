@@ -1,6 +1,6 @@
 # Reprendre le projet
 
-État de référence : version 0.4.9, 4 octobre 2026.
+État de référence : version 0.4.10, 4 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 ## Ce qui fonctionne
@@ -8,8 +8,10 @@ Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développeme
 Application Windows WPF, capture passive avec Npcap déjà installé, exécutable autonome
 .NET, calculs dégâts/soins, filtre boss/toutes cibles, compétences, historique local,
 import/export JSON v2. Interface FR/EN/ES, trois thèmes et identité graphique commune.
-Bouton Copier dans le rapport et l’overlay : résumé texte avec noms, cible, durée,
-total et classement DPS/HPS selon le filtre affiché, y compris dans l’historique.
+Bouton Copier dans le rapport et l’overlay : une ligne compacte pour le chat du jeu,
+dans la langue de l’interface, avec noms, cible, durée, DPS/HPS global et classement
+selon le filtre affiché, y compris dans l’historique. Valeurs abrégées en k/M,
+pourcentages conservés ; pas de répétition de la cible ou de l’unité par joueur.
 Les sources non identifiées et les données de démonstration restent signalées.
 Overlay séparé au premier plan : survol détaillé, compétences au clic, accès aux combats
 archivés, taille automatique, mode compact, verrouillage des clics, aimantation aux bords,

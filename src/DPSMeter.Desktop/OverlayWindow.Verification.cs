@@ -124,6 +124,10 @@ public sealed partial class OverlayWindow
             foreach (var theme in Themes.Ids)
             {
                 window.Apply(preferences with { Language = language, Theme = theme }); window.SetMetric(false); window.Update(encounter);
+                window.CopySummary(value => copied = value);
+                if (copied != FightSummary.Format(encounter, false, window.Target, language) || !copied.Contains(Text.Get("groupDps", language)))
+                    throw new InvalidOperationException("Overlay copy must follow interface language changes.");
+                window.copyNotice = null; window.Render();
                 window.SavePreview(directory, $"overlay-{language}-{theme}.png");
                 window.Width = window.MinWidth;
                 foreach (var compact in new[] { false, true })

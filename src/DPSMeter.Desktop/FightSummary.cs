@@ -11,27 +11,27 @@ internal static class FightSummary
         if (heals) target = null;
         string T(string key) => Text.Get(key, language);
         var culture = CultureInfo.GetCultureInfo(language);
-        string N(double value) => value.ToString("N0", culture);
-        var title = fight.Title == "—" ? T("local") : SingleLine(fight.Title);
-        var scope = target is { } id ? SingleLine(fight.Participants.First(p => p.Id == id).Name) : T("allTargets");
+        string N(double value) => value >= 1_000_000 ? (value / 1_000_000).ToString("0.##", culture) + "M"
+            : value >= 1000 ? (value / 1000).ToString("0.#", culture) + "k" : value.ToString("0", culture);
+        var scope = target is { } id ? SingleLine(fight.Participants.First(p => p.Id == id).Name)
+            : fight.Title == "—" ? T("allTargets") : $"{SingleLine(fight.Title)} / {T("allTargets")}";
         var rows = EncounterMath.Players(fight, heals, target);
         var total = rows.Sum(row => row.Total);
-        var metric = T(heals ? "hps" : "dps");
         var duration = EncounterMath.Window(fight, target).DurationMs;
-        var lines = new List<string> { $"DPSMeter · {title}" };
-        if (fight.Origin == "demo") lines.Add(T("demoLabel"));
-        else if (fight.Origin.Contains("unverified")) lines.Add(T("importLabel"));
-        lines.Add($"{scope} · {T("duration")} : {(duration < 1000 ? "< 1 s" : CombatPresentation.Duration(duration))}");
-        lines.Add($"{T(heals ? "heals" : "damage")} : {N(total)} · {T(heals ? "groupHps" : "groupDps")} : {N(total / EncounterMath.Seconds(fight, target))}");
+        var parts = new List<string> { "DPSMeter" };
+        if (fight.Origin == "demo") parts.Add(T("demoLabel"));
+        else if (fight.Origin.Contains("unverified")) parts.Add(T("importLabel"));
+        parts.Add($"{scope} {(duration < 1000 ? "<1s" : CombatPresentation.Duration(duration))}");
+        parts.Add($"{T(heals ? "groupHps" : "groupDps")} {N(total / EncounterMath.Seconds(fight, target))}");
         var rank = 0;
         foreach (var row in rows)
         {
             var person = fight.Participants.First(p => p.Id == row.Id);
-            var label = person.IsUnidentifiedSource ? T("unidentifiedSource") : $"{++rank}. {SingleLine(row.Name)}";
-            lines.Add($"{label} : {N(row.PerSecond)} {metric} ({row.Share.ToString("N1", culture)} %)");
+            var label = person.IsUnidentifiedSource ? T("unidentifiedSource") : $"{++rank}.{SingleLine(row.Name)}";
+            parts.Add($"{label} {N(row.PerSecond)} ({row.Share.ToString("0.#", culture)}%)");
         }
-        if (heals) lines.Add(T("rawHealing"));
-        return string.Join(Environment.NewLine, lines);
+        if (heals) parts.Add(T("shareRawHealing"));
+        return string.Join(" | ", parts);
     }
 
     public static string Copy(string summary, Action<string> write)
