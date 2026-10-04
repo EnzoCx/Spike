@@ -154,5 +154,24 @@
    </ScrollViewer>
    <TextBlock x:Name="Notice" Grid.Row="2" TextWrapping="Wrap" Foreground="{DynamicResource Accent}" FontSize="12" Margin="0,14,0,0"/>
   </Grid>
+  <Border x:Name="SetupPanel" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource Background}" KeyboardNavigation.TabNavigation="Cycle">
+   <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel MaxWidth="680" Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center">
+     <StackPanel Orientation="Horizontal" Margin="0,0,0,20"><local:BrandMark Width="36" Height="36" Margin="0,0,12,0"/><TextBlock Text="DPSMeter" FontSize="28" FontWeight="SemiBold"/></StackPanel>
+     <WrapPanel x:Name="SetupLanguages" Margin="0,0,0,16"/>
+     <TextBlock x:Name="SetupTitle" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap"/>
+     <TextBlock x:Name="SetupIntro" TextWrapping="Wrap" LineHeight="22" Margin="0,12,0,16" Foreground="{DynamicResource Muted}"/>
+     <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="8" Padding="20">
+      <StackPanel>
+       <TextBlock x:Name="SetupSteps" TextWrapping="Wrap" LineHeight="24"/>
+       <Button x:Name="SetupDownload" Click="DownloadNpcap" HorizontalAlignment="Left" Margin="0,20,0,0" Background="{DynamicResource Accent}" Foreground="{DynamicResource Background}"/>
+       <TextBlock Text="https://npcap.com/#download" Foreground="{DynamicResource Muted}" Margin="0,8,0,0"/>
+      </StackPanel>
+     </Border>
+     <TextBlock x:Name="SetupStatus" TextWrapping="Wrap" LineHeight="22" Margin="0,20,0,16" AutomationProperties.LiveSetting="Polite"/>
+     <WrapPanel><Button x:Name="SetupCheck" Click="CheckNpcap" Margin="0,0,8,8"/><Button x:Name="SetupContinue" Click="CompleteSetup" IsEnabled="False" Margin="0,0,8,8"/><Button x:Name="SetupLater" Click="DeferSetup" Margin="0,0,0,8"/></WrapPanel>
+    </StackPanel>
+   </ScrollViewer>
+  </Border>
  </Grid>
 </Window>

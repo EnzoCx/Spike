@@ -1,6 +1,6 @@
 # Reprendre le projet
 
-État de référence : version 0.4.6, 4 octobre 2026.
+État de référence : version 0.4.7, 4 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 ## Ce qui fonctionne
@@ -37,6 +37,8 @@ les changements d’instance et les IDs réutilisés. Préserver les événement
 - Une phase sans événement de 12 secondes peut découper un combat.
 - Les joueurs observés ne sont pas un groupe confirmé ; noms et PV peuvent manquer.
 - Npcap n’est pas embarqué ; aucune installation automatique ni approbation NCSOFT.
+  L’assistant au lancement guide son installation s’il manque, puis revérifie sa
+  présence. « Plus tard » laisse les archives accessibles ; « Démarrer » permet de réessayer.
 - Pas de site communautaire, classements en ligne ou signature Windows.
 - Mise à jour automatique depuis GitHub Releases : téléchargement en arrière-plan,
   installation au lancement suivant, ancienne version conservée. Voir `docs/UPDATES.md`.

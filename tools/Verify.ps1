@@ -23,6 +23,7 @@ try {
         throw "UI verification failed with exit code $($process.ExitCode)."
     }
     Get-Content -LiteralPath (Join-Path $previewPath 'result.txt')
+    Get-Content -LiteralPath (Join-Path $previewPath 'setup-result.txt')
     Get-Content -LiteralPath (Join-Path $previewPath 'idle-fade-result.txt')
     Get-Content -LiteralPath (Join-Path $previewPath 'placement-result.txt')
 } finally {

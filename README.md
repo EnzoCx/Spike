@@ -53,22 +53,20 @@
 ### Ce qu’il vous faut
 
 - **Windows x64** et AION 2 Global.
-- **Npcap déjà installé** sur le PC : il permet la capture passive et n’est pas fourni avec DPSMeter.
+- **Npcap** pour lire les combats : l’assistant de premier lancement vous guide s’il manque. Il s’installe séparément, une seule fois.
 - Le jeu en **mode fenêtré ou sans bordure** pour utiliser l’overlay de bureau au premier plan.
 
 L’exécutable est autonome : **aucune installation de .NET n’est nécessaire pour jouer**.
 
 ### Télécharger et lancer
 
-Les versions destinées aux joueurs seront disponibles sur la page [Releases](https://github.com/Phobie53/DPSMeter/releases).
+1. Téléchargez **DPSMeter.exe** depuis la [dernière release](https://github.com/Phobie53/DPSMeter/releases/latest) et placez-le dans un dossier personnel.
+2. Ouvrez l’exécutable. Si Npcap manque, l’assistant vous invite à fermer le jeu et à télécharger son installateur depuis le site officiel.
+3. Installez Npcap, revenez dans DPSMeter et cliquez sur **Vérifier l’installation**, puis **Continuer**. Lancez ensuite le jeu.
 
-**En attendant la première release**, un build de développement est disponible dans GitHub Actions :
+Npcap déjà présent ? L’assistant est ignoré. **Plus tard** permet de consulter les archives et réglages sans capture ; **Démarrer** rouvre l’assistant si Npcap manque encore. Sa détection ne garantit pas à elle seule la réception des combats.
 
-1. Connectez-vous à GitHub et ouvrez [Build and verify](https://github.com/Phobie53/DPSMeter/actions/workflows/build.yml).
-2. Choisissez une exécution **réussie sur `main`**, puis téléchargez **DPSMeter-windows-x64** dans la section **Artifacts**.
-3. Extrayez le ZIP dans un dossier personnel, puis ouvrez **`DPSMeter.exe`**.
-
-Les artefacts expirent après 14 jours. Ce sont des builds de développement, pas des versions stables. L’application n’est pas encore signée : Windows peut afficher un avertissement de sécurité. Vérifiez que le fichier provient bien de ce dépôt.
+L’application n’est pas encore signée : Windows peut afficher un avertissement de sécurité. Vérifiez que le fichier provient bien de ce dépôt.
 
 <details>
 <summary><strong>Mises à jour : à partir de la version 0.4.6</strong></summary>

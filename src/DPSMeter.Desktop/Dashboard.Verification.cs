@@ -16,6 +16,7 @@ public partial class Dashboard
     {
         Directory.CreateDirectory(directory);
         if (!Text.IsComplete) throw new InvalidOperationException("Missing translations.");
+        VerifySetup(directory);
         var placementChecks = OverlayPlacement.Verify();
         GameArtwork.Verify();
         preferences = JsonSerializer.Deserialize<Preferences>("{\"Language\":\"fr\"}")!;

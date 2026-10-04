@@ -77,15 +77,23 @@ public partial class Dashboard : Window
 
     private IntPtr Hotkey(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
-        if (message == 0x0312 && wParam.ToInt32() == 73) { ToggleOverlay(this, new RoutedEventArgs()); handled = true; }
+        if (message == 0x0312 && wParam.ToInt32() == 73)
+        {
+            if (SetupPanel.Visibility != Visibility.Visible) ToggleOverlay(this, new RoutedEventArgs());
+            handled = true;
+        }
         return IntPtr.Zero;
     }
 
     private void StartSession()
     {
+        if (!verifying)
+        {
+            timer.Start();
+            if (!NpcapAvailability.Detect().IsInstalled) { ShowSetup(); return; }
+        }
         if (preferences.ShowOverlayOnStartup) OpenOverlay();
         if (verifying) return;
-        timer.Start();
         if (preferences.AutoStart) StartCapture();
     }
 
@@ -153,7 +161,7 @@ public partial class Dashboard : Window
     private void StartCapture()
     {
         if (verifying || meter is not null) return;
-        if (!NpcapAvailability.Detect().IsInstalled) { SetNotice("npcapRequired"); return; }
+        if (!NpcapAvailability.Detect().IsInstalled) { ShowSetup(startCapture: true); return; }
         try
         {
             meter = new(preferences.PlayerName);
