@@ -4,7 +4,7 @@
     <TargetFramework>net9.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <AssemblyName>DPSMeter</AssemblyName>
-    <Version>0.4.11</Version>
+    <Version>0.4.12</Version>
     <ApplicationIcon>Brand/dpsmeter.ico</ApplicationIcon>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>

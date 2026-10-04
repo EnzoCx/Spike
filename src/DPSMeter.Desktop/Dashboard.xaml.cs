@@ -205,7 +205,7 @@ public partial class Dashboard : Window
     {
         if (!IsInitialized) return;
         refreshing = true;
-        PauseButton.IsEnabled = meter is not null; FinishButton.IsEnabled = meter?.HasCombat == true;
+        PauseButton.IsEnabled = meter is not null; FinishButton.IsEnabled = meter?.CanFinish == true;
         ExportButton.IsEnabled = shown is not null;
         CopyButton.IsEnabled = shown is not null;
         CaptureControls.Visibility = viewingHistory ? Visibility.Collapsed : Visibility.Visible;

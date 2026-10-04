@@ -1,6 +1,6 @@
 # Reprendre le projet
 
-État de référence : version 0.4.11, 4 octobre 2026.
+État de référence : version 0.4.12, 4 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 ## Ce qui fonctionne
@@ -35,6 +35,16 @@ ce changement ne filtre pas le classement en groupe confirmé.
 Sans identité locale, le mode d’observation conserve le délai global précédent.
 Une identification tardive recalcule le délai depuis les événements conservés.
 
+Pour un boss identifié et engagé, les dégâts de tous les participants sur cette
+même entité maintiennent désormais le parse. Une phase silencieuse met le meter au
+repos, mais sa reprise complète la même archive. `BossAttempt` utilise les resets
+horodatés de `Aion2HitPoints` (retour au maximum observé après une baisse sous 95 %)
+et les PV à zéro pour sceller une tentative. Un autre boss engagé, même du même nom,
+démarre un nouveau parse ; le changement de zone/personnage, la pause et Terminer
+effacent aussi la continuation. Terminer reste disponible pendant le repos d’un boss.
+Les soins directs lient le soigneur au combat observé de leur destinataire, sans
+déduire un roster. Les adds et soins personnels pendant les phases restent dans le parse.
+
 ## Sources supplémentaires
 
 Certaines sources anonymes n’utilisent que Mur de feu, Tempête glaciale ou Piège explosif.
@@ -56,8 +66,10 @@ les changements d’instance et les IDs réutilisés. Préserver les événement
 
 - Les critiques des autres joueurs peuvent être incomplets.
 - Buff uptime, dos/face, doubles et coups parfaits ne sont pas exposés.
-- Une phase sans activité personnelle de 12 secondes peut découper un combat,
-  même si les alliés continuent (mort, attente ou uniquement des soins périodiques).
+- Sans boss identifié, une phase sans activité personnelle de 12 secondes peut découper
+  un combat. Pour un boss, un reset/mort non reçu peut fusionner des tentatives sur la
+  même entité ; une mécanique de retour complet des PV peut être prise pour un reset.
+  La reprise ne traverse pas le redémarrage du meter. Voir `docs/ARCHITECTURE.md`.
 - Les joueurs observés ne sont pas un groupe confirmé ; noms et PV peuvent manquer.
 - Npcap n’est pas embarqué ; aucune installation automatique ni approbation NCSOFT.
   L’assistant au lancement guide son installation s’il manque, puis revérifie sa

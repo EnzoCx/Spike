@@ -23,13 +23,36 @@ Npcap existant → TCP serveur → réassemblage → décodeur AION 2
 La capture alimente une file bornée ; le timer de présentation appelle `LiveMeter.Poll`
 chaque seconde. Si le personnage est identifié, un segment commence et se prolonge
 avec ses dégâts infligés/reçus (invocations au propriétaire connu incluses) et ses soins
-directs vers autrui. Il finit après 12 secondes sans cette activité personnelle :
-les événements alentour sont conservés pendant le segment mais ne prolongent pas le délai.
+directs vers autrui. Hors boss identifié, il finit après 12 secondes sans cette activité.
+Les événements alentour sont conservés pendant le segment mais ne prolongent pas le délai.
 Les soins reçus, personnels et périodiques ne le relancent pas. Sans identité locale,
-le délai global de 12 secondes sans événement reste le recours. Une identification tardive
-recalcule le délai à partir des événements conservés. Un segment finit aussi à la demande
-ou à une limite de taille/durée. Le dernier combat reste affiché, mais ne signifie pas
-qu’un combat est actif. Un point de reprise est enregistré toutes les 10 secondes.
+le délai global de 12 secondes sans événement reste le recours.
+
+`BossAttempt` suit le boss engagé par son identifiant d’entité et son identifiant PNJ,
+jamais par son nom seul. L’engagement provient d’un échange de dégâts personnel ou du
+combat observé d’un joueur soigné directement dans les 12 secondes précédentes.
+Tous les dégâts impliquant ce boss maintiennent ensuite le combat, même si le joueur
+local est mort ou inactif. Après 12 secondes de silence, le segment est sauvegardé et
+mis au repos : `HasCombat` est faux et `Snapshot` est nul. Une reprise du même boss
+ou de l’activité personnelle (adds, soins) complète le même identifiant d’archive.
+Le farm des autres cibles ne réactive pas cette continuation.
+
+La mort observée (PV à zéro), un reset de PV, un autre boss engagé, un changement de
+zone/personnage, une fin manuelle, une pause ou une limite de taille/durée scellent
+le segment. Le reset utilise `Aion2HitPoints.ResetsOf` : retour au maximum observé
+après une lecture inférieure à 95 % de ce maximum. Ses horodatages séparent les
+tentatives même si plusieurs pulls arrivent dans le même lot. Les PV de mort au même
+instant qu’un dégât sont appliqués après ce dégât pour conserver le coup final.
+Le bouton Terminer reste disponible pour un boss au repos. La continuation reste en
+mémoire pendant la session ; aucune fusion d’anciennes archives n’est effectuée.
+
+Sans signal de reset/mort reçu, une nouvelle tentative sur la même entité peut être
+confondue avec une phase ; une remontée complète des PV pendant une mécanique peut
+inversement être prise pour un reset. Un changement d’instance non signalé avec les
+mêmes identifiants ne peut pas être distingué. Le maximum observé n’est qu’une borne
+inférieure si la capture commence au milieu du combat. Une fin manuelle reste le recours.
+Le dernier combat reste affiché au repos. Un point de reprise est enregistré toutes
+les 10 secondes ; reprendre un boss met à jour le même fichier v2, sans doublon.
 
 Les sauvegardes sont sérialisées par un sémaphore. Le dernier enregistrement attendu
 à la fermeture inclut les événements drainés par l’arrêt de capture.
