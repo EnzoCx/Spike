@@ -24,15 +24,15 @@ internal sealed class CombatantRow : Button
 
     public CombatantRow()
     {
-        Padding = new Thickness(0); Margin = new Thickness(0, 0, 0, 4); HorizontalContentAlignment = HorizontalAlignment.Stretch;
+        Padding = new Thickness(0); Margin = new Thickness(0, 0, 0, 2); HorizontalContentAlignment = HorizontalAlignment.Stretch;
         var track = new Grid { IsHitTestVisible = false };
         track.ColumnDefinitions.Add(fill); track.ColumnDefinitions.Add(rest); track.Children.Add(bar);
         var surface = new Grid(); surface.Children.Add(track);
         layout.Margin = new Thickness(8, 6, 8, 6);
-        layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(32) });
+        layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(26) });
         layout.ColumnDefinitions.Add(new ColumnDefinition());
-        layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(87) });
-        layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(46) });
+        layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(80) });
+        layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(40) });
         layout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); layout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         layout.VerticalAlignment = VerticalAlignment.Center;
         Grid.SetRowSpan(emblem, 2); layout.Children.Add(emblem);
@@ -57,9 +57,11 @@ internal sealed class CombatantRow : Button
         string className, Preferences preferences, bool self = false, int? skillId = null)
     {
         var palette = Themes.Get(preferences.Theme);
-        Height = preferences.OverlayCompact ? 43 : 56;
-        layout.Margin = new Thickness(8, preferences.OverlayCompact ? 3 : 6, 8, preferences.OverlayCompact ? 3 : 6);
-        rate.FontSize = preferences.OverlayCompact ? 17 : 19;
+        Height = preferences.OverlayCompact ? 28 : 42;
+        layout.Margin = new Thickness(6, 2, 6, 2);
+        rate.FontSize = preferences.OverlayCompact ? 15 : 17;
+        detail.Visibility = total.Visibility = preferences.OverlayCompact ? Visibility.Collapsed : Visibility.Visible;
+        name.VerticalAlignment = VerticalAlignment.Center;
         name.Text = title; rate.Text = number; share.Text = percentage; detail.Text = subtitle; total.Text = amount;
         name.Foreground = rate.Foreground = Themes.Brush(palette.Foreground);
         share.Foreground = detail.Foreground = total.Foreground = Themes.Brush(palette.Muted);
@@ -68,7 +70,8 @@ internal sealed class CombatantRow : Button
         bar.Background = Dashboard.ClassColor(className); bar.Opacity = preferences.Theme == "contrast" ? 0.13 : 0.2;
         fill.Width = new GridLength(Math.Max(.001, fraction), GridUnitType.Star);
         rest.Width = new GridLength(Math.Max(.001, 100 - fraction), GridUnitType.Star);
-        emblem.Content = skillId is { } id ? GameArtwork.SkillIcon(id, title, preferences.OverlayCompact ? 26 : 32) : CombatPresentation.Emblem(className, 28);
+        var iconSize = preferences.OverlayCompact ? 20 : 24;
+        emblem.Content = skillId is { } id ? GameArtwork.SkillIcon(id, title, iconSize) : CombatPresentation.Emblem(className, iconSize);
         System.Windows.Automation.AutomationProperties.SetName(this, title + ", " + subtitle + ", " + number);
     }
 }

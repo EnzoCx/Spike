@@ -80,7 +80,7 @@ public partial class Dashboard
                 }
         OverlayWindow.VerifyPreview(new Preferences(), demo, directory, (Style)FindResource(typeof(Button)));
         File.WriteAllText(System.IO.Path.Combine(directory, "placement-result.txt"), $"PASS: {placementChecks} placement checks, including a hidden native HWND; corners, taskbar work area, negative coordinates, scaled threshold, free movement, screen recovery and bottom anchoring. No window shown, no mouse input sent.");
-        File.WriteAllText(System.IO.Path.Combine(directory, "result.txt"), "PASS: nine embedded class icons, atlas bounds/decoding, skill variants, separate buff namespace and unknown icon fallback; overlay startup, settings migration, opt-out, no duplicate window, show/hide; player selection, skill search, damage/healing, target filtering, archived report during live updates, history search by player and boss filter; stable overlay rows, hover content, scope and compact sizing; 27 dashboard and 12 overlay renders. No capture or window shown.");
+        File.WriteAllText(System.IO.Path.Combine(directory, "result.txt"), "PASS: nine embedded class icons, atlas bounds/decoding, skill variants, separate buff namespace and unknown icon fallback; overlay startup, settings migration, opt-out, no duplicate window, show/hide; player selection, skill search, damage/healing, target filtering, archived report during live updates, history search by player and boss filter; stable overlay rows, hover content, scope and compact sizing; dashboard and overlay renders in all languages and themes, including both densities at minimum width. No capture or window shown.");
     }
 
     internal void RenderSaved(string path, string directory)

@@ -21,14 +21,14 @@ public sealed partial class OverlayWindow : Window
     private readonly StackPanel rows = new();
     private readonly Dictionary<string, CombatantRow> entries = new();
     private readonly Border frame;
-    private readonly TextBlock heading = new() { FontSize = 20, FontWeight = FontWeights.SemiBold, TextTrimming = TextTrimming.CharacterEllipsis };
-    private readonly TextBlock duration = new() { FontSize = 22, FontWeight = FontWeights.SemiBold };
+    private readonly TextBlock heading = new() { FontSize = 16, FontWeight = FontWeights.SemiBold, TextTrimming = TextTrimming.CharacterEllipsis };
+    private readonly TextBlock duration = new() { FontSize = 16, FontWeight = FontWeights.SemiBold };
     private readonly TextBlock health = new() { FontSize = 10 }, status = new() { FontSize = 10 };
-    private readonly TextBlock hint = new() { FontSize = 11 }, total = new() { FontSize = 18, FontWeight = FontWeights.SemiBold };
+    private readonly TextBlock hint = new() { FontSize = 10, TextTrimming = TextTrimming.CharacterEllipsis }, total = new() { FontSize = 16, FontWeight = FontWeights.SemiBold };
     private readonly ProgressBar hpBar = new() { Height = 3, Minimum = 0, Maximum = 100, BorderThickness = new Thickness(0) };
-    private readonly TextBlock empty = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(12, 24, 12, 24), FontSize = 13 };
-    private readonly TextBlock columns = new() { FontSize = 10, Margin = new Thickness(4, 2, 4, 8) };
-    private readonly TextBlock rateHead = new() { FontSize = 10, Width = 128, HorizontalAlignment = HorizontalAlignment.Right, TextAlignment = TextAlignment.Right, Margin = new Thickness(0, 2, 8, 8) };
+    private readonly TextBlock empty = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(8), FontSize = 12 };
+    private readonly TextBlock columns = new() { FontSize = 10, Margin = new Thickness(4, 0, 4, 4) };
+    private readonly TextBlock rateHead = new() { FontSize = 10, Width = 120, HorizontalAlignment = HorizontalAlignment.Right, TextAlignment = TextAlignment.Right, Margin = new Thickness(0, 0, 6, 4) };
     private readonly ScrollViewer scroll;
     private readonly Button picker, damage, healing, scope, back, report, locking, close, options, unresolvedToggle;
     private readonly Thumb grip;
@@ -59,7 +59,7 @@ public sealed partial class OverlayWindow : Window
         Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/CommonStyles.xaml") });
         Resources[typeof(ScrollBar)] = Resources["MeterScrollBar"];
         if (buttonStyle is not null) Resources[typeof(Button)] = buttonStyle;
-        Title = "DPSMeter · Overlay"; MinWidth = 420; MinHeight = 260; MaxWidth = 800; MaxHeight = 1000;
+        Title = "DPSMeter · Overlay"; MinWidth = 360; MinHeight = 180; MaxWidth = 800; MaxHeight = 1000;
         Width = Bounded(preferences.OverlayWidth, 460, MinWidth, MaxWidth);
         Height = Bounded(preferences.OverlayHeight, 460, MinHeight, MaxHeight);
         Left = double.IsFinite(preferences.OverlayLeft) ? preferences.OverlayLeft : 40;
@@ -71,13 +71,13 @@ public sealed partial class OverlayWindow : Window
         var layout = new Grid();
         foreach (var height in new[] { GridLength.Auto, GridLength.Auto, GridLength.Auto, GridLength.Auto, new GridLength(1, GridUnitType.Star), GridLength.Auto })
             layout.RowDefinitions.Add(new RowDefinition { Height = height });
-        var header = new DockPanel { Margin = new Thickness(0, 0, 0, 6), Background = Brushes.Transparent };
+        var header = new DockPanel { Margin = new Thickness(0, 0, 0, 4), Background = Brushes.Transparent };
         close = SmallButton("×", Close); DockPanel.SetDock(close, Dock.Right); header.Children.Add(close);
         locking = SmallButton("◇", Lock); DockPanel.SetDock(locking, Dock.Right); header.Children.Add(locking);
         options = SmallButton("···", ShowOptions); DockPanel.SetDock(options, Dock.Right); header.Children.Add(options);
-        duration.Margin = new Thickness(10, 0, 12, 0); DockPanel.SetDock(duration, Dock.Right); header.Children.Add(duration);
+        duration.Margin = new Thickness(8, 0, 8, 0); DockPanel.SetDock(duration, Dock.Right); header.Children.Add(duration);
         var brand = new DockPanel { Cursor = Cursors.SizeAll, Background = Brushes.Transparent };
-        brand.Children.Add(new BrandMark { Width = 25, Height = 25, Margin = new Thickness(0, 0, 8, 0) }); brand.Children.Add(heading);
+        brand.Children.Add(new BrandMark { Width = 20, Height = 20, Margin = new Thickness(0, 0, 6, 0) }); brand.Children.Add(heading);
         header.MouseLeftButtonDown += (_, e) =>
         {
             if (e.ChangedButton != MouseButton.Left || locked) return;
@@ -92,11 +92,12 @@ public sealed partial class OverlayWindow : Window
         };
         header.MouseRightButtonUp += (_, e) => { if (!locked) ShowOptions(); e.Handled = true; };
         header.Children.Add(brand); layout.Children.Add(header);
-        var healthArea = new StackPanel { Margin = new Thickness(2, 0, 2, 10) };
-        var healthLine = new DockPanel { Margin = new Thickness(0, 0, 0, 6) };
+        var healthArea = new StackPanel { Margin = new Thickness(2, 0, 2, 4) };
+        var healthLine = new DockPanel { Margin = new Thickness(0, 0, 0, 3) };
+        health.TextTrimming = TextTrimming.CharacterEllipsis;
         DockPanel.SetDock(status, Dock.Right); healthLine.Children.Add(status); healthLine.Children.Add(health);
         healthArea.Children.Add(healthLine); healthArea.Children.Add(hpBar); Grid.SetRow(healthArea, 1); layout.Children.Add(healthArea);
-        var controls = new DockPanel { Margin = new Thickness(0, 0, 0, 9) };
+        var controls = new DockPanel { Margin = new Thickness(0, 0, 0, 4) };
         healing = SmallButton("HPS", () => SetMetric(true)); DockPanel.SetDock(healing, Dock.Right); controls.Children.Add(healing);
         damage = SmallButton("DPS", () => SetMetric(false)); DockPanel.SetDock(damage, Dock.Right); controls.Children.Add(damage);
         scope = SmallButton("", () => { bossOnly = !bossOnly; Render(); }); DockPanel.SetDock(scope, Dock.Right); controls.Children.Add(scope);
@@ -111,7 +112,7 @@ public sealed partial class OverlayWindow : Window
         unresolvedToggle = SmallButton("", () => { showUnidentified = !showUnidentified; Render(); });
         unresolvedToggle.HorizontalContentAlignment = HorizontalAlignment.Left;
         Grid.SetRow(scroll, 4); layout.Children.Add(scroll);
-        var footer = new DockPanel { Margin = new Thickness(0, 10, 0, 0) };
+        var footer = new DockPanel { Margin = new Thickness(0, 4, 0, 0) };
         grip = new Thumb { Width = 16, Height = 24, Cursor = Cursors.SizeNWSE, Background = Brushes.Transparent };
         var glyph = new FrameworkElementFactory(typeof(TextBlock)); glyph.SetValue(TextBlock.TextProperty, "◢"); glyph.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
         grip.Template = new ControlTemplate(typeof(Thumb)) { VisualTree = glyph };
@@ -122,7 +123,7 @@ public sealed partial class OverlayWindow : Window
         report = SmallButton("", OpenReport); DockPanel.SetDock(report, Dock.Right); footer.Children.Add(report);
         var aggregate = new StackPanel(); aggregate.Children.Add(hint); aggregate.Children.Add(total); footer.Children.Add(aggregate);
         Grid.SetRow(footer, 5); layout.Children.Add(footer);
-        frame = new Border { Padding = new Thickness(12), CornerRadius = new CornerRadius(10), BorderThickness = new Thickness(1), Child = layout };
+        frame = new Border { Padding = new Thickness(8), CornerRadius = new CornerRadius(7), BorderThickness = new Thickness(1), Child = layout };
         // Keep opacity on a child visual, including in offscreen render previews.
         var root = new Grid(); root.Children.Add(frame); Content = root;
         MouseEnter += (_, _) => { pointerInside = true; UpdateVisibility(); };
@@ -135,7 +136,7 @@ public sealed partial class OverlayWindow : Window
     private void SaveLayout() => LayoutSaved?.Invoke(Left, Top, Width, Height);
     private Button SmallButton(string text, Action action)
     {
-        var button = new Button { Content = text, FontSize = 11, Padding = new Thickness(7, 5, 7, 5), Margin = new Thickness(0, 0, 4, 0), MinWidth = 27 };
+        var button = new Button { Content = text, FontSize = 11, Padding = new Thickness(6, 3, 6, 3), Margin = new Thickness(0, 0, 4, 0), MinWidth = 24 };
         button.Click += (_, _) => action(); return button;
     }
 
@@ -352,7 +353,7 @@ public sealed partial class OverlayWindow : Window
         total.ToolTip = fight is null ? "" : $"{N(people.Sum(p => p.Total))} {T(heals ? "heals" : "damage")} · {T(target is null ? "allTargets" : "scopeBoss")}";
         if (preferences.OverlayAutoFit)
         {
-            var desired = 196 + Math.Max(1, Math.Min(8, wanted.Count)) * (preferences.OverlayCompact ? 47 : 60) + (showSources ? 32 : 0);
+            var desired = 144 + Math.Max(1, Math.Min(8, wanted.Count)) * (preferences.OverlayCompact ? 30 : 44) + (showSources ? 24 : 0);
             placement.SetHeight(desired);
         }
     }

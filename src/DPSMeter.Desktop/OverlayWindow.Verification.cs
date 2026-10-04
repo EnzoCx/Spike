@@ -114,6 +114,15 @@ public sealed partial class OverlayWindow
             {
                 window.Apply(preferences with { Language = language, Theme = theme }); window.SetMetric(false); window.Update(encounter);
                 window.SavePreview(directory, $"overlay-{language}-{theme}.png");
+                window.Width = window.MinWidth;
+                foreach (var compact in new[] { false, true })
+                {
+                    window.ChangeAppearance(true, compact, .94);
+                    window.SavePreview(directory, $"overlay-narrow-{language}-{theme}-{compact}.png");
+                    if (window.scroll.ScrollableHeight > 1)
+                        throw new InvalidOperationException("Minimum-width overlay clips party rows.");
+                }
+                window.Width = 460;
             }
         window.Close();
     }
