@@ -16,6 +16,7 @@ public partial class Dashboard
     {
         Directory.CreateDirectory(directory);
         if (!Text.IsComplete) throw new InvalidOperationException("Missing translations.");
+        VerifySharing(directory);
         VerifySetup(directory);
         var placementChecks = OverlayPlacement.Verify();
         GameArtwork.Verify();

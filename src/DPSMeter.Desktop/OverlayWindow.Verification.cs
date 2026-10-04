@@ -63,6 +63,8 @@ public sealed partial class OverlayWindow
     internal static void VerifyPreview(Preferences preferences, Encounter encounter, string directory, Style buttonStyle)
     {
         var window = new OverlayWindow(preferences with { OverlayWidth = 460 }, buttonStyle);
+        window.CopySummary(_ => throw new InvalidOperationException("Empty overlay must not copy."));
+        if (window.copy.IsEnabled) throw new InvalidOperationException("Empty overlay enables copy.");
         var withSource = encounter with
         {
             Participants = encounter.Participants.Append(new Participant(int.MaxValue, "Synthetic source", "Sorcerer", false, IsUnidentifiedSource: true)).ToArray(),
@@ -102,8 +104,17 @@ public sealed partial class OverlayWindow
         if (!reportOpened) throw new InvalidOperationException("Full report lost its scope.");
         window.SelectFight(encounter); window.Update(encounter with { Id = Guid.NewGuid(), Events = [] });
         if (window.Selected?.Id != encounter.Id || window.entries.Count == 0) throw new InvalidOperationException("Live update replaced history.");
+        string? copied = null;
+        window.CopySummary(value => copied = value);
+        if (copied != FightSummary.Format(encounter, false, window.Target, preferences.Language) || window.hint.Text != window.T("copied"))
+            throw new InvalidOperationException("Overlay copy lost the archive or scope.");
+        window.CopySummary(_ => throw new System.Runtime.InteropServices.COMException("Clipboard busy"));
+        if (window.hint.Text != window.T("copyError")) throw new InvalidOperationException("Overlay copy failure not shown.");
         window.healing.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         if (!window.heals || window.Target is not null || window.rateHead.Text != "HPS / %") throw new InvalidOperationException("Healing incorrectly filtered or labelled.");
+        window.CopySummary(value => copied = value);
+        if (copied != FightSummary.Format(encounter, true, null, preferences.Language)) throw new InvalidOperationException("Overlay copy lost healing mode.");
+        window.copyNotice = null;
         window.SelectFight(null); if (window.Selected?.Id == encounter.Id) throw new InvalidOperationException("Return to live failed.");
         window.SetMetric(false); window.Update(encounter);
         var fullHeight = window.Height;

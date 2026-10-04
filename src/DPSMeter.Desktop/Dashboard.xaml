@@ -79,7 +79,7 @@
      <StackPanel x:Name="EmptyPanel" Margin="0,64,0,0"><TextBlock x:Name="EmptyTitle" FontSize="26"/><TextBlock x:Name="EmptyHint" TextWrapping="Wrap" Style="{StaticResource MutedText}" MaxWidth="480" HorizontalAlignment="Left" Margin="0,16,0,0" LineHeight="22"/></StackPanel>
      <Grid x:Name="CombatPanel">
       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-      <DockPanel><Button x:Name="ExportButton" DockPanel.Dock="Right" Click="Export" Margin="12,0,0,0"/><TextBlock x:Name="FightTitle" FontSize="26" FontWeight="SemiBold"/></DockPanel>
+      <DockPanel><Button x:Name="ExportButton" DockPanel.Dock="Right" Click="Export" Margin="12,0,0,0"/><Button x:Name="CopyButton" DockPanel.Dock="Right" Click="CopyFight" Margin="12,0,0,0"/><TextBlock x:Name="FightTitle" FontSize="26" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/></DockPanel>
       <DockPanel Grid.Row="1" Margin="0,6,0,0"><TextBlock x:Name="OriginLabel" DockPanel.Dock="Right" Style="{StaticResource MutedText}" FontSize="10"/><TextBlock x:Name="ScopeLabel" Style="{StaticResource MutedText}" TextTrimming="CharacterEllipsis"/></DockPanel>
       <Grid Grid.Row="2" Margin="0,18,0,20"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
        <StackPanel><TextBlock x:Name="DpsCaption" Style="{StaticResource MutedText}"/><TextBlock x:Name="DpsValue" FontSize="32" FontWeight="SemiBold" Margin="0,5,0,0"/></StackPanel>

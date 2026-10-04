@@ -30,7 +30,7 @@ public sealed partial class OverlayWindow : Window
     private readonly TextBlock columns = new() { FontSize = 10, Margin = new Thickness(4, 0, 4, 4) };
     private readonly TextBlock rateHead = new() { FontSize = 10, Width = 120, HorizontalAlignment = HorizontalAlignment.Right, TextAlignment = TextAlignment.Right, Margin = new Thickness(0, 0, 6, 4) };
     private readonly ScrollViewer scroll;
-    private readonly Button picker, damage, healing, scope, back, report, locking, close, options, unresolvedToggle;
+    private readonly Button picker, damage, healing, scope, back, report, copy, locking, close, options, unresolvedToggle;
     private readonly Thumb grip;
     private readonly OverlayPlacement placement;
     private Encounter? live, archived;
@@ -41,6 +41,8 @@ public sealed partial class OverlayWindow : Window
     private double visibilityOpacity = double.NaN;
     private const double IdleOpacity = .15;
     private string captureStatus = "waiting";
+    private string? copyNotice;
+    private DateTime copyNoticeUntil;
     private Encounter? Selected => archived ?? live;
     private int? Target => bossOnly && !heals && Selected is { } fight ? EncounterMath.PrimaryBoss(fight)?.Id : null;
     private string T(string key) => Text.Get(key, preferences.Language);
@@ -121,6 +123,7 @@ public sealed partial class OverlayWindow : Window
         grip.DragCompleted += (_, _) => { SetManipulating(false); placement.EnsureVisible(); SaveLayout(); };
         DockPanel.SetDock(grip, Dock.Right); footer.Children.Add(grip);
         report = SmallButton("", OpenReport); DockPanel.SetDock(report, Dock.Right); footer.Children.Add(report);
+        copy = SmallButton("", () => CopySummary(Clipboard.SetText)); DockPanel.SetDock(copy, Dock.Right); footer.Children.Add(copy);
         var aggregate = new StackPanel(); aggregate.Children.Add(hint); aggregate.Children.Add(total); footer.Children.Add(aggregate);
         Grid.SetRow(footer, 5); layout.Children.Add(footer);
         frame = new Border { Padding = new Thickness(8), CornerRadius = new CornerRadius(7), BorderThickness = new Thickness(1), Child = layout };
@@ -151,6 +154,7 @@ public sealed partial class OverlayWindow : Window
         hpBar.Background = Themes.Brush(theme.Border); hpBar.Foreground = Themes.Brush(theme.Accent);
         locking.ToolTip = T("lockOverlay"); close.ToolTip = T("closeOverlay"); options.ToolTip = T("overlayOptions"); grip.ToolTip = T("resizeOverlay");
         back.ToolTip = T("back"); picker.ToolTip = T("fightPicker"); report.Content = T("fightDetails");
+        copy.Content = T("copy"); copy.ToolTip = T("copyHint");
         damage.ToolTip = T("damage"); healing.ToolTip = T("heals"); Render();
     }
 
@@ -164,6 +168,13 @@ public sealed partial class OverlayWindow : Window
     private void SetMetric(bool value) { heals = value; Render(); }
     private void SelectFight(Encounter? value) { archived = value; actor = null; Render(); }
     private void OpenReport() { if (Selected is { } fight) DetailsRequested?.Invoke(fight, actor, heals, Target); }
+    private void CopySummary(Action<string> write)
+    {
+        if (Selected is not { } fight) return;
+        copyNotice = FightSummary.Copy(FightSummary.Format(fight, heals, Target, preferences.Language), write);
+        copyNoticeUntil = DateTime.UtcNow.AddSeconds(5);
+        Render();
+    }
     private void ChangeAppearance(bool autoFit, bool compact, double opacity)
     {
         preferences = preferences with { OverlayAutoFit = autoFit, OverlayCompact = compact, OverlayOpacity = opacity };
@@ -286,6 +297,7 @@ public sealed partial class OverlayWindow : Window
         picker.Content = T(archived is null ? "live" : "history") + " ▾";
         scope.Content = T(target is null ? "scopeAll" : "scopeBoss"); scope.ToolTip = T("scopeHint"); scope.IsEnabled = boss is not null && !heals;
         report.IsEnabled = fight is not null;
+        copy.IsEnabled = fight is not null;
         damage.Background = (Brush)Resources[heals ? "Surface" : "Accent"]; damage.Foreground = (Brush)Resources[heals ? "Foreground" : "Background"];
         healing.Background = (Brush)Resources[heals ? "Accent" : "Surface"]; healing.Foreground = (Brush)Resources[heals ? "Background" : "Foreground"];
         columns.Text = actor is null ? T("overlayColumns") : T("skillColumns");
@@ -349,6 +361,11 @@ public sealed partial class OverlayWindow : Window
         var unresolvedCount = unidentified.Length;
         hint.Text = locked ? T("overlayLocked") : $"{T("observedGroup")} · {people.Count - unresolvedCount} {T("players").ToLower(Culture)}";
         hint.ToolTip = unresolvedCount == 0 ? null : T("sourceHint");
+        if (copyNotice is not null && DateTime.UtcNow < copyNoticeUntil)
+        {
+            hint.Text = T(copyNotice);
+            hint.ToolTip = hint.Text;
+        }
         total.Text = $"{N(people.Sum(p => p.PerSecond))} {(heals ? "HPS" : "DPS")}";
         total.ToolTip = fight is null ? "" : $"{N(people.Sum(p => p.Total))} {T(heals ? "heals" : "damage")} · {T(target is null ? "allTargets" : "scopeBoss")}";
         if (preferences.OverlayAutoFit)

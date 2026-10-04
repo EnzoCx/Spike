@@ -114,6 +114,7 @@ public partial class Dashboard : Window
         SidebarFoot.Text = T("localHistory"); PageTitle.Text = T(page);
         StartButton.Content = T(meter is null ? "start" : "stop"); PauseButton.Content = T(meter?.Paused == true ? "resume" : "pause");
         FinishButton.Content = T("finish"); UpdateOverlayButton(); ExportButton.Content = T("export");
+        CopyButton.Content = T("copy"); CopyButton.ToolTip = T("copyHint");
         EmptyTitle.Text = T("noFight"); EmptyHint.Text = T("liveHint");
         DamageButton.Content = T("damage"); HealingButton.Content = T("heals");
         DurationCaption.Text = T("duration"); TimelineCaption.Text = T("timeline"); ImportButton.Content = T("import");
@@ -206,6 +207,7 @@ public partial class Dashboard : Window
         refreshing = true;
         PauseButton.IsEnabled = meter is not null; FinishButton.IsEnabled = meter?.HasCombat == true;
         ExportButton.IsEnabled = shown is not null;
+        CopyButton.IsEnabled = shown is not null;
         CaptureControls.Visibility = viewingHistory ? Visibility.Collapsed : Visibility.Visible;
         EmptyPanel.Visibility = shown is null ? Visibility.Visible : Visibility.Collapsed;
         CombatPanel.Visibility = shown is null ? Visibility.Collapsed : Visibility.Visible;
@@ -361,6 +363,13 @@ public partial class Dashboard : Window
         }
         catch (Exception error) when (IsFileError(error)) { SetNotice("loadError"); }
     }
+    private void CopyFight(object sender, RoutedEventArgs e) => CopySummary(Clipboard.SetText);
+    private void CopySummary(Action<string> write)
+    {
+        if (shown is null) return;
+        SetNotice(FightSummary.Copy(FightSummary.Format(shown, heals, target, preferences.Language), write));
+    }
+
     private async void Export(object sender, RoutedEventArgs e)
     {
         if (shown is null) return;
