@@ -134,6 +134,9 @@ public sealed partial class OverlayWindow
                     throw new InvalidOperationException("Overlay copy must follow interface language changes.");
                 window.copyNotice = null; window.Render();
                 window.SavePreview(directory, $"overlay-{language}-{theme}.png");
+                window.rows.Children.OfType<CombatantRow>().First().RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                window.SavePreview(directory, $"overlay-skills-{language}-{theme}.png");
+                window.actor = null; window.Render();
                 window.VerifyMenuDesign(directory, language, theme);
                 window.Width = window.MinWidth;
                 foreach (var compact in new[] { false, true })

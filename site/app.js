@@ -76,11 +76,11 @@ let theme = [readPreference('spike-theme'), 'dark'].find(value => themes.include
 
 function updatePreviews() {
   const copy = translations[language];
-  document.querySelector('#overlay-preview').src = `assets/overlay-${language}-${theme}.png`;
+  document.querySelector('#overlay-preview').src = `assets/overlay-en-${theme}.png`;
   document.querySelector('#overlay-preview').alt = copy.overlayAlt;
-  document.querySelector('#report-preview').src = `assets/report-${language}-${theme}.png`;
+  document.querySelector('#report-preview').src = `assets/report-en-${theme}.png`;
   document.querySelector('#report-preview').alt = copy.reportAlt;
-  document.querySelector('#report-link').href = `assets/report-${language}-${theme}.png`;
+  document.querySelector('#report-link').href = `assets/report-en-${theme}.png`;
 }
 
 function setLanguage(value) {

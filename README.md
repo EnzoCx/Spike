@@ -50,9 +50,9 @@
 
 **Click a skill or Report to open the full analysis.** The selected player and target scope carry over from the overlay. In the app, selecting another player updates the **Skills** panel; use the search field to find a skill by name.
 
-![Original Atiel fight report in French: Soras selected, game skill icons, damage and DPS per skill, hits, ticks, and observed critical hits](docs/images/rapport-atiel.png)
+![Spike combat report in English: fictional players, skill damage and DPS, hits, ticks, and observed critical hits](docs/images/report-demo.png)
 
-*Original screenshot from an earlier version, kept in French with the original player names. It shows a real fight and the game's skill icons.*
+*The redesigned combat report, shown in English with fictional demonstration data.*
 
 | Per-skill metric | What the report shows |
 | --- | --- |
@@ -63,7 +63,7 @@
 | **Ticks** | Periodic events counted separately from direct hits. |
 | **Critical hits (%)** | The proportion of observed hits that were critical, excluding ticks. |
 
-In the report above, **Feu de l'enfer - MAX** deals **162,658 damage**, accounting for **12.4%** of Soras's damage and **1,351 DPS**. Its **12.5% critical rate** applies to the skill's 8 hits, not its share of total damage.
+Damage share and critical rate measure different things: a skill can account for half of a player's damage without half of its hits being critical.
 
 The summary above the skills shows the player's damage, hits, critical rate, **Largest event**, and **Average event** within the displayed scope. The last two values include ticks. Switch to **Healing** for the same breakdown using raw healing and HPS. Expand **Fight timeline** to chart all observed participants or the selected player.
 
@@ -78,7 +78,7 @@ The summary above the skills shows the player's damage, hits, critical rate, **L
 
 </details>
 
-> The overlay and history previews use **fictional demonstration data**, rendered in English from version **0.4.13** with the Graphite theme. The Atiel report is an original French screenshot of a real fight, published with permission. None of these screenshots should be used to compare class performance.
+> All previews use **fictional demonstration data**, rendered in English with the redesigned interface from version **0.5.3** and the Graphite theme. They should not be used to compare class performance.
 
 | During your session | When reviewing your performance |
 | --- | --- |

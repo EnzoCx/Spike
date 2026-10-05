@@ -14,9 +14,14 @@ statique local, puis ouvrir son adresse. Ne jamais servir la racine du dépôt.
 
 ## Aperçus
 
-Les 18 images de `images/` sont des rendus démo de `tools/Verify.ps1` version 0.5.3 :
-- `overlay-{langue}-{thème}.png` vient du fichier de même nom dans `artifacts/verification`.
-- `report-{langue}-{thème}.png` vient de `{langue}-{thème}-live.png`.
+Les 6 images de `images/` sont des rendus démo de `tools/Verify.ps1`, avec l'interface
+0.5.3 en anglais (y compris les noms des compétences fictives), dans les trois thèmes :
+- `overlay-en-{thème}.png` vient du fichier de même nom dans `artifacts/verification`.
+- `report-en-{thème}.png` vient de `en-{thème}-live.png`.
+
+Les captures restent en anglais quelle que soit la langue du texte du site.
+Le README principal utilise `overlay-discreet-en-dark.png`, `overlay-skills-en-dark.png`,
+`en-dark-live.png` et `en-dark-history.png` du même dossier de vérification.
 
 Seuls ces fichiers synthétiques explicitement nommés sont copiés. Ne jamais copier
 un répertoire de diagnostics, un combat réel ou `docs/images/rapport-atiel.png` sur le site.

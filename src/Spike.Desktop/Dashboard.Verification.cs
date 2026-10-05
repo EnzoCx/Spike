@@ -122,11 +122,22 @@ public partial class Dashboard
     internal static Encounter PreviewEncounter()
     {
         var source = Demo.Create();
+        var skillNames = new Dictionary<string, string>
+        {
+            ["Frappe de démonstration"] = "Demo strike",
+            ["Enchaînement de démonstration"] = "Demo combo",
+            ["Flamme de démonstration"] = "Demo flame",
+            ["Éclat de démonstration"] = "Demo burst",
+            ["Flèche de démonstration"] = "Demo arrow",
+            ["Salve de démonstration"] = "Demo volley",
+            ["Lumière de démonstration"] = "Demo light",
+            ["Châtiment de démonstration"] = "Demo smite"
+        };
         var players = source.Actors.Select((actor, i) => new Participant(i + 1, actor.Name, new[] { "Gladiator", "Sorcerer", "Ranger", "Cleric" }[i], true))
             .Append(new Participant(100, "Training guardian · preview", "", false, true)).ToArray();
         return new(2, Guid.NewGuid(), DateTimeOffset.Now, "Global", "preview", "demo", "", "preview", source.DurationMs,
             players, source.Hits.Select(hit => new CombatEvent(hit.OffsetMs, Array.FindIndex(source.Actors, actor => actor.Id == hit.ActorId) + 1, 100,
-                11010000, hit.Skill, hit.Damage, false, hit.Critical, false)).ToArray());
+                11010000, skillNames[hit.Skill], hit.Damage, false, hit.Critical, false)).ToArray());
     }
 
     internal async Task VerifyLive(int seconds, string directory)

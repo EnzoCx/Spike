@@ -17,12 +17,10 @@ foreach ($name in @('Barlow-Regular.ttf', 'BarlowCondensed-SemiBold.ttf', 'Barlo
 foreach ($name in @('LICENSE', 'THIRD-PARTY-NOTICES.md')) {
     Copy-Item -LiteralPath (Join-Path $project $name) -Destination $assets -Force
 }
-foreach ($language in @('fr', 'en', 'es')) {
-    foreach ($theme in @('dark', 'light', 'contrast')) {
-        foreach ($view in @('overlay', 'report')) {
-            $name = "$view-$language-$theme.png"
-            Copy-Item -LiteralPath (Join-Path $project "site/images/$name") -Destination $assets -Force
-        }
+foreach ($theme in @('dark', 'light', 'contrast')) {
+    foreach ($view in @('overlay', 'report')) {
+        $name = "$view-en-$theme.png"
+        Copy-Item -LiteralPath (Join-Path $project "site/images/$name") -Destination $assets -Force
     }
 }
 [IO.File]::WriteAllText((Join-Path $destination '.nojekyll'), '')
