@@ -1,7 +1,12 @@
 # Reprendre le projet
 
-État de référence : version 0.5.7, 5 octobre 2026.
+État de référence : version 0.5.8, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
+
+Depuis 0.5.8, le site et le README comparent les fonctionnalités de Spike, NotMeter,
+A2Tools et Abyss Logs, avec sources et date de consultation. Le site traduit ce
+tableau en FR/EN/ES, dans les trois thèmes, avec défilement mobile et clavier et
+contenu français disponible sans JavaScript. Voir `site/README.md` pour sa maintenance.
 
 Depuis 0.5.5, l’aimantation de l’overlay agit à 6 pixels logiques des bords au lieu
 de 12, avec adaptation à l’échelle de l’écran. Maj permet toujours de la contourner.

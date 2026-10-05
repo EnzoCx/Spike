@@ -4,7 +4,7 @@
     <TargetFramework>net9.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <AssemblyName>Spike</AssemblyName>
-    <Version>0.5.7</Version>
+    <Version>0.5.8</Version>
     <Product>Spike</Product>
     <Title>Spike</Title>
     <Description>Spike — combat analysis for AION 2 Global</Description>

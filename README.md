@@ -23,6 +23,7 @@
   <a href="#installation">Install</a> ·
   <a href="#preview">See the interface</a> ·
   <a href="#skill-breakdown">Skill breakdown</a> ·
+  <a href="#feature-comparison">Compare meters</a> ·
   <a href="#your-first-fight">Your first fight</a> ·
   <a href="#frequently-asked-questions">FAQ</a> ·
   <a href="https://github.com/EnzoCx/Spike/issues">Report an issue</a>
@@ -87,6 +88,29 @@ The summary above the skills shows the player's damage, hits, critical rate, **L
 | **Discreet overlay** — compact, movable, with click-through mode | **History** — search by boss or player and filter boss fights |
 | **Three themes** — Graphite, Ivory, High contrast | **Import / export** — JSON v2 files, export without names |
 | **Automatic collapse** — title bar only after two minutes out of combat | **Copy** — a compact summary in the interface language, ready for game chat |
+
+## Feature comparison
+
+Spike focuses on in-game readability and local reports, in French, English and Spanish. Here is what NotMeter, A2Tools and Abyss Logs offer too.
+
+**Sources checked on 5 October 2026.** Features documented or visible in official sources; the other apps have not been tested. **Not confirmed** does not mean absent. **Website** identifies a web feature, without assuming it is available in the desktop app.
+
+| Feature | Spike | [NotMeter](https://notmeter.com/) | [A2Tools](https://github.com/taengu/A2Tools-DPS-Meter#features) | [Abyss Logs](https://github.com/karim-mo/aion2-abysslogs-dps-meter#what-it-does) |
+| --- | --- | --- | --- | --- |
+| Live DPS overlay | Yes | Not confirmed | Yes | Yes |
+| Damage by skill | Yes | Website | Yes | Yes |
+| Healing analysis | Raw healing and HPS | Website | Not confirmed | Yes |
+| Local fight history | Yes | Not confirmed | Boss fights auto-saved | Yes |
+| Documented languages | FR / EN / ES | Website: 9, including FR / EN / ES | EN / KO / Traditional and Simplified Chinese | 9 languages announced |
+| Report sharing | Text copy / JSON v2, export without names | Reports on the website | Web links | Web links |
+| Buff duration | Not available | Website | Not confirmed | Buff timeline |
+| Back attacks, double and perfect hits | Not available | Website | Yes | Yes |
+| Online leaderboards | No | Yes | Yes | Yes |
+| Automatic fight uploads | No | Not confirmed | Not confirmed | Optional, with consent |
+
+Sources: [Spike features and limits](#understanding-your-numbers), [NotMeter website](https://notmeter.com/) and its [language list](https://notmeter.com/assets/i18n.js), [A2Tools README](https://github.com/taengu/A2Tools-DPS-Meter#readme), [Abyss Logs README](https://github.com/karim-mo/aion2-abysslogs-dps-meter#readme).
+
+This table compares features, not measurement accuracy or compliance with game rules. Report formats are not interchangeable: Spike only imports its own JSON v2. Its fights stay local, with no telemetry or automatic uploads.
 
 ## Installation
 
