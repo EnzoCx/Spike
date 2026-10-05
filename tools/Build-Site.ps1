@@ -23,5 +23,13 @@ foreach ($theme in @('dark', 'light', 'contrast')) {
         Copy-Item -LiteralPath (Join-Path $project "site/images/$name") -Destination $assets -Force
     }
 }
+# Tie CSS and JavaScript URLs to their contents so returning visitors get matching assets.
+$indexPath = Join-Path $destination 'index.html'
+$index = [IO.File]::ReadAllText($indexPath)
+foreach ($name in @('assets/tokens.css', 'style.css', 'app.js')) {
+    $hash = (Get-FileHash -LiteralPath (Join-Path $destination $name) -Algorithm SHA256).Hash.Substring(0, 12).ToLowerInvariant()
+    $index = $index.Replace('"' + $name + '"', '"' + $name + '?v=' + $hash + '"')
+}
+[IO.File]::WriteAllText($indexPath, $index)
 [IO.File]::WriteAllText((Join-Path $destination '.nojekyll'), '')
 Write-Output "Static site assembled in artifacts/site (public assets only)."

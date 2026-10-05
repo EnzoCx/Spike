@@ -17,6 +17,11 @@ statique local, puis ouvrir son adresse. Ne jamais servir la racine du dépôt.
 La section `#comparatif` compare Spike, NotMeter, A2Tools et Abyss Logs. Le tableau
 français reste lisible sans JavaScript ; `app.js` fournit les versions EN/ES. Le
 conteneur défile au clavier et sur mobile, avec les couleurs des trois thèmes.
+La première colonne reste visible pendant le défilement sur petit écran. Des repères
+accompagnent les statuts textuels ; les sources et la méthode se déplient sous le tableau.
+
+À l’assemblage, les URLs des feuilles de styles et du script reçoivent une empreinte
+de leur contenu pour éviter un mélange de nouvelle page et d’anciens styles en cache.
 
 À chaque mise à jour, vérifier les sources officielles liées dans le tableau,
 actualiser la date de consultation et conserver les mêmes faits dans `index.html`,

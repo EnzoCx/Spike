@@ -1,5 +1,6 @@
 const translations = {
   en: {
+    compareDate: 'As of 5 October 2026', compareLegend: 'Not confirmed: not documented in the sources', compareMethod: 'Sources and comparison methodology',
     navCompare: 'Compare', compareEyebrow: 'CHOOSE YOUR METER', compareTitle: 'Features, side by side.',
     compareIntro: 'Spike focuses on in-game readability and local reports, in French, English and Spanish. Here is what NotMeter, A2Tools and Abyss Logs offer too.',
     compareNote: 'Sources checked on 5 October 2026. Features documented or visible in official sources; the other apps have not been tested. “Not confirmed” does not mean absent. “Website” identifies a web feature, without assuming it is available in the desktop app.',
@@ -43,6 +44,7 @@ const translations = {
     description: 'Spike, the damage and healing meter for AION 2 Global. A discreet overlay, detailed reports and fights stored on your PC.'
   },
   es: {
+    compareDate: 'A 5 de octubre de 2026', compareLegend: 'Sin confirmar: información no documentada', compareMethod: 'Fuentes y método de comparación',
     navCompare: 'Comparativa', compareEyebrow: 'ELIGE TU MEDIDOR', compareTitle: 'Las funciones, lado a lado.',
     compareIntro: 'Spike se centra en la legibilidad durante el juego y los informes locales, en francés, inglés y español. Esto es lo que también ofrecen NotMeter, A2Tools y Abyss Logs.',
     compareNote: 'Fuentes consultadas el 5 de octubre de 2026. Funciones documentadas o visibles en fuentes oficiales; no se han probado las otras aplicaciones. «Sin confirmar» no significa ausente. «Sitio web» identifica una función de la web, sin asumir que exista en la aplicación.',
