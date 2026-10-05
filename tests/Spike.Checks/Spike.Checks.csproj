@@ -7,5 +7,6 @@
     <Using Remove="System.Net.Http" />
     <Compile Include="../../src/Spike.Desktop/Updates/UpdatePackage.cs" Link="Updates/UpdatePackage.cs" />
     <Compile Include="../../src/Spike.Desktop/Updates/UpdateStore.cs" Link="Updates/UpdateStore.cs" />
+    <Compile Include="../../src/Spike.Desktop/Updates/UpdatePolling.cs" Link="Updates/UpdatePolling.cs" />
   </ItemGroup>
 </Project>

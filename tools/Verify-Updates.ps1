@@ -37,7 +37,7 @@ $old = Join-Path $buildRoot '0.4.6/Spike.UpdateHarness.exe'
 $new = Join-Path $buildRoot '0.4.7/Spike.UpdateHarness.exe'
 $targets = @()
 try {
-    foreach ($scenario in @('replace', 'locked')) {
+    foreach ($scenario in @('replace', 'restart-running', 'locked')) {
         # Include spaces to exercise real process argument quoting.
         $folder = Join-Path $runRoot "$scenario with spaces"
         New-Item -ItemType Directory -Path $folder | Out-Null
@@ -50,9 +50,13 @@ try {
             if ($scenario -eq 'locked') {
                 $held = [IO.File]::Open($target, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::Read)
             }
-            Invoke-Hidden $target
-            if ($scenario -eq 'replace') {
+            if ($scenario -eq 'restart-running') { Invoke-Hidden $target '--restart-running' }
+            else { Invoke-Hidden $target }
+            if ($scenario -ne 'locked') {
                 Wait-Started $target '0.4.7.0'
+                if ($scenario -eq 'restart-running' -and !(Test-Path -LiteralPath "$target.saved")) {
+                    throw 'Restart must wait for normal shutdown and the final save.'
+                }
                 if ((Get-FileHash -LiteralPath "$target.previous").Hash -ne (Get-FileHash -LiteralPath $old).Hash) {
                     throw 'Original binary was not preserved.'
                 }

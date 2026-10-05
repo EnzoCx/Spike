@@ -10,6 +10,7 @@ internal static class UpdateChecks
 {
     internal static async Task Run(Action<bool, string> check)
     {
+        await CheckPolling(check);
         var current = new Version(0, 4, 6, 0);
         var bytes = Encoding.UTF8.GetBytes("synthetic executable fixture");
         var hash = Convert.ToHexString(SHA256.HashData(bytes));
@@ -89,5 +90,45 @@ internal static class UpdateChecks
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
             Task.FromResult(new HttpResponseMessage(status) { Content = new ByteArrayContent(bytes) });
+    }
+
+    private static async Task CheckPolling(Action<bool, string> check)
+    {
+        check(UpdatePolling.Interval == TimeSpan.FromMinutes(15), "Check updates every fifteen minutes");
+        using var stop = new CancellationTokenSource();
+        var first = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var second = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var calls = 0;
+        var active = 0;
+        var overlap = false;
+        var loop = UpdatePolling.RunAsync(async () =>
+        {
+            if (Interlocked.Increment(ref active) != 1) overlap = true;
+            var call = Interlocked.Increment(ref calls);
+            if (call == 1) { first.SetResult(); await release.Task; }
+            if (call == 2) second.SetResult();
+            Interlocked.Decrement(ref active);
+        }, stop.Token, TimeSpan.FromMilliseconds(10));
+        try
+        {
+            await first.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            await Task.Delay(50);
+            check(calls == 1 && !overlap, "A slow initial check never overlaps periodic checks");
+            release.SetResult();
+            await second.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            stop.Cancel();
+            await loop.WaitAsync(TimeSpan.FromSeconds(5));
+            var stoppedCalls = calls;
+            await Task.Delay(30);
+            check(stoppedCalls >= 2 && calls == stoppedCalls && !overlap,
+                "Checks recur without reopening and stop on shutdown");
+        }
+        finally { stop.Cancel(); release.TrySetResult(); }
+
+        using var alreadyStopped = new CancellationTokenSource();
+        alreadyStopped.Cancel();
+        await UpdatePolling.RunAsync(() => throw new Exception("Check after shutdown"), alreadyStopped.Token);
+        check(true, "A stopped updater never starts a request");
     }
 }

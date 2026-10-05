@@ -1,7 +1,9 @@
 # Mises à jour automatiques
 
 L'EXE autonome consulte `https://api.github.com/repos/EnzoCx/Spike/releases/latest`
-une fois à chaque démarrage normal, sans authentification ni données de combat.
+à chaque démarrage normal, puis toutes les 15 minutes après la fin de la vérification
+précédente, sans authentification ni données de combat. Les vérifications ne se chevauchent
+pas et la boucle s’arrête à la fermeture. Après une panne réseau, elle réessaie au prochain intervalle.
 Depuis 0.5.2, l’asset publié et l’exécutable s’appellent `Spike.exe`. Les versions
 antérieures recherchent `DPSMeter.exe` et nécessitent un téléchargement manuel de
 Spike.exe une fois. Les réglages et combats sont copiés de `%LOCALAPPDATA%/DPSMeter`
@@ -9,7 +11,13 @@ vers `%LOCALAPPDATA%/Spike` au premier lancement, sans supprimer ni écraser les
 Une migration interrompue conserve l’ancien stockage et est retentée au lancement suivant.
 La petite flèche à côté de la version relance immédiatement la recherche et le téléchargement
 d’une version plus récente. Son état indique téléchargement, mise à jour prête, version à jour
-ou échec avec possibilité de réessayer. La flèche est masquée lorsque Spike est à jour. La capture continue ; aucun redémarrage n’est imposé.
+ou échec avec possibilité de réessayer. La flèche est masquée lorsque Spike est à jour.
+Lorsqu’une mise à jour est prête, elle laisse place au bouton « Redémarrer pour mettre à jour ».
+Ce bouton prépare l’assistant, puis ferme normalement Spike (arrêt de capture et sauvegarde
+du combat) avant son remplacement et sa relance. Si la préparation échoue, Spike reste ouvert
+et le bouton permet de réessayer. Une mise à jour prête reste accessible même hors ligne.
+Sans clic, l’installation attend la prochaine ouverture. La capture continue pendant les
+vérifications et téléchargements ; aucun redémarrage n’est imposé.
 Les diagnostics et builds de développement ne consultent pas GitHub.
 Le démarrage et la capture n'attendent pas le réseau. Aucun dialogue ni redémarrage forcé.
 
@@ -22,7 +30,7 @@ au maximum cinq minutes ; sa préparation réseau est bornée à trente secondes
 Le cache `%LOCALAPPDATA%/Spike/updates/` est séparé par chemin d'installation et
 protégé contre les accès simultanés par un verrou de fichier. Au lancement suivant,
 l'application revalide le cache et la version Windows du binaire. Une copie de l'EXE
-actuel sert d'assistant sans fenêtre : elle attend la sortie du processus de démarrage,
+actuel sert d'assistant sans fenêtre : elle attend la sortie du processus qui l’a lancée,
 remplace atomiquement l'EXE et relance celui-ci. Elle ne termine aucun processus.
 Un lancement issu de cet assistant ne retente pas l'installation, pour éviter les boucles.
 Une version égale ou supérieure déjà présente n'est jamais rétrogradée.

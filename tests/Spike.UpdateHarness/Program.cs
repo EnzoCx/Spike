@@ -31,6 +31,15 @@ if (args.Length == 3 && args[0] == "--stage")
 }
 
 var executable = Environment.ProcessPath!;
+if (args.SequenceEqual(new[] { "--restart-running" }))
+{
+    if (!AutomaticUpdater.TryApplyPending(executable)) return 1;
+    // Simulate normal closing while the installer waits; it must not replace a running parent.
+    await Task.Delay(300);
+    if (File.Exists(executable + ".started") || File.Exists(executable + ".previous")) return 1;
+    File.WriteAllText(executable + ".saved", "synthetic fight saved before exit");
+    return 0;
+}
 if (args.Length == 0 && AutomaticUpdater.TryApplyPending(executable)) return 0;
 File.WriteAllText(executable + ".started", typeof(AutomaticUpdater).Assembly.GetName().Version!.ToString());
 return 0;

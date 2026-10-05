@@ -50,6 +50,6 @@ public partial class App : Application
         var dashboard = new Dashboard();
         MainWindow = dashboard;
         MainWindow.Show();
-        if (executable is not null) _ = dashboard.DownloadUpdatesAsync();
+        if (executable is not null) dashboard.StartUpdates();
     }
 }

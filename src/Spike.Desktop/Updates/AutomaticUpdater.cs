@@ -53,10 +53,13 @@ internal static class AutomaticUpdater
     internal static async Task<UpdateDownloadResult> DownloadAsync(string executable)
     {
         await DownloadGate.WaitAsync();
+        var cachedUpdate = false;
         try
         {
             var store = Store(executable);
             using var updateLock = store.AcquireLock();
+            var pending = store.Pending(Current);
+            cachedUpdate = pending is not null && HasVersion(store.Payload, pending.Version);
             using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(5));
             using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30), MaxResponseContentBufferSize = 1024 * 1024 };
             client.DefaultRequestHeaders.UserAgent.ParseAdd($"Spike/{Current}");
@@ -64,13 +67,13 @@ internal static class AutomaticUpdater
             client.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
             var json = await client.GetStringAsync($"https://api.github.com/repos/{UpdatePackage.Repository}/releases/latest", timeout.Token);
             var package = UpdatePackage.FromRelease(json, new Version(0, 0, 0, 0));
-            if (package is null) return UpdateDownloadResult.Failed;
-            if (package.Version <= Current) return UpdateDownloadResult.Current;
+            if (package is null) return cachedUpdate ? UpdateDownloadResult.Ready : UpdateDownloadResult.Failed;
+            if (package.Version <= Current) return cachedUpdate ? UpdateDownloadResult.Ready : UpdateDownloadResult.Current;
             await store.StageAsync(client, json, Current, timeout.Token);
             return store.Pending(Current) is not null ? UpdateDownloadResult.Ready : UpdateDownloadResult.Failed;
         }
         // Updates are best effort: offline, rate limiting, read-only folders and corrupt data never block the meter.
-        catch (Exception error) when (IsExpected(error)) { return UpdateDownloadResult.Failed; }
+        catch (Exception error) when (IsExpected(error)) { return cachedUpdate ? UpdateDownloadResult.Ready : UpdateDownloadResult.Failed; }
         finally { DownloadGate.Release(); }
     }
 

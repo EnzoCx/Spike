@@ -24,6 +24,9 @@
       <Path Width="14" Height="14" Stretch="Uniform" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Data="M 7,1 L 7,10 M 3,6 L 7,10 L 11,6 M 1,11 L 1,14 L 13,14 L 13,11"/>
      </Button><TextBlock x:Name="VersionLabel" FontSize="10" VerticalAlignment="Center" Foreground="{DynamicResource Muted}"/></DockPanel>
      <TextBlock x:Name="UpdateStatus" AutomationProperties.LiveSetting="Polite" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,6,0,0"/>
+     <Button x:Name="RestartUpdateButton" Click="RestartUpdate" Visibility="Collapsed" Margin="0,10,0,0" Padding="10,8" Background="{DynamicResource Accent}" Foreground="{DynamicResource Background}">
+      <TextBlock x:Name="RestartUpdateLabel" TextWrapping="Wrap" TextAlignment="Center" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+     </Button>
      <TextBlock x:Name="SidebarFoot" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,8,0,0"/>
     </StackPanel>
     <StackPanel><Button x:Name="LiveNav" Tag="M 1,9 L 4,9 L 6,3 L 9,14 L 12,6 L 15,6" Style="{StaticResource Nav}" Click="ShowLive"/><Button x:Name="HistoryNav" Tag="M 2,6 A 7,7 0 1 1 2,12 M 2,2 L 2,6 L 6,6 M 9,5 L 9,9 L 12,11" Style="{StaticResource Nav}" Click="ShowHistory"/><Button x:Name="ProgressNav" Tag="M 1,14 L 5,9 L 9,11 L 15,2 M 10,2 L 15,2 L 15,7" Style="{StaticResource Nav}" Click="ShowProgress"/><Button x:Name="SettingsNav" Tag="M 2,4 L 14,4 M 2,12 L 14,12 M 6,1 L 6,7 M 10,9 L 10,15" Style="{StaticResource Nav}" Click="ShowSettings"/></StackPanel>

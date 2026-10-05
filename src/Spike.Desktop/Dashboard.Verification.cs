@@ -17,7 +17,7 @@ public partial class Dashboard
         Directory.CreateDirectory(directory);
         if (!Text.IsComplete) throw new InvalidOperationException("Missing translations.");
         VerifyDesignFonts();
-        VerifyUpdates();
+        VerifyUpdates(directory);
         VerifySharing(directory);
         VerifySetup(directory);
         VerifyProgress(directory);

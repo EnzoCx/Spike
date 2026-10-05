@@ -65,6 +65,7 @@ public partial class Dashboard : Window
         };
         Closing += (_, _) =>
         {
+            StopUpdates();
             timer.Stop();
             overlay?.Close();
             if (hwndSource is not null) { OverlayWindow.UnregisterHotKey(hwndSource.Handle, 73); hwndSource.RemoveHook(Hotkey); }

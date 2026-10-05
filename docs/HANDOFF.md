@@ -1,7 +1,12 @@
 # Reprendre le projet
 
-État de référence : version 0.5.8, 5 octobre 2026.
+État de référence : version 0.5.9, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
+
+Depuis 0.5.9, les mises à jour sont recherchées au lancement puis toutes les 15 minutes.
+Une mise à jour prête affiche « Redémarrer pour mettre à jour » : fermeture normale avec
+sauvegarde du combat, installation puis relance. Sans clic, elle attend la prochaine ouverture.
+La vérification reste silencieuse et conserve le bouton prêt en cas de panne réseau.
 
 Depuis 0.5.8, le site et le README comparent les fonctionnalités de Spike, NotMeter,
 A2Tools et Abyss Logs, avec sources et date de consultation. Le site traduit ce
@@ -25,9 +30,9 @@ Landing page FR/EN/ES et trois thèmes : https://enzocx.github.io/Spike/.
 Sources dans `site/`, publication limitée au dossier assemblé par `tools/Build-Site.ps1`.
 Les aperçus proviennent uniquement des fixtures démo hors écran. Voir `site/README.md`.
 La migration vers 0.5.2 nécessite un téléchargement manuel de Spike.exe pour les anciennes installations.
-La flèche de téléchargement près de la version relance la recherche et affiche son état,
-sans redémarrage forcé ; installation au lancement suivant. La flèche disparaît lorsque
-« Spike est à jour » est affiché et reste disponible après un échec.
+La flèche de téléchargement près de la version relance la recherche et affiche son état.
+Elle disparaît lorsque « Spike est à jour » est affiché et laisse place au bouton de
+redémarrage lorsque la mise à jour est prête. Aucun redémarrage n’est imposé.
 
 ## Interface depuis 0.5.3
 
@@ -146,7 +151,7 @@ Voir `EncounterProgress.cs`, `Dashboard.Progress.cs`, `Dashboard.Progress.Verifi
   présence. « Plus tard » laisse les archives accessibles ; « Démarrer » permet de réessayer.
 - Pas de site communautaire, classements en ligne ou signature Windows.
 - Mise à jour automatique depuis GitHub Releases : téléchargement en arrière-plan,
-  installation au lancement suivant, ancienne version conservée. Voir `docs/UPDATES.md`.
+  installation sur clic ou au lancement suivant, ancienne version conservée. Voir `docs/UPDATES.md`.
   Téléchargement manuel de Spike.exe requis pour les versions antérieures à 0.5.2.
 - SDK/runtime .NET 9 : migration LTS à planifier séparément, pas intégrée à ce nettoyage.
 
