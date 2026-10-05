@@ -19,11 +19,6 @@ public sealed class Aion2FrameDecoder
     private readonly List<KillEvent> _kills = new();
     private readonly List<AvoidEvent> _avoids = new();
 
-    // For telling apart the summons of two players of one class (see GuessSummonOwner): when each
-    // entity appeared, and when each player last cast each skill variant (skill id / 10).
-    private readonly Dictionary<int, DateTime> _spawnedAt = new();
-    private readonly Dictionary<(int Caster, int Variant), DateTime> _lastCasts = new();
-
     /// <summary>AION2_FIND=text: reports every decoded frame holding that text (UTF-8 or UTF-16), for
     /// finding where something typed in the game - chat, say - shows up. Diagnostic only.</summary>
     /// <summary>AION2_FRAMES=file: every decoded frame (time;opcode;length;hex) for protocol analysis.</summary>
@@ -69,6 +64,7 @@ public sealed class Aion2FrameDecoder
 
     private IEnumerable<DamageEvent> DecodeFrame(ReadOnlySpan<byte> frame, DateTime timestamp, bool nested)
     {
+        _entities.AdvanceTime(timestamp);
         FrameLayout layout = _protocol.FrameLayout;
         if (frame.Length < layout.OpcodeOffset + layout.OpcodeSize)
         {
@@ -169,6 +165,7 @@ public sealed class Aion2FrameDecoder
             case OpcodeFamily.Zone:
                 if (TryReadString(frame, fields, "zoneName", layout.LittleEndian, out string? zone))
                 {
+                    if (CurrentZone != zone) _entities.ResetContext(timestamp);
                     CurrentZone = zone;
                 }
                 return Array.Empty<DamageEvent>();
@@ -246,6 +243,7 @@ public sealed class Aion2FrameDecoder
     private List<DamageEvent> DecodeBundle(ReadOnlySpan<byte> frame, DateTime timestamp)
     {
         var events = new List<DamageEvent>();
+        _entities.AdvanceTime(timestamp);
         FrameLayout layout = _protocol.FrameLayout;
         int headerEnd = layout.OpcodeOffset + layout.OpcodeSize + 4;
         if (!layout.IsVarint || frame.Length <= headerEnd)
@@ -321,7 +319,6 @@ public sealed class Aion2FrameDecoder
             return;
         }
 
-        _spawnedAt[unchecked((int)entityId)] = timestamp;
 
         // Two type bytes, then a flag: 1 = the entity carries a name (a summon's owner, e.g. a
         // Cleric's Divine Aura announced as "Psefon"), length-prefixed, before the NPC id.
@@ -338,7 +335,7 @@ public sealed class Aion2FrameDecoder
 
         p += 3;
         int npcId = unchecked((int)BinaryPrimitives.ReadUInt32LittleEndian(frame[p..]));
-        _entities.NoteSpawned(unchecked((int)entityId));
+        _entities.NoteSpawned(unchecked((int)entityId), timestamp);
         _entities.RegisterNpc(unchecked((int)entityId), npcId);
         _entities.SetSummonOwnerName(unchecked((int)entityId), ownerName);
 
@@ -353,110 +350,6 @@ public sealed class Aion2FrameDecoder
         {
             _entities.SetSummonOwner(unchecked((int)entityId), owner == entityId ? null : unchecked((int)owner));
         }
-    }
-
-    /// <summary>
-    /// A summon whose spawn names no owner, neither by id nor by name (a Sorcerer's Bittercold Wind):
-    /// an entity the server announced as a monster that casts a class's skills is somebody's
-    /// summon, and when exactly one member of the party plays that class, it is theirs. Remembered
-    /// once found. With two players of the class nothing is guessed.
-    /// <para>Only a direct hit on a monster counts. Damage-over-time frames name a class skill next
-    /// to a monster too: a Sorcerer's Steel Barrier absorbing a monster's blow reads "monster X,
-    /// effect Steel Barrier, on the Sorcerer" - which once made a boss's add (Phantasmal Lakshmi)
-    /// the party Sorcerer's summon, its blows on the party his damage (Draupnir capture,
-    /// 2026-10-02).</para>
-    /// <para>Two players of the class: the summon strikes with the variant of the skill its owner
-    /// cast (skill id / 10 - talents pick the variant), and its owner cast it just before it
-    /// appeared. On a Draupnir run with two Sorcerers (2026-10-02 23:00), all 23 Bittercold Winds
-    /// fit both: Lumy cast 15280240 and her winds hit with 15280242/3, Aurulio cast 15280030 and
-    /// his hit with 15280032/3, each cast ~50 ms before the spawn. The caster of that variant
-    /// closest before the spawn is the owner - by id, so it works before the players are named.</para>
-    /// </summary>
-    private int? GuessSummonOwner(int actor, int skillId, int target)
-    {
-        // The target is no player and no summon. Not IsKnownMonster: started mid-fight, the meter
-        // never saw the boss spawn.
-        if (!_entities.IsSpawned(actor) || _entities.IsKnownPlayer(target) || _entities.SummonOwnerOf(target) is not null
-            || Aion2SkillNames.ClassOf(skillId) is not string className)
-        {
-            return null;
-        }
-
-        // A party member of the class who cast this variant just before (within 5 s); else a caster
-        // within 2 s who may be a party member not named yet (the meter started inside a dungeon)
-        // but is not known to be outside the party (open world); else the party's only player of
-        // the class.
-        int variant = skillId / 10;
-        var party = _entities.PartyMemberIdsOfClass(className).Where(id => id != actor).ToList();
-        int? owner = OwnerByCast(actor, variant, TimeSpan.FromSeconds(5), id => party.Contains(id))
-            ?? OwnerByCast(actor, variant, TimeSpan.FromSeconds(2), id => !_entities.IsNamedOutsideParty(id));
-        if (owner is null && party.Count == 1)
-        {
-            owner = party[0];
-        }
-
-        if (owner is int found)
-        {
-            _entities.SetSummonOwner(actor, found);
-        }
-
-        return owner;
-    }
-
-    /// <summary>The caster accepted by <paramref name="eligible"/> who cast this variant of the
-    /// summon's skill closest before it spawned, within <paramref name="window"/> (a Sorcerer
-    /// summons a wind every ten seconds or more).</summary>
-    private int? OwnerByCast(int summon, int variant, TimeSpan window, Func<int, bool> eligible)
-    {
-        if (!_spawnedAt.TryGetValue(summon, out DateTime spawned))
-        {
-            return null;
-        }
-
-        var justBefore = _lastCasts
-            .Where(kv => kv.Key.Variant == variant && eligible(kv.Key.Caster))
-            .Select(kv => (Id: kv.Key.Caster, Gap: spawned - kv.Value))
-            .Where(c => c.Gap >= TimeSpan.Zero && c.Gap <= window)
-            .OrderBy(c => c.Gap)
-            .ToList();
-        return justBefore.Count > 0 ? justBefore[0].Id : null;
-    }
-
-    /// <summary>A player's cast of a class skill, remembered for <see cref="OwnerByCast"/>.</summary>
-    private void NoteCast(int actor, int skillId, DateTime timestamp)
-    {
-        if (!_entities.IsSpawned(actor) && Aion2SkillNames.ClassOf(skillId) is not null)
-        {
-            _lastCasts[(actor, skillId / 10)] = timestamp;
-        }
-    }
-
-    /// <summary>
-    /// A summon that appeared before the meter started has no spawn frame on record, so neither its
-    /// owner field nor its owner's name nor the cast before it is known. It still casts nothing but
-    /// its summon attack (a spirit's "Fire Spirit: Leaping Slam", a Cleric's "Divine Aura", a
-    /// Sorcerer's "Bittercold Wind"), and when the party has exactly one player of that class, known
-    /// by id, it is theirs (Canyon Urugugu, recording started mid-fight, 2026-10-03: two Divine Auras
-    /// and two spirits left as Player #id). A spirit's basic attack counts too, though its id names no
-    /// class (see <see cref="Aion2SkillNames.SummonAttackClass"/>): the Ancient Spirit cast nothing
-    /// else once its owner was known. A named entity is a player, never a summon.
-    /// </summary>
-    private int? LeftoverSummonOwner(int actor, int skillId)
-    {
-        if (_entities.IsSpawned(actor) || _entities.HasName(actor)
-            || Aion2SkillNames.SummonAttackClass(skillId) is not string className)
-        {
-            return null;
-        }
-
-        var owners = _entities.PartyPlayerIdsOfClass(className).Where(id => id != actor).ToList();
-        if (owners.Count != 1)
-        {
-            return null;
-        }
-
-        _entities.SetSummonOwner(actor, owners[0]);
-        return owners[0];
     }
 
     private static ReadOnlySpan<byte> OwnerMarker => new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
@@ -478,12 +371,7 @@ public sealed class Aion2FrameDecoder
         p += 2;
         if ((flags & 0x04) == 0)
         {
-            // Still a cast: a summoning skill is announced this way, just before its summon spawns.
             NoDamageFrames++;
-            if (TryReadVarint(frame, ref p, out long caster) && frame.Length >= p + 4)
-            {
-                NoteCast(unchecked((int)caster), unchecked((int)BinaryPrimitives.ReadUInt32LittleEndian(frame[p..])), timestamp);
-            }
 
             return Array.Empty<DamageEvent>();
         }
@@ -496,7 +384,7 @@ public sealed class Aion2FrameDecoder
 
         int skillId = unchecked((int)BinaryPrimitives.ReadUInt32LittleEndian(frame[p..]));
         p += 4;
-        NoteCast((int)actor, skillId, timestamp);
+
         if (Aion2SkillNames.IsNonDamageEffect(skillId))
         {
             return Array.Empty<DamageEvent>();
@@ -529,9 +417,8 @@ public sealed class Aion2FrameDecoder
 
         // A summoned spirit's hits are its summoner's, as in the game's own combat analyzer. The heal
         // test below still looks at the spirit itself: its spawn "heal" targets its own id.
-        int source = _entities.SummonOwnerOf((int)actor) ?? GuessSummonOwner((int)actor, skillId, (int)target)
-            ?? LeftoverSummonOwner((int)actor, skillId) ?? (int)actor;
-        if (Aion2SkillNames.ClassOf(skillId) is string className)
+        int source = _entities.SummonOwnerOf((int)actor) ?? (int)actor;
+        if ((Aion2SkillNames.ClassOf(skillId) ?? Aion2SkillNames.SummonAttackClass(skillId)) is string className)
         {
             _entities.NoteClass(source, className);
         }
@@ -546,12 +433,6 @@ public sealed class Aion2FrameDecoder
         // Chanter's Recuperation on a member who had not cast yet used to read as damage between two
         // players - and one such hit made the resolver paint the whole party as enemies.
         bool isHeal = Aion2SkillNames.IsHealFamily(skillId) && !_entities.IsKnownMonster((int)target);
-        // Not IsKnownMonster: started mid-fight, the meter never saw the boss spawn.
-        if (!isHeal && _entities.IsKnownPlayer(source) && !_entities.IsKnownPlayer((int)target) && _entities.SummonOwnerOf((int)target) is null)
-        {
-            _entities.NoteMonsterHit(source, (int)target, skillId);
-        }
-
         // A heal on a summon is not healing the group: a Spiritmaster's spirit arrives with a heal of
         // its full health on itself (~56,000 per summon - 4.07 M over one Krao Cave run once spirits
         // are credited to their summoner), and topping up one's spirits is not party healing either.
@@ -560,7 +441,7 @@ public sealed class Aion2FrameDecoder
             return Array.Empty<DamageEvent>();
         }
 
-        return new[] { new DamageEvent(timestamp, source, (int)target, amount, isHeal, skill, critical && !isHeal, SkillId: skillId) };
+        return new[] { new DamageEvent(timestamp, source, (int)target, amount, isHeal, skill, critical && !isHeal, SkillId: skillId, OriginalSource: source != (int)actor ? (int)actor : null, Attribution: _entities.OwnerEvidence((int)actor), AttributionCaptured: true) };
     }
 
     /// <summary>
@@ -627,7 +508,7 @@ public sealed class Aion2FrameDecoder
                 : Array.Empty<DamageEvent>();
         }
 
-        // No summon guess here (see GuessSummonOwner): a tick's class skill can be the target's own
+        // No summon guess: a tick's class skill can be the target's own
         // shield, the actor the monster striking it.
         int source = _entities.SummonOwnerOf((int)actor) ?? (int)actor;
 
@@ -640,7 +521,7 @@ public sealed class Aion2FrameDecoder
             bool countedHeal = (flags & 0x01) != 0 && healed > 0 && healed <= MaxPlausibleAmount
                 && Aion2SkillNames.ClassOf(skillId) is not null && _entities.SummonOwnerOf((int)target) is null;
             return countedHeal
-                ? new[] { new DamageEvent(timestamp, source, (int)target, healed, IsHeal: true, Aion2SkillNames.NameOf(skillId), IsTick: true, SkillId: skillId) }
+                ? new[] { new DamageEvent(timestamp, source, (int)target, healed, IsHeal: true, Aion2SkillNames.NameOf(skillId), IsTick: true, SkillId: skillId, OriginalSource: source != (int)actor ? (int)actor : null, Attribution: _entities.OwnerEvidence((int)actor), AttributionCaptured: true) }
                 : Array.Empty<DamageEvent>();
         }
 
@@ -649,7 +530,7 @@ public sealed class Aion2FrameDecoder
             return Array.Empty<DamageEvent>();
         }
 
-        return new[] { new DamageEvent(timestamp, source, (int)target, amount, IsHeal: false, Aion2SkillNames.NameOf(skillId), IsTick: true, SkillId: skillId) };
+        return new[] { new DamageEvent(timestamp, source, (int)target, amount, IsHeal: false, Aion2SkillNames.NameOf(skillId), IsTick: true, SkillId: skillId, OriginalSource: source != (int)actor ? (int)actor : null, Attribution: _entities.OwnerEvidence((int)actor), AttributionCaptured: true) };
     }
 
     /// <summary>

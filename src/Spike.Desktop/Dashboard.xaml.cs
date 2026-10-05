@@ -112,6 +112,7 @@ public partial class Dashboard : Window
     {
         Title = Text.ProductName;
         TranslateUpdate();
+        TranslateProgress();
         LiveNav.Content = T("live"); HistoryNav.Content = T("history"); SettingsNav.Content = T("settings");
         SidebarFoot.Text = T("localHistory"); PageTitle.Text = T(page);
         StartButton.Content = T(meter is null ? "start" : "stop"); PauseButton.Content = T(meter?.Paused == true ? "resume" : "pause");
@@ -210,6 +211,7 @@ public partial class Dashboard : Window
         PauseButton.IsEnabled = meter is not null; FinishButton.IsEnabled = meter?.CanFinish == true;
         ExportButton.IsEnabled = shown is not null;
         CopyButton.IsEnabled = shown is not null;
+        CompareButton.IsEnabled = shown is not null;
         CaptureControls.Visibility = viewingHistory ? Visibility.Collapsed : Visibility.Visible;
         EmptyPanel.Visibility = shown is null ? Visibility.Visible : Visibility.Collapsed;
         CombatPanel.Visibility = shown is null ? Visibility.Collapsed : Visibility.Visible;
@@ -273,6 +275,7 @@ public partial class Dashboard : Window
             Rest = new GridLength(Math.Max(.01, 100 - row.Share), GridUnitType.Star),
             Extra = $"{N(row.Hits)} {T("hits")} · {N(row.Ticks)} {T("ticks")} · {row.CriticalRate.ToString("N1", Culture)} % {T("critical")}"
         }).ToArray();
+        if (person.IsPlayer) DetailsSummary.Text += $"\n{T("observedDeaths")} : {Deaths(person.ObservedDeaths)}";
         MetricNote.Text = T(person.IsUnidentifiedSource ? "sourceHint" : heals ? "rawHealing" : "critNote");
     }
 
@@ -294,9 +297,13 @@ public partial class Dashboard : Window
         page = value; PageTitle.Text = T(value);
         FightPage.Visibility = value == "live" ? Visibility.Visible : Visibility.Collapsed;
         HistoryPage.Visibility = value == "history" ? Visibility.Visible : Visibility.Collapsed;
+        ProgressPage.Visibility = value == "progress" ? Visibility.Visible : Visibility.Collapsed;
         SettingsPage.Visibility = value == "settings" ? Visibility.Visible : Visibility.Collapsed;
-        foreach (var (button, name) in new[] { (LiveNav, "live"), (HistoryNav, "history"), (SettingsNav, "settings") })
-            button.Background = name == value ? (Brush)Resources["Surface"] : Brushes.Transparent;
+        foreach (var (button, name) in new[] { (LiveNav, "live"), (HistoryNav, "history"), (ProgressNav, "progress"), (SettingsNav, "settings") })
+        {
+            if (name == value) button.SetResourceReference(BackgroundProperty, "Surface");
+            else button.Background = Brushes.Transparent;
+        }
     }
     private void ShowLive(object sender, RoutedEventArgs e) { viewingHistory = false; shown = lastLive; SwitchPage("live"); Tick(); }
     private async void ShowHistory(object sender, RoutedEventArgs e)
@@ -344,7 +351,7 @@ public partial class Dashboard : Window
     }
     private async void OpenHistory(object sender, MouseButtonEventArgs e) => await LoadSelectedHistory();
     private async void OpenHistoryReport(object sender, RoutedEventArgs e) => await LoadSelectedHistory();
-    private void HistorySelected(object sender, SelectionChangedEventArgs e) => OpenHistoryButton.IsEnabled = HistoryList.SelectedItem is HistoryDisplay;
+    private void HistorySelected(object sender, SelectionChangedEventArgs e) => CompareHistoryButton.IsEnabled = OpenHistoryButton.IsEnabled = HistoryList.SelectedItem is HistoryDisplay;
     private async void HistoryKey(object sender, KeyEventArgs e) { if (e.Key == Key.Enter) await LoadSelectedHistory(); }
     private async Task LoadSelectedHistory()
     {

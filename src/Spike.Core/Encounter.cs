@@ -2,9 +2,10 @@ namespace Spike.Core;
 
 public sealed record Participant(int Id, string Name, string ClassName, bool IsPlayer, bool IsBoss = false,
     long? CombatPower = null, bool IsSelf = false, long? CurrentHp = null, long? HighestHp = null,
-    bool IsUnidentifiedSource = false);
+    bool IsUnidentifiedSource = false, int? NpcId = null, int? ServerId = null,
+    int? ObservedDeaths = null, string? IdentityEvidence = null);
 public sealed record CombatEvent(long AtMs, int Source, int Target, int SkillId, string Skill,
-    long Amount, bool Heal, bool Critical, bool Tick);
+    long Amount, bool Heal, bool Critical, bool Tick, int? OriginalSource = null, string? Attribution = null);
 public sealed record Encounter(int Version, Guid Id, DateTimeOffset StartedAt, string Region, string Patch,
     string Origin, string Zone, string EndReason, long DurationMs, Participant[] Participants, CombatEvent[] Events)
 {

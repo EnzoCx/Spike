@@ -48,5 +48,19 @@ public sealed class EncounterStore(string root)
         return entries.OrderByDescending(entry => entry.StartedAt).ToArray();
     }
 
+    public IReadOnlyList<ProgressAttempt> Progress()
+    {
+        SkippedFiles = 0;
+        if (!Directory.Exists(Root)) return [];
+        var attempts = new List<ProgressAttempt>();
+        foreach (var path in Directory.EnumerateFiles(Root, "*.json"))
+        {
+            if (!Guid.TryParseExact(Path.GetFileNameWithoutExtension(path), "N", out var id)) continue;
+            try { attempts.AddRange(EncounterProgress.Summarize(Load(id))); }
+            catch (Exception error) when (error is IOException or InvalidDataException or JsonException or UnauthorizedAccessException) { SkippedFiles++; }
+        }
+        return attempts;
+    }
+
     private string FilePath(Guid id) => Path.Combine(Root, id.ToString("N") + ".json");
 }

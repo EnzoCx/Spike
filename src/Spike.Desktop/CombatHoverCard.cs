@@ -40,6 +40,7 @@ internal static class CombatHoverCard
         }
         stack.Children.Add(metrics);
         stack.Children.Add(Label($"{N(row?.Hits ?? 0)} {T("hits")}   ·   {T("criticalObserved")} {(row?.CriticalRate ?? 0).ToString("N1", culture)} %", 12));
+        if (person.IsPlayer) stack.Children.Add(Label($"{T("observedDeaths")} : {(person.ObservedDeaths is { } deaths ? N(deaths) : T("notRecorded"))}", 12, true));
         if (person.CombatPower is { } power) stack.Children.Add(Label($"{T("combatPower")} : {N(power)}", 12, true));
         var heading = Label(T("topSkills"), 12, true); heading.Margin = new Thickness(0, 16, 0, 8); stack.Children.Add(heading);
         foreach (var spell in EncounterMath.Spells(fight, actor, heals, target).Take(8))

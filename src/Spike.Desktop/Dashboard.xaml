@@ -26,7 +26,7 @@
      <TextBlock x:Name="UpdateStatus" AutomationProperties.LiveSetting="Polite" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,6,0,0"/>
      <TextBlock x:Name="SidebarFoot" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,8,0,0"/>
     </StackPanel>
-    <StackPanel><Button x:Name="LiveNav" Tag="M 1,9 L 4,9 L 6,3 L 9,14 L 12,6 L 15,6" Style="{StaticResource Nav}" Click="ShowLive"/><Button x:Name="HistoryNav" Tag="M 2,6 A 7,7 0 1 1 2,12 M 2,2 L 2,6 L 6,6 M 9,5 L 9,9 L 12,11" Style="{StaticResource Nav}" Click="ShowHistory"/><Button x:Name="SettingsNav" Tag="M 2,4 L 14,4 M 2,12 L 14,12 M 6,1 L 6,7 M 10,9 L 10,15" Style="{StaticResource Nav}" Click="ShowSettings"/></StackPanel>
+    <StackPanel><Button x:Name="LiveNav" Tag="M 1,9 L 4,9 L 6,3 L 9,14 L 12,6 L 15,6" Style="{StaticResource Nav}" Click="ShowLive"/><Button x:Name="HistoryNav" Tag="M 2,6 A 7,7 0 1 1 2,12 M 2,2 L 2,6 L 6,6 M 9,5 L 9,9 L 12,11" Style="{StaticResource Nav}" Click="ShowHistory"/><Button x:Name="ProgressNav" Tag="M 1,14 L 5,9 L 9,11 L 15,2 M 10,2 L 15,2 L 15,7" Style="{StaticResource Nav}" Click="ShowProgress"/><Button x:Name="SettingsNav" Tag="M 2,4 L 14,4 M 2,12 L 14,12 M 6,1 L 6,7 M 10,9 L 10,15" Style="{StaticResource Nav}" Click="ShowSettings"/></StackPanel>
    </DockPanel>
   </Border>
   <Border Grid.Column="1" Margin="0,8,8,8" CornerRadius="20" Background="{DynamicResource Background}" BorderBrush="{DynamicResource Border}" BorderThickness="1">
@@ -44,7 +44,7 @@
      <StackPanel x:Name="EmptyPanel" Margin="0,64,0,0"><TextBlock x:Name="EmptyTitle" FontSize="26"/><TextBlock x:Name="EmptyHint" TextWrapping="Wrap" Style="{StaticResource MutedText}" MaxWidth="480" HorizontalAlignment="Left" Margin="0,16,0,0" LineHeight="22"/></StackPanel>
      <Grid x:Name="CombatPanel">
       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-      <DockPanel><Button x:Name="ExportButton" DockPanel.Dock="Right" Click="Export" Margin="12,0,0,0"/><Button x:Name="CopyButton" DockPanel.Dock="Right" Click="CopyFight" Margin="12,0,0,0"/><TextBlock x:Name="FightTitle" FontSize="23" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/></DockPanel>
+      <DockPanel><Button x:Name="CompareButton" DockPanel.Dock="Right" Click="CompareShown" Margin="12,0,0,0"/><Button x:Name="ExportButton" DockPanel.Dock="Right" Click="Export" Margin="12,0,0,0"/><Button x:Name="CopyButton" DockPanel.Dock="Right" Click="CopyFight" Margin="12,0,0,0"/><TextBlock x:Name="FightTitle" FontSize="23" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/></DockPanel>
       <DockPanel Grid.Row="1" Margin="0,6,0,0"><TextBlock x:Name="OriginLabel" DockPanel.Dock="Right" Style="{StaticResource MutedText}" FontSize="10"/><TextBlock x:Name="ScopeLabel" Style="{StaticResource MutedText}" TextTrimming="CharacterEllipsis"/></DockPanel>
       <Grid Grid.Row="2" Margin="0,24,0,24"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
        <StackPanel><TextBlock x:Name="DpsCaption" Style="{StaticResource MutedText}"/><TextBlock x:Name="DpsValue" FontSize="26" FontWeight="SemiBold" Margin="0,5,0,0"/></StackPanel>
@@ -102,8 +102,42 @@
     <ListBox x:Name="HistoryList" Grid.Row="1" MouseDoubleClick="OpenHistory" KeyDown="HistoryKey" SelectionChanged="HistorySelected"><ListBox.ItemTemplate><DataTemplate>
      <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="200"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="{Binding Title}" FontSize="20"/><TextBlock Text="{Binding When}" Style="{StaticResource MutedText}" Margin="0,5,0,0"/><TextBlock Text="{Binding Summary}" Foreground="{DynamicResource Accent}" FontSize="12" Margin="0,6,0,0"/></StackPanel><StackPanel Grid.Column="1" HorizontalAlignment="Right"><TextBlock Text="{Binding Duration}" FontSize="22" HorizontalAlignment="Right"/><TextBlock Text="{Binding Damage}" Style="{StaticResource MutedText}" HorizontalAlignment="Right" Margin="0,6,0,0"/></StackPanel></Grid>
     </DataTemplate></ListBox.ItemTemplate></ListBox>
-    <DockPanel Grid.Row="2" Margin="0,14,0,0"><Button x:Name="OpenHistoryButton" DockPanel.Dock="Right" Click="OpenHistoryReport" IsEnabled="False" Margin="16,0,0,0"/><TextBlock x:Name="HistoryHint" Style="{StaticResource MutedText}" TextWrapping="Wrap" VerticalAlignment="Center"/></DockPanel>
+    <DockPanel Grid.Row="2" Margin="0,14,0,0"><Button x:Name="CompareHistoryButton" DockPanel.Dock="Right" Click="CompareHistory" IsEnabled="False" Margin="8,0,0,0"/><Button x:Name="OpenHistoryButton" DockPanel.Dock="Right" Click="OpenHistoryReport" IsEnabled="False" Margin="16,0,0,0"/><TextBlock x:Name="HistoryHint" Style="{StaticResource MutedText}" TextWrapping="Wrap" VerticalAlignment="Center"/></DockPanel>
    </Grid>
+   <ScrollViewer x:Name="ProgressPage" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Margin="0,0,12,0">
+     <DockPanel><Button x:Name="RefreshProgressButton" DockPanel.Dock="Right" Click="ShowProgress"/><TextBlock x:Name="ProgressIntro" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,0,16,16"/></DockPanel>
+     <Grid Margin="0,0,0,16"><Grid.ColumnDefinitions><ColumnDefinition Width="1.4*"/><ColumnDefinition Width="16"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <StackPanel><TextBlock x:Name="ProgressContextLabel" Style="{StaticResource MutedText}" Margin="0,0,0,6"/><ComboBox x:Name="ProgressContext" ToolTip="{Binding SelectedItem.Name, RelativeSource={RelativeSource Self}}" DisplayMemberPath="Name" SelectionChanged="ProgressContextChanged"/></StackPanel>
+      <StackPanel Grid.Column="2"><TextBlock x:Name="ProgressPlayerLabel" Style="{StaticResource MutedText}" Margin="0,0,0,6"/><ComboBox x:Name="ProgressPlayer" ToolTip="{Binding SelectedItem.Name, RelativeSource={RelativeSource Self}}" DisplayMemberPath="Name" SelectionChanged="ProgressPlayerChanged"/></StackPanel>
+     </Grid>
+     <TextBlock x:Name="ProgressEmpty" TextWrapping="Wrap" Margin="0,12,0,24" FontSize="15"/>
+     <StackPanel x:Name="ProgressContent">
+      <TextBlock x:Name="ProgressScope" Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,16"/>
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <StackPanel><TextBlock x:Name="ProgressCurrentLabel" FontWeight="Medium" Margin="0,0,0,6"/><ComboBox x:Name="ProgressCurrent" ToolTip="{Binding SelectedItem.Name, RelativeSource={RelativeSource Self}}" DisplayMemberPath="Name" SelectionChanged="ProgressCurrentChanged"/></StackPanel>
+       <StackPanel Grid.Column="2"><TextBlock x:Name="ProgressReferenceLabel" FontWeight="Medium" Margin="0,0,0,6"/><ComboBox x:Name="ProgressReference" ToolTip="{Binding SelectedItem.Name, RelativeSource={RelativeSource Self}}" DisplayMemberPath="Name" SelectionChanged="ProgressReferenceChanged"/></StackPanel>
+      </Grid>
+      <WrapPanel Margin="0,10,0,18"><Button x:Name="PreviousAttemptButton" Click="ChoosePreviousAttempt"/><Button x:Name="BestAttemptButton" Click="ChooseBestAttempt"/><Button x:Name="OpenProgressReportButton" Click="OpenProgressReport"/></WrapPanel>
+      <Border Background="{DynamicResource Surface}" CornerRadius="12" Padding="20" Margin="0,0,0,20">
+       <StackPanel><TextBlock x:Name="ProgressDelta" FontSize="26" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock x:Name="ProgressNumbers" Margin="0,8,0,0" TextWrapping="Wrap"/>
+        <TextBlock x:Name="ProgressDetail" Margin="0,8,0,0" TextWrapping="Wrap" Style="{StaticResource MutedText}"/>
+       </StackPanel>
+      </Border>
+      <DockPanel><TextBlock x:Name="ProgressTrendTitle" FontWeight="SemiBold"/><TextBlock x:Name="ProgressTrendRange" HorizontalAlignment="Right" Style="{StaticResource MutedText}"/></DockPanel>
+      <Grid x:Name="ProgressChart" Height="132" Margin="0,12,0,0"/>
+      <TextBlock x:Name="ProgressTrendHint" Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,6,0,20"/>
+      <TextBlock x:Name="ProgressSkillsTitle" FontWeight="SemiBold" Margin="0,0,0,12"/>
+      <ItemsControl x:Name="ProgressSkills"><ItemsControl.ItemTemplate><DataTemplate>
+       <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="180"/></Grid.ColumnDefinitions>
+        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}"/>
+        <StackPanel Grid.Column="1"><TextBlock Text="{Binding Delta}" HorizontalAlignment="Right"/><TextBlock Text="{Binding Values}" HorizontalAlignment="Right" Style="{StaticResource MutedText}" FontSize="11"/></StackPanel>
+       </Grid>
+      </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+      <TextBlock x:Name="ProgressCaution" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,12,0,8"/>
+     </StackPanel>
+    </StackPanel>
+   </ScrollViewer>
    <ScrollViewer x:Name="SettingsPage" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
     <StackPanel MaxWidth="660" HorizontalAlignment="Left">
      <TextBlock x:Name="LanguageCaption" FontSize="16" FontWeight="Medium"/><StackPanel x:Name="LanguageChoices" Orientation="Horizontal" Margin="0,12,0,32"/>

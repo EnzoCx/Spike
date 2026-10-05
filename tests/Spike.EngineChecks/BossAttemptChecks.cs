@@ -92,6 +92,8 @@ internal static class BossAttemptChecks
                 "A reused entity with a different boss NPC cannot resume through an ally");
             Check(fight.Completed[^1].Participants.Single(actor => actor.Id == 200).Name == Aion2BossCatalog.Find(2300171)!.Name,
                 "Reusing an entity does not rename the previous attempt's boss");
+            Check(fight.Completed[^1].Participants.Single(actor => actor.Id == 200).NpcId == 2300171,
+                "Reusing an entity preserves the previous boss catalog ID for progression");
         }
 
         using (var fight = new Fixture(protocol))

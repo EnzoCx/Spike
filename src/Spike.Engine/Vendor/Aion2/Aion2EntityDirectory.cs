@@ -38,7 +38,7 @@ public sealed record Aion2DirectorySnapshot(
     Dictionary<int, int> BossNpcs,
     int LocalPlayerId);
 
-public sealed class Aion2EntityDirectory : IEntityDirectory
+public sealed partial class Aion2EntityDirectory : IEntityDirectory
 {
     private readonly Dictionary<int, string> _names = new();
     private readonly Dictionary<string, int> _ids = new();
@@ -59,8 +59,8 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
 
     /// <summary>
     /// The local player: a session frame's id when one is decoded, else the object whose name is the
-    /// configured character name (<see cref="SetConfiguredLocalName"/>), else the one inferred from
-    /// the stream (see <see cref="InferLocalPlayer"/>). -1 while none is known.
+    /// configured character name (<see cref="SetConfiguredLocalName"/>) when unique.
+    /// -1 while no explicit identity is known; skill frequency is never proof.
     /// </summary>
     public int LocalPlayerId
     {
@@ -73,13 +73,14 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
 
             lock (_gate)
             {
-                if (_configuredLocalName is not null && _ids.TryGetValue(_configuredLocalName, out int byName))
+                if (_configuredLocalName is not null && _ids.TryGetValue(_configuredLocalName, out int byName)
+                    && _names.Count(p => p.Value == _configuredLocalName) == 1)
                 {
                     return byName;
                 }
             }
 
-            return InferLocalPlayer() ?? -1;
+            return -1;
         }
 
         internal set => _explicitLocalId = value;
@@ -116,6 +117,8 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
     {
         lock (_gate)
         {
+            if (_character is { Restored: false } previous && (info.ReceivedAt > previous.ReceivedAt
+                || info.CombatId != previous.CombatId || info.Name != previous.Name || info.ServerId != previous.ServerId)) ResetContext(info.ReceivedAt);
             _character = info;
             _explicitLocalId = info.CombatId;
             _names[info.CombatId] = info.Name;
@@ -368,10 +371,11 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
     private readonly HashSet<int> _spawned = new();
 
     /// <summary>Notes that the server announced this entity as a monster (or a summon).</summary>
-    public void NoteSpawned(int entityId)
+    public void NoteSpawned(int entityId, DateTime? at = null)
     {
         lock (_gate)
         {
+            ForgetSpawn(entityId, at ?? DateTime.MinValue);
             _spawned.Add(entityId);
         }
     }
@@ -432,7 +436,7 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
     {
         lock (_gate)
         {
-            if (ownerId is int owner)
+            if (ownerId is int owner && owner != entityId)
             {
                 if ((!_summonOwners.TryGetValue(entityId, out int known) || known != owner) && _resolvedOwners.Count < 4096)
                 {
@@ -479,10 +483,9 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
                 return owner;
             }
 
-            // Owner known by name: the player of that name, when it is a player and not the entity itself.
-            return _summonOwnerNames.TryGetValue(entityId, out string? name) && _ids.TryGetValue(name, out int byName) && byName != entityId
-                ? byName
-                : null;
+            if (!_summonOwnerNames.TryGetValue(entityId, out string? name)) return null;
+            var matches = _names.Where(p => p.Key != entityId && p.Value == name && !_spawned.Contains(p.Key)).Take(2).ToArray();
+            return matches.Length == 1 ? matches[0].Key : null;
         }
     }
 
@@ -639,23 +642,12 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
             }
 
             _lastPartyFrame = at;
-            MatchPartyMembersByClass();
+            AdvanceTime(at);
         }
     }
 
     // Party member name -> class, from the roster's class code.
     private readonly Dictionary<string, string> _partyClasses = new(StringComparer.Ordinal);
-
-    // Monsters the local player or a named party member hit, and the unnamed players who hit one too.
-    private readonly HashSet<int> _partyTargets = new();
-    private readonly HashSet<int> _fightingAlongside = new();
-
-    // Unnamed players fighting alongside the party -> the skills (base ids) they were seen using.
-    private readonly Dictionary<int, HashSet<int>> _skillsSeen = new();
-
-    /// <summary>A player uses many skills; a spirit summoned before the meter started (owner
-    /// unknown) a few: 16 against 3 on a Krao Cave capture replayed from mid-fight.</summary>
-    private const int MinSkillsOfAPlayer = 4;
 
     /// <summary>True when a name is registered for this id - a player, never a summon.</summary>
     public bool HasName(int id)
@@ -704,80 +696,6 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
         }
     }
 
-    /// <summary>Notes a player's hit on a monster, for <see cref="MatchPartyMembersByClass"/>.</summary>
-    public void NoteMonsterHit(int playerId, int monsterId, int skillId)
-    {
-        lock (_gate)
-        {
-            bool partySide = _names.TryGetValue(playerId, out string? name)
-                ? CurrentPartyNames().Contains(name)
-                : IsLocalPlayer(playerId) || InferLocalPlayer() == playerId;
-            if (partySide)
-            {
-                if (_partyTargets.Count > 4096)
-                {
-                    _partyTargets.Clear();
-                }
-
-                _partyTargets.Add(monsterId);
-            }
-            else if (!_names.ContainsKey(playerId) && !_spawned.Contains(playerId) && _partyTargets.Contains(monsterId))
-            {
-                _fightingAlongside.Add(playerId);
-                if (!_skillsSeen.TryGetValue(playerId, out var skills))
-                {
-                    skills = new HashSet<int>();
-                    _skillsSeen[playerId] = skills;
-                }
-
-                if (skills.Add(skillId / 10000) && skills.Count == MinSkillsOfAPlayer)
-                {
-                    MatchPartyMembersByClass();
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// A player's name arrives only when they "appear" (zone entry, teleport): started inside a
-    /// dungeon, the meter knows the party from the roster - names and classes, no combat ids - while
-    /// the members fight as unnamed ids. When the party has exactly one member of a class still
-    /// without an id, and exactly one unnamed player of that class fights the party's monsters, they
-    /// are the same character. Summons do not count (an unclaimed Divine Aura or Bittercold Wind
-    /// casts its class's skills too). With two such members or two such players nothing is
-    /// guessed; the local player is left to its own rules. (Draupnir and Krao Cave captures
-    /// replayed from mid-fight, 2026-10-02.)
-    /// </summary>
-    private void MatchPartyMembersByClass()
-    {
-        var party = CurrentPartyNames();
-        int? local = _explicitLocalId >= 0 ? _explicitLocalId : InferLocalPlayer();
-        string? localName = _character?.Name ?? _configuredLocalName;
-        var unnamedMembers = party
-            .Where(n => !_ids.ContainsKey(n) && n != localName && _partyClasses.ContainsKey(n))
-            .GroupBy(n => _partyClasses[n])
-            .Where(g => g.Count() == 1)
-            .ToList();
-        foreach (var member in unnamedMembers)
-        {
-            // A spirit summoned before the meter started has no known owner and casts its class's
-            // skills too, but few different ones (MinSkillsOfAPlayer). Then one candidate, or one
-            // clearly ahead (three times the next one's casts), the same rule as InferLocalPlayer.
-            var candidates = _fightingAlongside
-                .Where(id => !_names.ContainsKey(id) && id != local && !_spawned.Contains(id)
-                    && _skillsSeen.TryGetValue(id, out var skills) && skills.Count >= MinSkillsOfAPlayer
-                    && _classVotes.TryGetValue(id, out var votes) && votes.MaxBy(v => v.Value).Key == member.Key)
-                .Select(id => (Id: id, Casts: _classVotes[id].Values.Sum()))
-                .OrderByDescending(c => c.Casts)
-                .ToList();
-            if (candidates.Count == 1 || (candidates.Count > 1 && candidates[0].Casts >= 3 * candidates[1].Casts))
-            {
-                Register(candidates[0].Id, member.First());
-                _fightingAlongside.Remove(candidates[0].Id);
-            }
-        }
-    }
-
     /// <summary>Names in the local player's party: listed by a roster frame within
     /// <see cref="PartyMemory"/> of the latest one. Empty when no roster has arrived yet.</summary>
     public IReadOnlySet<string> PartyNames
@@ -792,7 +710,7 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
     }
 
     private HashSet<string> CurrentPartyNames() =>
-        _partySeen.Where(kv => _lastPartyFrame - kv.Value <= PartyMemory).Select(kv => kv.Key).ToHashSet(StringComparer.Ordinal);
+        _partySeen.Where(kv => observedAt >= kv.Value && observedAt - kv.Value <= PartyMemory).Select(kv => kv.Key).ToHashSet(StringComparer.Ordinal);
 
     /// <summary>A name the roster shows that is not a party member - the guild name, which every
     /// member's nickname frame repeats after its own name.</summary>
@@ -827,33 +745,10 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
     }
 
     /// <summary>
-    /// The local player, worked out from the stream: first the entity receiving the detailed-stats
-    /// frames (see <see cref="NoteDetailedStats"/>) - reliable in a crowd; else the object seen
-    /// casting class skills that never got a nickname frame. Only claimed when it is unambiguous - one
-    /// such object, or one clearly dominant - otherwise null and nobody is called "you".
+    /// The local player from its explicit session or character record.
+    /// Skill frequency, detailed-stat frequency and roster leftovers cannot identify a player.
     /// </summary>
-    public int? InferLocalPlayer()
-    {
-        lock (_gate)
-        {
-            var byStats = _detailedStats.OrderByDescending(kv => kv.Value).Take(2).ToList();
-            if (byStats.Count > 0 && byStats[0].Value >= 5 && (byStats.Count == 1 || byStats[0].Value >= 3 * byStats[1].Value))
-            {
-                return byStats[0].Key;
-            }
-
-            var unnamed = _classVotes.Where(kv => !_names.ContainsKey(kv.Key))
-                .Select(kv => (Id: kv.Key, Votes: kv.Value.Values.Sum()))
-                .OrderByDescending(x => x.Votes)
-                .ToList();
-            if (unnamed.Count == 0 || (unnamed.Count > 1 && unnamed[0].Votes < 3 * unnamed[1].Votes))
-            {
-                return null;
-            }
-
-            return unnamed[0].Id;
-        }
-    }
+    public int? InferLocalPlayer() => _explicitLocalId >= 0 ? _explicitLocalId : null;
 
     /// <summary>Diagnostic line for the replay tool.</summary>
     public string Describe()
@@ -893,18 +788,7 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
                 return boss.Name;
             }
 
-            // The local player is never announced to itself, so its id has no name of its own until
-            // the character record (login, zone change) arrives. Until then: the name set in
-            // Settings, else the character saved from the last login, else the party roster's
-            // leftover name - solo, only the first two exist, and "Player #id" used to stay.
-            if (registered is null && InferLocalPlayer() == id)
-            {
-                // The roster's leftover name is safe here: the local player is not named yet, so its
-                // own name is still among the leftovers, and a single leftover is it.
-                registered = _configuredLocalName
-                    ?? (_character is { Restored: true } saved && saved.Name.Length > 0 ? saved.Name : null)
-                    ?? LocalRosterName();
-            }
+
         }
 
         return registered ?? (ClassOf(id) is not null ? $"Player #{id}" : null);
@@ -961,6 +845,9 @@ public sealed class Aion2EntityDirectory : IEntityDirectory
     {
         lock (_gate)
         {
+            // An explicit conflicting name proves that an ID has changed identity.
+            // End its evidence lifetime instead of relabelling an earlier participant.
+            if (_names.TryGetValue(id, out var previous) && previous != name) ResetContext(observedAt);
             _names[id] = name;
             _ids[name] = id;
         }

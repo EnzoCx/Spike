@@ -109,6 +109,27 @@ public sealed class Aion2HitPoints
         }
     }
 
+    public void Remove(int entityId)
+    {
+        lock (_gate) _tracks.Remove(entityId);
+    }
+
+    // Observed positive-to-zero transitions only. Repeated zeros are one death;
+    // an initial zero or missing readings cannot prove a death during this fight.
+    public int? ObservedDeaths(int entityId, DateTime from, DateTime to)
+    {
+        var samples = SamplesAround(entityId, from, to);
+        if (!samples.Any(s => s.At >= from)) return null;
+        var count = 0;
+        long? previous = null;
+        foreach (var sample in samples)
+        {
+            if (sample.At >= from && previous > 0 && sample.Hp == 0) count++;
+            previous = sample.Hp;
+        }
+        return count;
+    }
+
     private sealed class Track
     {
         public long HighestSeen;

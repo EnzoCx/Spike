@@ -149,4 +149,5 @@ foreach (var file in Directory.EnumerateFiles(testFolder)) File.Delete(file);
 Directory.Delete(testFolder);
 await UpdateChecks.Run(Check);
 ApplicationDataChecks.Run(Check);
+ProgressChecks.Run(Check);
 Console.WriteLine($"{count} checks passed.");

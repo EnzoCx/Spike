@@ -8,6 +8,7 @@ internal sealed class BossAttempt(int entityId, int npcId, DateTime startedAt)
     public int EntityId { get; } = entityId;
     public int NpcId { get; } = npcId;
     private DateTime? endedAt;
+    public DateTime? EndedAt => endedAt;
     private string? endReason;
 
     public bool Includes(DamageEvent hit) => !hit.IsHeal && hit.Amount > 0

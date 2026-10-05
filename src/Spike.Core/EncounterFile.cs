@@ -28,12 +28,18 @@ public static class EncounterFile
             CheckText(actor.Name); CheckText(actor.ClassName);
             if (actor.CombatPower is < 0 or > 1_000_000_000 || actor.CurrentHp is < 0 or > 1_000_000_000_000 || actor.HighestHp is < 0 or > 1_000_000_000_000)
                 throw new InvalidDataException("Invalid participant statistics.");
+            if (actor.NpcId is <= 0 || actor.ServerId is <= 0 || actor.ObservedDeaths is < 0 or > 250_000
+                || actor.IdentityEvidence is not (null or "direct" or "unknown"))
+                throw new InvalidDataException("Invalid participant evidence.");
         }
         foreach (var hit in encounter.Events)
         {
             if (hit is null || !ids.Contains(hit.Source) || !ids.Contains(hit.Target) || hit.Amount is < 0 or > 1_000_000_000_000
                 || hit.AtMs < 0 || hit.AtMs > encounter.DurationMs) throw new InvalidDataException("Invalid event.");
             CheckText(hit.Skill);
+            if (hit.OriginalSource is { } original && !ids.Contains(original)
+                || hit.Attribution is not (null or "owner-id" or "owner-name"))
+                throw new InvalidDataException("Invalid attribution evidence.");
         }
     }
 
@@ -41,12 +47,14 @@ public static class EncounterFile
     {
         Validate(encounter);
         var ids = encounter.Participants.Select((actor, index) => (actor.Id, Replacement: index + 1)).ToDictionary(pair => pair.Id, pair => pair.Replacement);
+        var originalSources = encounter.Events.Where(e => e.OriginalSource is not null).Select(e => e.OriginalSource!.Value).ToHashSet();
         return encounter with
         {
             Id = Guid.NewGuid(),
             Origin = encounter.Origin == "demo" ? "demo" : "shared-unverified",
-            Participants = encounter.Participants.Select(actor => actor with { Id = ids[actor.Id], Name = actor.IsPlayer || actor.IsUnidentifiedSource ? $"Player {ids[actor.Id]}" : actor.Name, IsSelf = false }).ToArray(),
-            Events = encounter.Events.Select(hit => hit with { Source = ids[hit.Source], Target = ids[hit.Target] }).ToArray()
+            Participants = encounter.Participants.Select(actor => actor with { Id = ids[actor.Id], Name = actor.IsPlayer || actor.IsUnidentifiedSource || originalSources.Contains(actor.Id) ? $"Player {ids[actor.Id]}" : actor.Name, IsSelf = false }).ToArray(),
+            Events = encounter.Events.Select(hit => hit with { Source = ids[hit.Source], Target = ids[hit.Target],
+                OriginalSource = hit.OriginalSource is { } original ? ids[original] : null }).ToArray()
         };
     }
 

@@ -23,6 +23,19 @@ La sauvegarde conserve les noms. L'export remplace les noms des joueurs et tous 
 IDs d'entités. Les métadonnées libres ne constituent pas une garantie d'anonymat.
 Les imports sont non vérifiés ; une démo conserve son marqueur de démo.
 
+## Métadonnées facultatives depuis 0.5.7
+
+Participants : `npcId` (identifiant catalogue du boss), `serverId` (serveur du personnage
+local lorsqu'il est reçu), `observedDeaths` (nombre de transitions PV positifs → zéro
+observées), `identityEvidence` (`direct` ou `unknown`). Les anciens fichiers restent
+valides : absence de compteur = information non enregistrée, jamais zéro décès prouvé.
+
+Événements : `originalSource` conserve l'entité d'invocation avant attribution ;
+`attribution` précise `owner-id` ou `owner-name`. La source créditée est figée à la
+réception ; une réutilisation d'ID ne réattribue pas les anciens dégâts. L'export remplace
+également cet identifiant original et conserve les références valides. Ces métadonnées
+ne prouvent pas l'authenticité d'un import.
+
 ## JSON v1 — ancien prototype, non importé par l'interface actuelle
 
 UTF-8, 10 Mo maximum. Voir `samples/combat.spike.json`.

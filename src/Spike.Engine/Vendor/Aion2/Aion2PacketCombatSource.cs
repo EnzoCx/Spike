@@ -179,7 +179,16 @@ public sealed class Aion2PacketCombatSource : ICombatSource
             {
                 foreach (DamageEvent ev in _decoder.Decode(frame.Span, segment.Timestamp))
                 {
-                    if (_pending.Count < 50_000) _pending.Enqueue(ev);
+                    // Freeze attribution at receipt: a later spawn may reuse the same ID.
+                    var owner = ev.AttributionCaptured ? null : _entities.SummonOwnerOf(ev.SourceObjectId);
+                    var captured = ev.AttributionCaptured ? ev : ev with
+                    {
+                        SourceObjectId = owner ?? ev.SourceObjectId,
+                        OriginalSource = owner is null ? null : ev.SourceObjectId,
+                        Attribution = owner is null ? null : _entities.OwnerEvidence(ev.SourceObjectId),
+                        AttributionCaptured = true
+                    };
+                    if (_pending.Count < 50_000) _pending.Enqueue(captured);
                     else Interlocked.Increment(ref _droppedEvents);
                     Interlocked.Increment(ref _eventsDecoded);
                 }

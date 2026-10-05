@@ -14,3 +14,12 @@ artwork is documented in GameArt/CREDITS.txt and the root THIRD-PARTY-NOTICES.md
 
 Spike 0.5.2: host cache references renamed from DPSMeter.Engine to Spike.Engine;
 upstream namespaces and protocol behavior unchanged.
+
+Spike 0.5.7 behavioral changes:
+- Remove class-only/nearby-cast summon ownership and class/skill-frequency identity guesses.
+- Accept explicit owner IDs or unique observed owner names; freeze attribution at receipt,
+  retaining original source IDs and evidence in DamageEvent. No retroactive reassignment.
+- Clear ownership at every spawn, invalidate conflicting names and reset contextual evidence
+  on local character records / decoded zone changes. Expire roster evidence against observed time.
+- Count observed positive-to-zero HP transitions, deduplicating repeated zeros. Missing HP
+  remains unknown; this is not complete death detection. No kill-opcode completeness claimed.

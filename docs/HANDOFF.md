@@ -1,6 +1,6 @@
 # Reprendre le projet
 
-État de référence : version 0.5.5, 5 octobre 2026.
+État de référence : version 0.5.7, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 Depuis 0.5.5, l’aimantation de l’overlay agit à 6 pixels logiques des bords au lieu
@@ -96,9 +96,36 @@ Un aède sans nom utilisant plusieurs compétences reste dans les participants.
 Cette correction est une classification prudente, pas une résolution des propriétaires
 ni un roster fiable. Ne pas masquer ce problème derrière un filtre des cinq premiers DPS.
 Les anciennes sauvegardes n’ont pas les trames d’apparition/propriétaire nécessaires.
-Prochaine amélioration utile : capturer les preuves d’appartenance et d’identité au bon
-moment, gérer leur durée de validité et tester deux joueurs de même classe, les invocations,
-les changements d’instance et les IDs réutilisés. Préserver les événements originaux.
+Depuis 0.5.7, les nouvelles captures conservent les preuves explicites d'attribution,
+invalident les associations périmées et préservent la source d'origine. Voir la section
+Progression et fiabilité ci-dessous. Un roster complet n'est toujours pas garanti.
+
+## Progression et fiabilité depuis 0.5.7
+
+La page Progression compare les essais d'un même boss (identifiant catalogue), ou d'une
+zone connue sans boss. Elle sélectionne le personnage local s'il est identifié, propose
+l'essai précédent et le meilleur DPS précédent, montre les écarts par compétence et
+les 20 derniers essais dans un graphique cliquable. Toutes les archives compatibles
+restent sélectionnables. Le chargement est asynchrone ; la capture ne change pas la sélection.
+Les anciennes archives sans identifiant de boss/serveur restent dans des séries séparées.
+Démos, imports, zones et versions de protocole ne sont pas mélangés.
+
+Morts observées : transitions PV positifs vers zéro, dédupliquées, dans les détails du
+joueur, le survol overlay et les comparaisons. « Non enregistré » si aucune donnée ;
+jamais de décompte garanti complet. Aucun écran de dégâts reçus.
+
+Les heuristiques de propriétaire par classe/proximité de lancement et de nom par classe
+ont été retirées. Une preuve d'ID ou de nom unique est nécessaire. Les événements gardent
+leur source originale et une attribution figée à réception, sans réattribution des anciens
+coups après réutilisation d'ID. Respawns, noms contradictoires et nouveaux contextes
+invalident les associations périmées ; les noms de roster expirent après 90 secondes.
+Une classe sans identité explicite reste une source non identifiée dans les nouvelles
+captures, sans perte de ses dégâts. Les anciennes archives ne sont pas réécrites.
+Démarrer en cours de session peut laisser le personnage local inconnu jusqu'à une annonce
+explicite ; un changement d'instance silencieux reste indétectable.
+
+Voir `EncounterProgress.cs`, `Dashboard.Progress.cs`, `Dashboard.Progress.Verification.cs`,
+`Aion2EntityDirectory.Evidence.cs` et les nouveaux contrôles ProgressChecks/EvidenceChecks.
 
 ## Autres limites connues
 

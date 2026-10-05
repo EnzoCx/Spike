@@ -58,6 +58,37 @@ Les sauvegardes sont sérialisées par un sémaphore. Le dernier enregistrement 
 à la fermeture inclut les événements drainés par l’arrêt de capture.
 Un combat sélectionné dans l’historique est indépendant du dernier combat reçu.
 
+## Progression et preuves
+
+`EncounterProgress` produit une projection légère de chaque archive : DPS dans la
+fenêtre du boss, HPS sur tout le combat, durée, morts observées et compétences.
+`EncounterStore.Progress` lit les fichiers en arrière-plan sans conserver leurs événements.
+La page Progression reste stable pendant la capture et se rafraîchit explicitement.
+Les 20 derniers essais apparaissent dans le graphique ; tous restent sélectionnables.
+
+Les séries séparent région, protocole, origine, zone et identifiant catalogue du boss
+(ou nom observé pour les anciennes archives). Sans boss, seule une zone connue permet
+le regroupement. L'identité comparée utilise nom, classe et serveur lorsqu'il est connu,
+jamais l'ID d'entité d'une session. Les homonymes ambigus dans un même combat sont exclus
+de la progression. Les archives sans serveur ou identifiant boss sont séparées des
+nouvelles séries qui disposent de ces preuves ; leurs résultats restent consultables.
+La difficulté et la composition exacte du groupe ne sont pas garanties par la capture.
+
+La classe et la proximité d'un lancement ne prouvent plus une identité ou un propriétaire.
+Le décodeur conserve la source originale avec les preuves explicites d'attribution.
+Les associations expirent au respawn ou au renouvellement du contexte ; les données
+anonymes restent comptées séparément. Les informations reçues après un changement de
+contexte ne renomment pas le dernier rapport déjà construit. Un changement silencieux
+sans trame identifiable ne peut toujours pas être détecté. Au démarrage en cours de
+session, l'identité locale peut rester inconnue jusqu'à sa prochaine annonce explicite.
+
+Les morts utilisent les passages de PV positifs à zéro dans la fenêtre observée, y compris
+après le dernier dégât et avant la clôture, sans étendre la durée servant au DPS. Des zéros
+répétés ne comptent qu'une fois ; une remontée de PV permet un nouveau décès. Les phases
+de boss restent dans le même rapport. Les relevés absents, les morts hors visibilité et
+les premières lectures à zéro ne permettent pas un décompte exhaustif. Aucun écran de
+dégâts reçus n'est ajouté.
+
 ## Overlay
 
 Fenêtre WPF transparente autonome, sans injection dans le jeu. `OverlayPlacement`
