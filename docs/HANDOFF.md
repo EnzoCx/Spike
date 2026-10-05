@@ -1,7 +1,10 @@
 # Reprendre le projet
 
-État de référence : version 0.5.4, 5 octobre 2026.
+État de référence : version 0.5.5, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
+
+Depuis 0.5.5, l’aimantation de l’overlay agit à 6 pixels logiques des bords au lieu
+de 12, avec adaptation à l’échelle de l’écran. Maj permet toujours de la contourner.
 
 Maintenance 0.5.4 : SharpPcap 6.3.1 et PacketDotNet 1.4.8, avec les fichiers de
 verrouillage régénérés pour toute la solution après le renommage en Spike.

@@ -34,7 +34,7 @@ internal sealed class OverlayPlacement
         if (message == 0x0216 && lParam != 0) // WM_MOVING: modify the proposed rectangle, never the pointer.
         {
             var proposed = Marshal.PtrToStructure<NativeRect>(lParam);
-            var result = Snap(proposed.Rect, WorkArea(proposed), 12 * Scale, snapping() && GetKeyState(0x10) >= 0);
+            var result = Snap(proposed.Rect, WorkArea(proposed), 6 * Scale, snapping() && GetKeyState(0x10) >= 0);
             Marshal.StructureToPtr(NativeRect.From(result), lParam, false);
             handled = true; return 1;
         }
