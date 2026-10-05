@@ -47,7 +47,7 @@ public partial class Dashboard : Window
         preferences = verification ? new Preferences() : Preferences.Load();
         store = new(System.IO.Path.Combine(verification ? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Spike") : ApplicationData.Root, "fights"));
         InitializeComponent();
-        LicensesText.Text = string.Join("\n\n", new[] { "Licenses/Engine.txt", "Licenses/Spike.txt", "Licenses/ThirdParty.txt", "GameArt/CREDITS.txt", "Fonts/Barlow-OFL.txt", "Fonts/BarlowCondensed-OFL.txt" }.Select(path =>
+        LicensesText.Text = string.Join("\n\n", new[] { "Licenses/Engine.txt", "Licenses/Spike.txt", "Licenses/ThirdParty.txt", "GameArt/CREDITS.txt", "Fonts/Barlow-OFL.txt", "Fonts/BarlowCondensed-OFL.txt", "Fonts/Geist-OFL.txt" }.Select(path =>
         {
             using var stream = Application.GetResourceStream(new Uri($"pack://application:,,,/{path}"))!.Stream;
             using var reader = new StreamReader(stream); return reader.ReadToEnd();
@@ -100,7 +100,7 @@ public partial class Dashboard : Window
     private void ApplyTheme()
     {
         var p = Themes.Get(preferences.Theme);
-        foreach (var (key, value) in new[] { ("Background", p.Background), ("Surface", p.Surface), ("Foreground", p.Foreground), ("Muted", p.Muted), ("Accent", p.Accent), ("Border", p.Border) })
+        foreach (var (key, value) in new[] { ("Background", p.Background), ("Surface", p.Surface), ("Foreground", p.Foreground), ("Muted", p.Muted), ("Accent", p.Accent), ("Border", p.Border), ("Sidebar", p.Sidebar), ("Hover", p.Hover), ("Brand", p.Brand) })
             Resources[key] = Themes.Brush(value);
         Topmost = !verifying && preferences.AlwaysOnTop;
         Aion2SkillNames.Language = preferences.Language;

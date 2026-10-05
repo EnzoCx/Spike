@@ -24,7 +24,7 @@ internal static class CombatHoverCard
             FontSize = size,
             Foreground = Themes.Brush(muted ? palette.Muted : palette.Foreground),
             TextWrapping = TextWrapping.Wrap,
-            FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Barlow")
+            FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Geist")
         };
         var head = new DockPanel { Margin = new Thickness(0, 0, 0, 12) };
         var icon = CombatPresentation.Emblem(person.IsUnidentifiedSource ? "" : person.ClassName, 32); icon.Margin = new Thickness(0, 0, 10, 0); head.Children.Add(icon);
@@ -66,8 +66,8 @@ internal static class CombatHoverCard
             Background = Themes.Brush(palette.Background),
             BorderBrush = Themes.Brush(palette.Border),
             BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(10),
-            Padding = new Thickness(18),
+            CornerRadius = new CornerRadius(16),
+            Padding = new Thickness(20),
             Child = stack
         };
     }

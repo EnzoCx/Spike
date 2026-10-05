@@ -18,24 +18,27 @@ Source unique : `symbol.path`, grille 64 × 64. `tools/Build-Brand.ps1` génère
 
 | Rôle | Graphite | Ivoire | Contraste élevé |
 | --- | --- | --- | --- |
-| Fond | `#191A18` | `#F3F0E8` | `#10120F` |
-| Surface | `#252722` | `#E5E1D7` | `#1C201A` |
-| Texte principal | `#F3F0E8` | `#242720` | `#FCFAF2` |
-| Texte secondaire | `#B1B1A5` | `#5F6257` | `#E2E5D7` |
-| Accent | `#DDA66A` | `#85501F` | `#FFD398` |
-| Séparateur | `#3D4038` | `#C7C9BE` | `#929B87` |
+| Fond | `#202022` | `#FCFCFB` | `#111113` |
+| Surface | `#2B2B2E` | `#F0F0EE` | `#242427` |
+| Texte principal | `#ECECEE` | `#252526` | `#FAFAF8` |
+| Texte secondaire | `#ADADB2` | `#646467` | `#DEDEDF` |
+| Action principale | `#E4E4E7` | `#303033` | `#FAFAF8` |
+| Séparateur | `#39393D` | `#DEDEDC` | `#909095` |
+| Navigation | `#18181A` | `#F3F3F1` | `#151517` |
+| Survol | `#353539` | `#E7E7E5` | `#353539` |
+| Symbole de marque | `#DDA66A` | `#85501F` | `#FFD398` |
 
-Le bronze identifie la marque et la sélection active. Les couleurs des classes portent les données : ne pas remplacer toutes les barres par du bronze. Le texte d’un bouton accentué reprend la couleur du fond du thème. Sur fond clair, utiliser le bronze foncé, jamais le bronze clair pour du petit texte.
+Ces palettes concernent l’application depuis 0.5.3. Le bronze identifie uniquement la marque ; les actions et sélections utilisent des neutres. Les couleurs des classes portent les données : ne pas remplacer toutes les barres par du bronze. Le texte d’un bouton accentué reprend la couleur du fond du thème. Sur fond clair, utiliser le bronze foncé, jamais le bronze clair pour du petit texte.
 
 Le fond sombre est le choix par défaut pour limiter la gêne pendant le jeu. Les thèmes Ivoire et Contraste élevé conservent toutes les fonctionnalités. Le rang et les libellés rendent la couleur non indispensable à la lecture.
 
 ## Typographie et interface
 
-**Barlow Condensed SemiBold** pour la signature et les titres de marque. **Barlow** pour les noms, actions et valeurs. Polices embarquées sous SIL OFL ; notices dans `src/Spike.Desktop/Fonts`.
+**Barlow Condensed SemiBold** pour la signature et les titres de marque. **Geist Regular, Medium et SemiBold** pour les noms, actions et valeurs de l’application (sources et attribution dans `THIRD-PARTY-NOTICES.md`). Polices embarquées sous SIL OFL ; notices dans `src/Spike.Desktop/Fonts`.
 
-- Échelle : 12, 15, 19, 24, 30 px ; l’overlay utilise 10–12 px pour les valeurs secondaires et 18 px pour sa signature.
+- Échelle principale : 12–13 px pour le texte et les commandes, 16–18 px pour les titres de sections, 23–26 px pour le combat et ses valeurs. L’overlay conserve ses densités compactes.
 - Les chiffres sont alignés à droite ; les noms sont alignés à gauche. Les unités restent visibles.
-- Espacements : 4, 8, 12, 16, 24, 32 px. Rayons discrets, séparateurs fins, sans ombres décoratives.
+- Direction inspirée de Codex : surfaces neutres, navigation distincte, hiérarchie calme. Espacements : 4, 8, 12, 16, 24, 32 px. Rayons : commandes 10 px, overlay 14 px, survol 16 px, espace principal 20 px. Séparateurs fins, sans ombres décoratives.
 - Une action principale accentuée par groupe. Les actions secondaires restent sur une surface neutre.
 - Aucun clignotement ni animation décorative pendant le combat. Aucune décoration derrière les chiffres.
 - Le logo reste dans les zones d’identité : en-tête, navigation, icône. Il ne remplace pas les icônes fonctionnelles.
@@ -48,7 +51,7 @@ de classes du site NotMeter : voir `src/Spike.Desktop/GameArt/sources.json` et
 palette officielle NCSOFT. La marque Spike et les thèmes restent graphite /
 bronze / ivoire. Les illustrations du jeu ne sont pas couvertes par notre licence MIT.
 
-Reprendre la signature, la palette et la typographie. La liste de combats, les classements et les détails utilisent les mêmes codes que l’application. Un libellé visible distingue toujours un exemple d’un parse réel. `tokens.css` fournit les thèmes et les espacements ; les polices doivent être servies avec leurs notices OFL. Le site GitHub Pages reprend ces ressources ; voir `site/README.md`.
+Le site conserve sa palette de marque bronze et ses polices Barlow ; ses aperçus montrent la nouvelle interface de l’application. La liste de combats, les classements et les détails utilisent les mêmes codes que l’application. Un libellé visible distingue toujours un exemple d’un parse réel. `tokens.css` fournit les thèmes et les espacements ; les polices doivent être servies avec leurs notices OFL. Le site GitHub Pages reprend ces ressources ; voir `site/README.md`.
 
 ## Fichiers et génération
 

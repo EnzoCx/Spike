@@ -16,6 +16,7 @@ public partial class Dashboard
     {
         Directory.CreateDirectory(directory);
         if (!Text.IsComplete) throw new InvalidOperationException("Missing translations.");
+        VerifyDesignFonts();
         VerifyUpdates();
         VerifySharing(directory);
         VerifySetup(directory);
@@ -73,13 +74,16 @@ public partial class Dashboard
                 {
                     preferences = new(language, theme, false, AutoStart: false); shown = lastLive = demo;
                     history = [new(demo.Id, demo.StartedAt, demo.Title, demo.DurationMs, demo.Events.Sum(hit => hit.Amount), "demo", 4, true)];
+                    updateStatusKey = "updateCurrent";
                     ApplyTheme(); Translate(); SwitchPage(view); FilterHistory(); RenderFight();
+                    StatusLabel.Text = T("stopped");
                     if (view == "history")
                     {
                         HistoryList.SelectedIndex = 0;
                         if (!OpenHistoryButton.IsEnabled || PageTitle.Text != T("history")) throw new InvalidOperationException("History report button or title failed.");
                     }
                     SaveDashboard(directory, $"{language}-{theme}-{view}.png", 1100, 780);
+                    SaveDashboard(directory, $"{language}-{theme}-{view}-minimum.png", 884, 600);
                 }
         OverlayWindow.VerifyPreview(new Preferences(), demo, directory, (Style)FindResource(typeof(Button)));
         File.WriteAllText(System.IO.Path.Combine(directory, "placement-result.txt"), $"PASS: {placementChecks} placement checks, including a hidden native HWND; corners, taskbar work area, negative coordinates, scaled threshold, free movement, screen recovery and bottom anchoring. No window shown, no mouse input sent.");

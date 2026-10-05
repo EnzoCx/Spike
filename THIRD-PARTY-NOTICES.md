@@ -10,6 +10,7 @@ relicense third-party components, game artwork or game data.
 | PacketDotNet | NuGet 1.4.7 | MPL-2.0; Chris Morgan and contributors; source: https://github.com/dotpcap/packetnet/tree/v1.4.7 |
 | .NET runtime / Microsoft runtime packages | Versions resolved in packages.lock.json | MIT and accompanying runtime notices; https://github.com/dotnet/runtime |
 | Barlow and Barlow Condensed | Bundled unmodified fonts | SIL OFL 1.1; full notices in src/Spike.Desktop/Fonts |
+| Geist | Unmodified static Regular, Medium and SemiBold from vercel/geist-font, commit 10dc7658f13c38a474cde201bb09a4617267545b | SIL OFL 1.1; copyright 2024 The Geist Project Authors; src/Spike.Desktop/Fonts/Geist-OFL.txt; https://github.com/vercel/geist-font |
 | AION 2 artwork and catalogs | Public NotMeter resources and upstream catalogs | Original rights retained by NCSOFT / respective owners; not licensed under our MIT grant |
 
 PacketDotNet is used unmodified as a separate dependency. Its source and license remain

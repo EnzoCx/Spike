@@ -5,108 +5,67 @@
  Title="{x:Static local:Text.ProductName}" Width="1120" Height="820" MinWidth="900" MinHeight="640"
  Icon="Brand/spike.ico"
  Background="{DynamicResource Background}" Foreground="{DynamicResource Foreground}"
- FontFamily="./Fonts/#Barlow" FontSize="14" WindowStartupLocation="CenterScreen">
+ FontFamily="./Fonts/#Geist" FontSize="13" UseLayoutRounding="True" TextOptions.TextFormattingMode="Display" WindowStartupLocation="CenterScreen">
  <Window.Resources>
   <ResourceDictionary>
   <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="CommonStyles.xaml"/></ResourceDictionary.MergedDictionaries>
-  <Style TargetType="ScrollBar" BasedOn="{StaticResource MeterScrollBar}"/>
-  <Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource Foreground}"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
-  <Style x:Key="MutedText" TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource Muted}"/><Setter Property="FontSize" Value="13"/></Style>
-  <Style TargetType="Button">
-   <Setter Property="Background" Value="{DynamicResource Surface}"/><Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
-   <Setter Property="Padding" Value="16,10"/><Setter Property="Margin" Value="0,0,8,0"/><Setter Property="Cursor" Value="Hand"/>
-   <Setter Property="BorderBrush" Value="{DynamicResource Border}"/><Setter Property="BorderThickness" Value="1"/>
-   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
-    <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7" Padding="{TemplateBinding Padding}">
-     <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
-    </Border><ControlTemplate.Triggers>
-     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Accent}"/></Trigger>
-     <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Accent}"/><Setter TargetName="Chrome" Property="BorderThickness" Value="2"/></Trigger>
-     <Trigger Property="IsPressed" Value="True"><Setter TargetName="Chrome" Property="Opacity" Value="0.65"/></Trigger>
-     <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Chrome" Property="Opacity" Value="0.4"/></Trigger>
-    </ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
-  </Style>
-  <Style x:Key="Nav" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="HorizontalContentAlignment" Value="Left"/><Setter Property="Margin" Value="0,0,0,8"/><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/></Style>
-  <Style TargetType="TextBox"><Setter Property="Padding" Value="12,9"/><Setter Property="Background" Value="{DynamicResource Surface}"/><Setter Property="Foreground" Value="{DynamicResource Foreground}"/><Setter Property="CaretBrush" Value="{DynamicResource Accent}"/><Setter Property="BorderBrush" Value="{DynamicResource Border}"/></Style>
-  <Style TargetType="CheckBox"><Setter Property="Foreground" Value="{DynamicResource Foreground}"/><Setter Property="Margin" Value="0,14,0,0"/></Style>
-
-  <Style TargetType="ComboBox">
-   <Setter Property="Foreground" Value="{DynamicResource Foreground}"/><Setter Property="Background" Value="{DynamicResource Surface}"/>
-   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBox"><Grid>
-    <ToggleButton Focusable="False" IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
-     <ToggleButton.Template><ControlTemplate TargetType="ToggleButton"><Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="6" Padding="12,9"><DockPanel><TextBlock Text="⌄" Foreground="{DynamicResource Foreground}" DockPanel.Dock="Right" Margin="12,0,0,0"/><TextBlock Foreground="{DynamicResource Foreground}" Text="{Binding SelectedItem.Name, RelativeSource={RelativeSource AncestorType=ComboBox}}" TextTrimming="CharacterEllipsis"/></DockPanel></Border></ControlTemplate></ToggleButton.Template>
-    </ToggleButton>
-    <Popup x:Name="PART_Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"><Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Border}" BorderThickness="1" Padding="6" MinWidth="180"><ScrollViewer MaxHeight="220"><ItemsPresenter/></ScrollViewer></Border></Popup>
-   </Grid></ControlTemplate></Setter.Value></Setter>
-  </Style>
-  <Style TargetType="ComboBoxItem"><Setter Property="Foreground" Value="{DynamicResource Foreground}"/><Setter Property="Padding" Value="8"/></Style>
-  <Style TargetType="ListBox"><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/><Setter Property="Foreground" Value="{DynamicResource Foreground}"/></Style>
-  <Style TargetType="ListBoxItem">
-   <Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Padding" Value="0"/><Setter Property="Margin" Value="0,0,0,6"/>
-   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ListBoxItem">
-    <Border x:Name="Row" Background="Transparent" Padding="12,11" CornerRadius="7" BorderThickness="1" BorderBrush="Transparent"><ContentPresenter/></Border>
-    <ControlTemplate.Triggers>
-     <Trigger Property="IsSelected" Value="True"><Setter TargetName="Row" Property="Background" Value="{DynamicResource Surface}"/><Setter TargetName="Row" Property="BorderBrush" Value="{DynamicResource Border}"/></Trigger>
-     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Row" Property="Background" Value="{DynamicResource Surface}"/></Trigger>
-     <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Row" Property="BorderBrush" Value="{DynamicResource Accent}"/></Trigger>
-    </ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
-  </Style>
   </ResourceDictionary>
  </Window.Resources>
- <Grid Background="{DynamicResource Background}">
-  <Grid.ColumnDefinitions><ColumnDefinition Width="176"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-  <Border BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Padding="18,26">
+ <Grid Background="{DynamicResource Sidebar}">
+  <Grid.ColumnDefinitions><ColumnDefinition Width="204"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+  <Border BorderBrush="{DynamicResource Border}" BorderThickness="0" Padding="16,28,16,20">
    <DockPanel>
-    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,40">
-     <StackPanel Orientation="Horizontal"><local:BrandMark Width="32" Height="32" Margin="0,0,7,0"/><TextBlock Text="{x:Static local:Text.ProductName}" FontFamily="./Fonts/#Barlow Condensed SemiBold" FontSize="25" FontWeight="SemiBold"/></StackPanel>
-     <TextBlock Text="AION 2 / GLOBAL" Style="{StaticResource MutedText}" Margin="0,8,0,0" FontSize="10"/>
+    <StackPanel DockPanel.Dock="Top" Margin="12,0,0,32">
+     <StackPanel Orientation="Horizontal"><local:BrandMark Width="24" Height="24" Margin="0,0,9,0"/><TextBlock Text="{x:Static local:Text.ProductName}" FontFamily="./Fonts/#Barlow Condensed SemiBold" FontSize="24" FontWeight="SemiBold"/></StackPanel>
+     <TextBlock Text="AION 2 · GLOBAL" Style="{StaticResource MutedText}" Margin="0,8,0,0" FontSize="10"/>
     </StackPanel>
     <StackPanel DockPanel.Dock="Bottom">
      <DockPanel><Button x:Name="UpdateButton" DockPanel.Dock="Right" Click="DownloadUpdate" Width="30" Height="30" Padding="6" Margin="6,0,0,0">
       <Path Width="14" Height="14" Stretch="Uniform" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Data="M 7,1 L 7,10 M 3,6 L 7,10 L 11,6 M 1,11 L 1,14 L 13,14 L 13,11"/>
      </Button><TextBlock x:Name="VersionLabel" FontSize="10" VerticalAlignment="Center" Foreground="{DynamicResource Muted}"/></DockPanel>
-     <TextBlock x:Name="UpdateStatus" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,6,0,0"/>
+     <TextBlock x:Name="UpdateStatus" AutomationProperties.LiveSetting="Polite" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,6,0,0"/>
      <TextBlock x:Name="SidebarFoot" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,8,0,0"/>
     </StackPanel>
-    <StackPanel><Button x:Name="LiveNav" Style="{StaticResource Nav}" Click="ShowLive"/><Button x:Name="HistoryNav" Style="{StaticResource Nav}" Click="ShowHistory"/><Button x:Name="SettingsNav" Style="{StaticResource Nav}" Click="ShowSettings"/></StackPanel>
+    <StackPanel><Button x:Name="LiveNav" Tag="M 1,9 L 4,9 L 6,3 L 9,14 L 12,6 L 15,6" Style="{StaticResource Nav}" Click="ShowLive"/><Button x:Name="HistoryNav" Tag="M 2,6 A 7,7 0 1 1 2,12 M 2,2 L 2,6 L 6,6 M 9,5 L 9,9 L 12,11" Style="{StaticResource Nav}" Click="ShowHistory"/><Button x:Name="SettingsNav" Tag="M 2,4 L 14,4 M 2,12 L 14,12 M 6,1 L 6,7 M 10,9 L 10,15" Style="{StaticResource Nav}" Click="ShowSettings"/></StackPanel>
    </DockPanel>
   </Border>
-  <Grid Grid.Column="1" Margin="28,26,28,18">
+  <Border Grid.Column="1" Margin="0,8,8,8" CornerRadius="20" Background="{DynamicResource Background}" BorderBrush="{DynamicResource Border}" BorderThickness="1">
+  <Grid Margin="28,24,28,16">
    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
    <DockPanel Margin="0,0,0,22">
     <Button x:Name="OverlayButton" DockPanel.Dock="Right" Click="ToggleOverlay" Margin="16,0,0,0"/>
     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center"><Ellipse Width="7" Height="7" Fill="{DynamicResource Accent}" Margin="0,0,8,0"/><TextBlock x:Name="StatusLabel" Style="{StaticResource MutedText}"/></StackPanel>
-    <TextBlock x:Name="PageTitle" FontSize="28" FontWeight="SemiBold"/>
+    <TextBlock x:Name="PageTitle" FontSize="18" FontWeight="SemiBold"/>
    </DockPanel>
    <Grid Grid.Row="1" x:Name="FightPage">
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-    <WrapPanel x:Name="CaptureControls" Margin="0,0,0,18"><Button x:Name="StartButton" Click="StartStop"/><Button x:Name="PauseButton" Click="Pause"/><Button x:Name="FinishButton" Click="Finish"/></WrapPanel>
+    <WrapPanel x:Name="CaptureControls" Margin="0,0,0,28"><Button x:Name="StartButton" Click="StartStop"/><Button x:Name="PauseButton" Click="Pause"/><Button x:Name="FinishButton" Click="Finish"/></WrapPanel>
     <Grid Grid.Row="1">
      <StackPanel x:Name="EmptyPanel" Margin="0,64,0,0"><TextBlock x:Name="EmptyTitle" FontSize="26"/><TextBlock x:Name="EmptyHint" TextWrapping="Wrap" Style="{StaticResource MutedText}" MaxWidth="480" HorizontalAlignment="Left" Margin="0,16,0,0" LineHeight="22"/></StackPanel>
      <Grid x:Name="CombatPanel">
       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-      <DockPanel><Button x:Name="ExportButton" DockPanel.Dock="Right" Click="Export" Margin="12,0,0,0"/><Button x:Name="CopyButton" DockPanel.Dock="Right" Click="CopyFight" Margin="12,0,0,0"/><TextBlock x:Name="FightTitle" FontSize="26" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/></DockPanel>
+      <DockPanel><Button x:Name="ExportButton" DockPanel.Dock="Right" Click="Export" Margin="12,0,0,0"/><Button x:Name="CopyButton" DockPanel.Dock="Right" Click="CopyFight" Margin="12,0,0,0"/><TextBlock x:Name="FightTitle" FontSize="23" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/></DockPanel>
       <DockPanel Grid.Row="1" Margin="0,6,0,0"><TextBlock x:Name="OriginLabel" DockPanel.Dock="Right" Style="{StaticResource MutedText}" FontSize="10"/><TextBlock x:Name="ScopeLabel" Style="{StaticResource MutedText}" TextTrimming="CharacterEllipsis"/></DockPanel>
-      <Grid Grid.Row="2" Margin="0,18,0,20"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-       <StackPanel><TextBlock x:Name="DpsCaption" Style="{StaticResource MutedText}"/><TextBlock x:Name="DpsValue" FontSize="32" FontWeight="SemiBold" Margin="0,5,0,0"/></StackPanel>
-       <StackPanel Grid.Column="1"><TextBlock x:Name="TotalCaption" Style="{StaticResource MutedText}"/><TextBlock x:Name="TotalValue" FontSize="25" Margin="0,9,0,0"/></StackPanel>
-       <StackPanel Grid.Column="2"><TextBlock x:Name="DurationCaption" Style="{StaticResource MutedText}"/><TextBlock x:Name="DurationValue" FontSize="25" Margin="0,9,0,0"/></StackPanel>
+      <Grid Grid.Row="2" Margin="0,24,0,24"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <StackPanel><TextBlock x:Name="DpsCaption" Style="{StaticResource MutedText}"/><TextBlock x:Name="DpsValue" FontSize="26" FontWeight="SemiBold" Margin="0,5,0,0"/></StackPanel>
+       <StackPanel Grid.Column="1"><TextBlock x:Name="TotalCaption" Style="{StaticResource MutedText}"/><TextBlock x:Name="TotalValue" FontSize="26" FontWeight="Medium" Margin="0,5,0,0"/></StackPanel>
+       <StackPanel Grid.Column="2"><TextBlock x:Name="DurationCaption" Style="{StaticResource MutedText}"/><TextBlock x:Name="DurationValue" FontSize="26" FontWeight="Medium" Margin="0,5,0,0"/></StackPanel>
       </Grid>
-      <Border Grid.Row="3" BorderBrush="{DynamicResource Border}" BorderThickness="0,1,0,0" Padding="0,14,0,14">
+      <Border Grid.Row="3" BorderBrush="{DynamicResource Border}" BorderThickness="0,1,0,0" Padding="0,16,0,20">
        <DockPanel><ComboBox x:Name="TargetBox" DockPanel.Dock="Right" MinWidth="180" MaxWidth="280" DisplayMemberPath="Name" SelectionChanged="TargetChanged"/>
         <StackPanel Orientation="Horizontal"><Button x:Name="DamageButton" Click="ShowDamage"/><Button x:Name="HealingButton" Click="ShowHealing"/></StackPanel>
        </DockPanel>
       </Border>
       <Grid Grid.Row="4">
-       <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="24"/><ColumnDefinition Width="3*"/></Grid.ColumnDefinitions>
+       <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="32"/><ColumnDefinition Width="1.15*"/></Grid.ColumnDefinitions>
        <Grid><Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-        <ListBox x:Name="PlayerList" SelectionChanged="PlayerSelected" Margin="-10,0,0,0">
+        <ListBox x:Name="PlayerList" SelectionChanged="PlayerSelected" Margin="0">
          <ListBox.ItemTemplate><DataTemplate><Grid>
           <Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/><ColumnDefinition Width="90"/></Grid.ColumnDefinitions>
           <ContentControl Content="{Binding Emblem}" VerticalAlignment="Center"/>
           <StackPanel Grid.Column="1" Margin="7,0,0,0"><TextBlock Text="{Binding Name}" FontSize="15" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding ClassLabel}" Style="{StaticResource MutedText}" FontSize="11" Margin="0,2,0,0"/>
            <Grid Height="3" Margin="0,9,8,0" Background="{DynamicResource Border}"><Grid.ColumnDefinitions><ColumnDefinition Width="{Binding BarWidth}"/><ColumnDefinition Width="{Binding RestWidth}"/></Grid.ColumnDefinitions><Border Background="{Binding Color}"/></Grid>
-          </StackPanel><StackPanel Grid.Column="2" HorizontalAlignment="Right"><TextBlock Text="{Binding RateLabel}" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Right"/><TextBlock Text="{Binding ShareLabel}" Style="{StaticResource MutedText}" FontSize="11" HorizontalAlignment="Right"/></StackPanel>
+          </StackPanel><StackPanel Grid.Column="2" HorizontalAlignment="Right"><TextBlock Text="{Binding RateLabel}" FontSize="18" FontWeight="Medium" HorizontalAlignment="Right"/><TextBlock Text="{Binding ShareLabel}" Style="{StaticResource MutedText}" FontSize="11" HorizontalAlignment="Right"/></StackPanel>
          </Grid></DataTemplate></ListBox.ItemTemplate>
         </ListBox>
         <Expander x:Name="TimelineExpander" Grid.Row="1" Margin="0,12,0,0" Foreground="{DynamicResource Muted}"><StackPanel>
@@ -116,9 +75,9 @@
        </Grid>
        <Border Grid.Column="1" BorderBrush="{DynamicResource Border}" BorderThickness="1,0,0,0" Margin="11,0,12,0"/>
        <Grid Grid.Column="2"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-        <TextBlock x:Name="DetailsTitle" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,8"/>
+        <TextBlock x:Name="DetailsTitle" FontSize="17" FontWeight="SemiBold" Margin="0,0,0,8"/>
         <TextBlock x:Name="DetailsSummary" Grid.Row="1" Style="{StaticResource MutedText}" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,12"/>
-        <Grid Grid.Row="2" Margin="0,0,0,14"><TextBox x:Name="SpellSearch" TextChanged="SearchSkills"/><TextBlock x:Name="SpellPlaceholder" Margin="12,0" Foreground="{DynamicResource Muted}" IsHitTestVisible="False"/></Grid>
+        <Grid Grid.Row="2" Margin="0,0,0,14"><TextBox x:Name="SpellSearch" TextChanged="SearchSkills"/><TextBlock x:Name="SpellPlaceholder" Margin="15,0" Foreground="{DynamicResource Muted}" IsHitTestVisible="False"/></Grid>
         <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
          <StackPanel>
           <ItemsControl x:Name="SpellList"><ItemsControl.ItemTemplate><DataTemplate>
@@ -139,7 +98,7 @@
    </Grid>
    <Grid x:Name="HistoryPage" Grid.Row="1" Visibility="Collapsed">
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-    <StackPanel Margin="0,0,0,18"><DockPanel><Button x:Name="ImportButton" DockPanel.Dock="Right" Click="Import" Margin="12,0,0,0"/><Grid><TextBox x:Name="HistorySearch" TextChanged="SearchHistory"/><TextBlock x:Name="HistoryPlaceholder" Margin="12,0" Foreground="{DynamicResource Muted}" IsHitTestVisible="False"/></Grid></DockPanel><DockPanel Margin="0,12,0,0"><CheckBox x:Name="HistoryBossOnly" DockPanel.Dock="Right" Margin="0" Checked="FilterBossHistory" Unchecked="FilterBossHistory"/><TextBlock x:Name="HistoryCount" Style="{StaticResource MutedText}"/></DockPanel></StackPanel>
+    <StackPanel Margin="0,0,0,18"><DockPanel><Button x:Name="ImportButton" DockPanel.Dock="Right" Click="Import" Margin="12,0,0,0"/><Grid><TextBox x:Name="HistorySearch" TextChanged="SearchHistory"/><TextBlock x:Name="HistoryPlaceholder" Margin="15,0" Foreground="{DynamicResource Muted}" IsHitTestVisible="False"/></Grid></DockPanel><DockPanel Margin="0,12,0,0"><CheckBox x:Name="HistoryBossOnly" DockPanel.Dock="Right" Margin="0" Checked="FilterBossHistory" Unchecked="FilterBossHistory"/><TextBlock x:Name="HistoryCount" Style="{StaticResource MutedText}"/></DockPanel></StackPanel>
     <ListBox x:Name="HistoryList" Grid.Row="1" MouseDoubleClick="OpenHistory" KeyDown="HistoryKey" SelectionChanged="HistorySelected"><ListBox.ItemTemplate><DataTemplate>
      <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="200"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="{Binding Title}" FontSize="20"/><TextBlock Text="{Binding When}" Style="{StaticResource MutedText}" Margin="0,5,0,0"/><TextBlock Text="{Binding Summary}" Foreground="{DynamicResource Accent}" FontSize="12" Margin="0,6,0,0"/></StackPanel><StackPanel Grid.Column="1" HorizontalAlignment="Right"><TextBlock Text="{Binding Duration}" FontSize="22" HorizontalAlignment="Right"/><TextBlock Text="{Binding Damage}" Style="{StaticResource MutedText}" HorizontalAlignment="Right" Margin="0,6,0,0"/></StackPanel></Grid>
     </DataTemplate></ListBox.ItemTemplate></ListBox>
@@ -147,9 +106,9 @@
    </Grid>
    <ScrollViewer x:Name="SettingsPage" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
     <StackPanel MaxWidth="660" HorizontalAlignment="Left">
-     <TextBlock x:Name="LanguageCaption" FontSize="19"/><StackPanel x:Name="LanguageChoices" Orientation="Horizontal" Margin="0,12,0,28"/>
-     <TextBlock x:Name="ThemeCaption" FontSize="19"/><StackPanel x:Name="ThemeChoices" Orientation="Horizontal" Margin="0,12,0,28"/>
-     <TextBlock x:Name="NameCaption" FontSize="19"/><TextBox x:Name="CharacterName" MaxLength="80" Margin="0,12,0,0"/><TextBlock x:Name="NameHint" Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,8,0,6"/>
+     <TextBlock x:Name="LanguageCaption" FontSize="16" FontWeight="Medium"/><StackPanel x:Name="LanguageChoices" Orientation="Horizontal" Margin="0,12,0,32"/>
+     <TextBlock x:Name="ThemeCaption" FontSize="16" FontWeight="Medium"/><StackPanel x:Name="ThemeChoices" Orientation="Horizontal" Margin="0,12,0,32"/>
+     <TextBlock x:Name="NameCaption" FontSize="16" FontWeight="Medium"/><TextBox x:Name="CharacterName" MaxLength="80" Margin="0,12,0,0"/><TextBlock x:Name="NameHint" Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,8,0,6"/>
      <CheckBox x:Name="AutoStartCheck"/><CheckBox x:Name="OverlayStartupCheck"/><CheckBox x:Name="OnTopCheck"/>
      <WrapPanel Margin="0,20,0,18"><Button x:Name="SaveSettingsButton" Click="SaveSettings"/><Button x:Name="RecoverOverlayButton" Click="RecoverOverlay"/></WrapPanel>
      <TextBlock x:Name="OverlayHint" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,0,0,24"/>
@@ -158,8 +117,9 @@
      <Expander x:Name="LicensesExpander" Foreground="{DynamicResource Foreground}"><TextBox x:Name="LicensesText" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="280" VerticalScrollBarVisibility="Auto" FontSize="11"/></Expander>
     </StackPanel>
    </ScrollViewer>
-   <TextBlock x:Name="Notice" Grid.Row="2" TextWrapping="Wrap" Foreground="{DynamicResource Accent}" FontSize="12" Margin="0,14,0,0"/>
+   <TextBlock x:Name="Notice" Grid.Row="2" TextWrapping="Wrap" Foreground="{DynamicResource Muted}" FontSize="12" Margin="0,14,0,0"/>
   </Grid>
+  </Border>
   <Border x:Name="SetupPanel" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource Background}" KeyboardNavigation.TabNavigation="Cycle">
    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
     <StackPanel MaxWidth="680" Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -167,7 +127,7 @@
      <WrapPanel x:Name="SetupLanguages" Margin="0,0,0,16"/>
      <TextBlock x:Name="SetupTitle" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap"/>
      <TextBlock x:Name="SetupIntro" TextWrapping="Wrap" LineHeight="22" Margin="0,12,0,16" Foreground="{DynamicResource Muted}"/>
-     <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="8" Padding="20">
+     <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="16" Padding="24">
       <StackPanel>
        <TextBlock x:Name="SetupSteps" TextWrapping="Wrap" LineHeight="24"/>
        <Button x:Name="SetupDownload" Click="DownloadNpcap" HorizontalAlignment="Left" Margin="0,20,0,0" Background="{DynamicResource Accent}" Foreground="{DynamicResource Background}"/>

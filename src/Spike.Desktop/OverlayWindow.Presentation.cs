@@ -39,7 +39,7 @@ public sealed partial class OverlayWindow
         if (!idleCollapsed) MinHeight = ExpandedMinHeight;
         scroll.MaxHeight = double.PositiveInfinity;
         frame.BorderBrush.Opacity = discreet && preferences.Theme != "contrast" ? .35 : 1;
-        frame.CornerRadius = new CornerRadius(discreet ? 4 : 7);
+        frame.CornerRadius = new CornerRadius(14);
         heading.FontSize = duration.FontSize = discreet ? 14 : 16;
         total.FontSize = discreet ? 13 : 16;
         duration.FontWeight = discreet ? FontWeights.Normal : FontWeights.SemiBold;

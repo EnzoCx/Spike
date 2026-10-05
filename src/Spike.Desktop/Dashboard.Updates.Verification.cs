@@ -18,6 +18,7 @@ public partial class Dashboard
                     downloadingUpdate = state == "updateDownloading";
                     TranslateUpdate();
                     if (UpdateStatus.Text != T(state) || UpdateStatus.Visibility != Visibility.Visible ||
+                        UpdateButton.Visibility != (state == "updateCurrent" ? Visibility.Collapsed : Visibility.Visible) ||
                         UpdateButton.IsEnabled == downloadingUpdate || AutomationProperties.GetName(UpdateButton) != T("downloadUpdate"))
                         throw new InvalidOperationException("Update control state or translation failed.");
                 }

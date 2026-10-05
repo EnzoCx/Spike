@@ -73,7 +73,9 @@ public sealed partial class OverlayWindow : Window
         placement = new OverlayPlacement(this, () => this.preferences.OverlaySnapToEdges, SaveLayout);
         ResizeMode = ResizeMode.NoResize; WindowStyle = WindowStyle.None; AllowsTransparency = true; Background = Brushes.Transparent;
         Topmost = true; ShowInTaskbar = false; ShowActivated = false;
-        FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Barlow");
+        FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Geist");
+        UseLayoutRounding = true;
+        TextOptions.SetTextFormattingMode(this, TextFormattingMode.Display);
         var layout = new Grid();
         foreach (var height in new[] { GridLength.Auto, GridLength.Auto, GridLength.Auto, GridLength.Auto, new GridLength(1, GridUnitType.Star), GridLength.Auto })
             layout.RowDefinitions.Add(new RowDefinition { Height = height });
@@ -157,7 +159,7 @@ public sealed partial class OverlayWindow : Window
     {
         preferences = value; var theme = Themes.Get(value.Theme);
         Title = $"{Text.ProductName} · {T("overlay")}";
-        foreach (var (key, color) in new[] { ("Background", theme.Background), ("Surface", theme.Surface), ("Foreground", theme.Foreground), ("Muted", theme.Muted), ("Border", theme.Border), ("Accent", theme.Accent) }) Resources[key] = Themes.Brush(color);
+        foreach (var (key, color) in new[] { ("Background", theme.Background), ("Surface", theme.Surface), ("Foreground", theme.Foreground), ("Muted", theme.Muted), ("Border", theme.Border), ("Accent", theme.Accent), ("Sidebar", theme.Sidebar), ("Hover", theme.Hover), ("Brand", theme.Brand) }) Resources[key] = Themes.Brush(color);
         frame.Background = Themes.Brush(theme.Background); frame.BorderBrush = Themes.Brush(theme.Border); Foreground = Themes.Brush(theme.Foreground);
         frame.Background.Opacity = Bounded(value.OverlayOpacity, .94, .65, 1);
         heading.Foreground = duration.Foreground = total.Foreground = empty.Foreground = Foreground;
@@ -216,6 +218,7 @@ public sealed partial class OverlayWindow : Window
     private ContextMenu Menu()
     {
         var menu = new ContextMenu { Background = (Brush)Resources["Surface"], Foreground = Foreground, MaxHeight = 460, MaxWidth = 540 };
+        menu.Resources.MergedDictionaries.Add(Resources);
         menu.Opened += (_, _) => { openMenus++; UpdateVisibility(); };
         menu.Closed += (_, _) => { openMenus = Math.Max(0, openMenus - 1); UpdateVisibility(); };
         return menu;

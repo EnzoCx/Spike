@@ -1,7 +1,7 @@
 # Spike — site public
 
 Landing page statique FR/EN/ES, sans dépendances JavaScript, tracker ou police distante.
-Palette et polices partagées avec le logiciel. Langue et thème mémorisés uniquement
+Identité de marque commune ; les aperçus montrent la nouvelle interface neutre du logiciel. Langue et thème mémorisés uniquement
 dans le navigateur ; `?lang=fr`, `?lang=en` et `?lang=es` permettent un lien direct.
 Sans JavaScript, le contenu français, les téléchargements et la FAQ restent disponibles.
 
@@ -14,7 +14,7 @@ statique local, puis ouvrir son adresse. Ne jamais servir la racine du dépôt.
 
 ## Aperçus
 
-Les 18 images de `images/` sont des rendus démo de `tools/Verify.ps1` version 0.5.0 :
+Les 18 images de `images/` sont des rendus démo de `tools/Verify.ps1` version 0.5.3 :
 - `overlay-{langue}-{thème}.png` vient du fichier de même nom dans `artifacts/verification`.
 - `report-{langue}-{thème}.png` vient de `{langue}-{thème}-live.png`.
 

@@ -9,7 +9,7 @@ vers `%LOCALAPPDATA%/Spike` au premier lancement, sans supprimer ni écraser les
 Une migration interrompue conserve l’ancien stockage et est retentée au lancement suivant.
 La petite flèche à côté de la version relance immédiatement la recherche et le téléchargement
 d’une version plus récente. Son état indique téléchargement, mise à jour prête, version à jour
-ou échec avec possibilité de réessayer. La capture continue ; aucun redémarrage n’est imposé.
+ou échec avec possibilité de réessayer. La flèche est masquée lorsque Spike est à jour. La capture continue ; aucun redémarrage n’est imposé.
 Les diagnostics et builds de développement ne consultent pas GitHub.
 Le démarrage et la capture n'attendent pas le réseau. Aucun dialogue ni redémarrage forcé.
 

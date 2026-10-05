@@ -15,6 +15,7 @@ public partial class Dashboard
         UpdateButton.ToolTip = T("downloadUpdate");
         AutomationProperties.SetName(UpdateButton, T("downloadUpdate"));
         UpdateButton.IsEnabled = !downloadingUpdate;
+        UpdateButton.Visibility = updateStatusKey == "updateCurrent" ? Visibility.Collapsed : Visibility.Visible;
         UpdateStatus.Text = updateStatusKey is null ? "" : T(updateStatusKey);
         UpdateStatus.Visibility = updateStatusKey is null ? Visibility.Collapsed : Visibility.Visible;
         UpdateButton.Foreground = (System.Windows.Media.Brush)FindResource(updateStatusKey == "updateReady" ? "Accent" : "Muted");

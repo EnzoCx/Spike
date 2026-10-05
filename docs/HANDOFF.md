@@ -1,6 +1,6 @@
 # Reprendre le projet
 
-État de référence : version 0.5.2, 5 octobre 2026.
+État de référence : version 0.5.3, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 ## Identité et site
@@ -15,7 +15,17 @@ Sources dans `site/`, publication limitée au dossier assemblé par `tools/Build
 Les aperçus proviennent uniquement des fixtures démo hors écran. Voir `site/README.md`.
 La migration vers 0.5.2 nécessite un téléchargement manuel de Spike.exe pour les anciennes installations.
 La flèche de téléchargement près de la version relance la recherche et affiche son état,
-sans redémarrage forcé ; installation au lancement suivant.
+sans redémarrage forcé ; installation au lancement suivant. La flèche disparaît lorsque
+« Spike est à jour » est affiché et reste disponible après un échec.
+
+## Interface depuis 0.5.3
+
+Direction inspirée de Codex : surfaces neutres, navigation avec icônes, rayons doux,
+espacements harmonisés et police Geist embarquée. Les styles partagés sont dans
+`CommonStyles.xaml` et les couleurs dans `Themes.cs`. Le bronze reste réservé au symbole.
+Rapport, historique, réglages, installation Npcap, overlay, survols et menus utilisent
+ces codes, en FR/EN/ES et dans les trois thèmes. Vérifications invisibles : police
+réellement résolue (sans substitution), flèche de mise à jour, menus et tailles minimales.
 
 ## Ce qui fonctionne
 

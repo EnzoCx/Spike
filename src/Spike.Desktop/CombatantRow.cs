@@ -28,7 +28,8 @@ internal sealed class CombatantRow : Button
         Padding = new Thickness(0); Margin = new Thickness(0, 0, 0, 2); HorizontalContentAlignment = HorizontalAlignment.Stretch;
         var track = new Grid { IsHitTestVisible = false };
         track.ColumnDefinitions.Add(fill); track.ColumnDefinitions.Add(rest); track.Children.Add(bar);
-        var surface = new Grid(); surface.Children.Add(track);
+        var surface = new Grid { ClipToBounds = true }; surface.Children.Add(track);
+        surface.SizeChanged += (_, _) => surface.Clip = new RectangleGeometry(new Rect(0, 0, surface.ActualWidth, surface.ActualHeight), 8, 8);
         layout.Margin = new Thickness(8, 6, 8, 6);
         layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(26) });
         layout.ColumnDefinitions.Add(new ColumnDefinition());
@@ -71,6 +72,7 @@ internal sealed class CombatantRow : Button
         Background = discreet ? Brushes.Transparent : Themes.Brush(palette.Surface);
         BorderBrush = Themes.Brush(self ? palette.Accent : palette.Border); BorderThickness = new Thickness(!discreet && self ? 1 : 0);
         bar.Background = Dashboard.ClassColor(className);
+        bar.CornerRadius = new CornerRadius(2);
         bar.Height = discreet ? 3 : double.NaN;
         bar.VerticalAlignment = discreet ? VerticalAlignment.Bottom : VerticalAlignment.Stretch;
         bar.Opacity = discreet ? (preferences.Theme == "contrast" ? .8 : .35) : preferences.Theme == "contrast" ? .13 : .2;

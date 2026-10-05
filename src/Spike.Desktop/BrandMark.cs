@@ -15,7 +15,7 @@ public sealed class BrandMark : FrameworkElement
 
     public BrandMark()
     {
-        SetResourceReference(FillProperty, "Accent");
+        SetResourceReference(FillProperty, "Brand");
         IsHitTestVisible = false;
         System.Windows.Automation.AutomationProperties.SetName(this, Text.ProductName);
     }
