@@ -1,7 +1,10 @@
 # Reprendre le projet
 
-État de référence : version 0.5.3, 5 octobre 2026.
+État de référence : version 0.5.4, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
+
+Maintenance 0.5.4 : SharpPcap 6.3.1 et PacketDotNet 1.4.8, avec les fichiers de
+verrouillage régénérés pour toute la solution après le renommage en Spike.
 
 ## Identité et site
 

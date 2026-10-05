@@ -4,26 +4,26 @@
     "net9.0": {
       "PacketDotNet": {
         "type": "Transitive",
-        "resolved": "1.4.7",
-        "contentHash": "xh4MGjkDFhJfFtAr6IEwg3ocPm3TO0/AxbYeCVoh9BaVT0xeWJB1p0nwKQ9olsQiQtSqF8M0UXz97U2VnOYY0w==",
+        "resolved": "1.4.8",
+        "contentHash": "j4C4QaJmaPCk0KXsIdsZqmBteKWj5znXBmfbPpu48rE5SW2xwXKVlRf7C3g7VM9aZqMHIQedApEuC71nNX5PaQ==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
       "SharpPcap": {
         "type": "Transitive",
-        "resolved": "6.3.0",
-        "contentHash": "9tFnPgVYWJj/6fQRFLV34n0Uh9SLwi2zkQ/dPaxx8ZoNuPm1XuJU731qWMsMJlwQD6FL0AFeQpRj7zXLV8iu1Q==",
+        "resolved": "6.3.1",
+        "contentHash": "EWclXz+QdffBRppFR7GDBLyKiAz045RGvu4t4gcMGocVMEq6dRfCnAEx7Ep6qxcPPhH2kz13Y8FqBaHZhsh3Pg==",
         "dependencies": {
-          "PacketDotNet": "1.4.7",
-          "System.Memory": "4.5.5",
-          "System.Text.Encoding.CodePages": "6.0.0"
+          "PacketDotNet": "1.4.8",
+          "System.Memory": "4.6.3",
+          "System.Text.Encoding.CodePages": "9.0.5"
         }
       },
       "System.Memory": {
         "type": "Transitive",
-        "resolved": "4.5.5",
-        "contentHash": "XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw=="
+        "resolved": "4.6.3",
+        "contentHash": "qdcDOgnFZY40+Q9876JUHnlHu7bosOHX8XISRoH94fwk6hgaeQGSgfZd8srWRZNt5bV9ZW2TljcegDNxsf+96A=="
       },
       "System.Runtime.CompilerServices.Unsafe": {
         "type": "Transitive",
@@ -32,11 +32,8 @@
       },
       "System.Text.Encoding.CodePages": {
         "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "ZFCILZuOvtKPauZ/j/swhvw68ZRi9ATCfvGbk1QfydmcXBkIWecWKn/250UH7rahZ5OoDBaiAudJtPvLwzw85A==",
-        "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
-        }
+        "resolved": "9.0.5",
+        "contentHash": "P6gqCJcVjdWA50Eai95eYdG4ryrb1xCd770NhQrvj847C7m30CJwQqzKykWoEMvV4qvjUazL/m7UMQdMZTp5xw=="
       },
       "spike.core": {
         "type": "Project"
@@ -44,9 +41,9 @@
       "spike.engine": {
         "type": "Project",
         "dependencies": {
-          "Spike.Core": "[1.0.0, )",
-          "PacketDotNet": "[1.4.7, )",
-          "SharpPcap": "[6.3.0, )"
+          "PacketDotNet": "[1.4.8, )",
+          "SharpPcap": "[6.3.1, )",
+          "Spike.Core": "[1.0.0, )"
         }
       }
     }

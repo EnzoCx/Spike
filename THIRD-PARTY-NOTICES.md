@@ -6,8 +6,8 @@ relicense third-party components, game artwork or game data.
 | Component | Version/source | License / notice |
 | --- | --- | --- |
 | Protocol and capture source | SkeeveAN/Aion-DPS-Meter, commit 2f237fed139fe4a173c9de9d43cdeb0eb52453f8 | MIT; retained in src/Spike.Engine/Vendor/LICENSE |
-| SharpPcap | NuGet 6.3.0 | MIT; Tamir Gal, Chris Morgan and contributors; https://github.com/dotpcap/sharppcap |
-| PacketDotNet | NuGet 1.4.7 | MPL-2.0; Chris Morgan and contributors; source: https://github.com/dotpcap/packetnet/tree/v1.4.7 |
+| SharpPcap | NuGet 6.3.1 | MIT; Tamir Gal, Chris Morgan and contributors; https://github.com/dotpcap/sharppcap |
+| PacketDotNet | NuGet 1.4.8 | MPL-2.0; Chris Morgan and contributors; source: https://github.com/dotpcap/packetnet/tree/v1.4.8 |
 | .NET runtime / Microsoft runtime packages | Versions resolved in packages.lock.json | MIT and accompanying runtime notices; https://github.com/dotnet/runtime |
 | Barlow and Barlow Condensed | Bundled unmodified fonts | SIL OFL 1.1; full notices in src/Spike.Desktop/Fonts |
 | Geist | Unmodified static Regular, Medium and SemiBold from vercel/geist-font, commit 10dc7658f13c38a474cde201bb09a4617267545b | SIL OFL 1.1; copyright 2024 The Geist Project Authors; src/Spike.Desktop/Fonts/Geist-OFL.txt; https://github.com/vercel/geist-font |
