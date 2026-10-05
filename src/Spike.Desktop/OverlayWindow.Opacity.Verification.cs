@@ -8,6 +8,12 @@ namespace Spike.Desktop;
 
 public sealed partial class OverlayWindow
 {
+    internal void VerifySelectOpacity(bool idle, double value)
+    {
+        var menu = BuildOptionsMenu().Items.OfType<MenuItem>().Single(item => Equals(item.Header, T(idle ? "idleOpacity" : "combatOpacity")));
+        menu.Items.OfType<MenuItem>().Single(item => Equals(item.Header, value.ToString("P0", Culture))).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+    }
+
     private static void VerifyOpacityPreferences(Preferences defaults, Encounter encounter, Style style)
     {
         foreach (var language in Text.Languages)

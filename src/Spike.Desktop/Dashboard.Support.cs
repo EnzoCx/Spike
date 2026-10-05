@@ -12,6 +12,7 @@ public partial class Dashboard
     private void TranslateSupport()
     {
         RequestsLabel.Text = T("githubRequests");
+        SupportHint.Text = T("supportHint");
         RequestsButton.ToolTip = RequestsUrl;
         DiscordLabel.Text = string.Format(T("discordContact"), DiscordContact);
         DiscordCopyLabel.Text = T("copyDiscord");

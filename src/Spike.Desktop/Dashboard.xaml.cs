@@ -114,6 +114,7 @@ public partial class Dashboard : Window
         Title = Text.ProductName;
         TranslateUpdate();
         TranslateSupport();
+        TranslateOpacity();
         TranslateProgress();
         LiveNav.Content = T("live"); HistoryNav.Content = T("history"); SettingsNav.Content = T("settings");
         SidebarFoot.Text = T("localHistory"); PageTitle.Text = T(page);
@@ -450,11 +451,13 @@ public partial class Dashboard : Window
         overlay.IdleFadeChanged += enabled =>
         {
             preferences = preferences with { OverlayFadeWhenIdle = enabled };
+            TranslateOpacity();
             if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
         };
         overlay.VisibilityOpacityChanged += (combat, idle) =>
         {
             preferences = preferences with { OverlayCombatOpacity = combat, OverlayIdleOpacity = idle };
+            TranslateOpacity();
             if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
         };
         overlay.DetailsRequested += (fight, player, healing, selectedTarget) =>

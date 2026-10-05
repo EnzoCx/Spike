@@ -1,7 +1,12 @@
 # Reprendre le projet
 
-État de référence : version 0.5.13, 5 octobre 2026.
+État de référence : version 0.5.14, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
+
+Depuis 0.5.14, Réglages expose les opacités combat/repos sous Apparence, avec
+application et sauvegarde immédiates. Les options du mini-meter restent synchronisées.
+La barre latérale précise que GitHub est à privilégier pour les retours et demandes,
+avec Discord comme autre moyen de contact ; elle défile si la fenêtre manque de place.
 
 Depuis 0.5.13, la poignée de l’overlay règle et mémorise aussi sa hauteur en mode
 discret. `OverlayAutoFit` est respecté dans les deux présentations ; le menu permet

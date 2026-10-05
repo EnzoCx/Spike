@@ -28,7 +28,7 @@ public partial class Dashboard
                 ApplyTheme(); Translate();
                 string? copied = null;
                 CopyDiscordContact(value => copied = value);
-                if (copied != "Phobie" || Notice.Text != T("discordCopied") || !DiscordLabel.Text.Contains(copied) || RequestsLabel.Text != T("githubRequests"))
+                if (copied != "Phobie" || Notice.Text != T("discordCopied") || !DiscordLabel.Text.Contains(copied) || RequestsLabel.Text != T("githubRequests") || SupportHint.Text != T("supportHint"))
                     throw new InvalidOperationException("Support contact and translated copy feedback are missing.");
                 CopyDiscordContact(_ => throw new COMException("Clipboard unavailable"));
                 if (Notice.Text != T("copyError")) throw new InvalidOperationException("Clipboard failure must be visible.");
