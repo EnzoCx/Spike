@@ -20,6 +20,13 @@
      <TextBlock Text="AION 2 · GLOBAL" Style="{StaticResource MutedText}" Margin="0,8,0,0" FontSize="10"/>
     </StackPanel>
     <StackPanel DockPanel.Dock="Bottom">
+     <Button x:Name="RequestsButton" Click="OpenRequests" Margin="0,0,0,8" Padding="8,10" Background="{DynamicResource Accent}" Foreground="{DynamicResource Background}">
+      <TextBlock x:Name="RequestsLabel" TextWrapping="Wrap" TextAlignment="Center" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+     </Button>
+     <TextBlock x:Name="DiscordLabel" FontSize="12" Margin="0,0,0,4"/>
+     <Button x:Name="DiscordCopyButton" Click="CopyDiscord" Margin="0,0,0,16" Padding="8,6">
+      <TextBlock x:Name="DiscordCopyLabel" TextWrapping="Wrap" TextAlignment="Center"/>
+     </Button>
      <DockPanel><Button x:Name="UpdateButton" DockPanel.Dock="Right" Click="DownloadUpdate" Width="30" Height="30" Padding="6" Margin="6,0,0,0">
       <Path Width="14" Height="14" Stretch="Uniform" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Data="M 7,1 L 7,10 M 3,6 L 7,10 L 11,6 M 1,11 L 1,14 L 13,14 L 13,11"/>
      </Button><TextBlock x:Name="VersionLabel" FontSize="10" VerticalAlignment="Center" Foreground="{DynamicResource Muted}"/></DockPanel>
@@ -147,6 +154,8 @@
      <TextBlock x:Name="ThemeCaption" FontSize="16" FontWeight="Medium"/><StackPanel x:Name="ThemeChoices" Orientation="Horizontal" Margin="0,12,0,32"/>
      <TextBlock x:Name="NameCaption" FontSize="16" FontWeight="Medium"/><TextBox x:Name="CharacterName" MaxLength="80" Margin="0,12,0,0"/><TextBlock x:Name="NameHint" Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,8,0,6"/>
      <CheckBox x:Name="AutoStartCheck"/><CheckBox x:Name="OverlayStartupCheck"/><CheckBox x:Name="OnTopCheck"/>
+     <CheckBox x:Name="LaunchWithGameCheck"/>
+     <TextBlock x:Name="LaunchWithGameHint" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,4,0,0"/>
      <WrapPanel Margin="0,20,0,18"><Button x:Name="SaveSettingsButton" Click="SaveSettings"/><Button x:Name="RecoverOverlayButton" Click="RecoverOverlay"/></WrapPanel>
      <TextBlock x:Name="OverlayHint" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,0,0,24"/>
      <Expander x:Name="DiagnosticsExpander" Foreground="{DynamicResource Foreground}"><StackPanel><TextBlock x:Name="DiagnosticsText" FontSize="13" TextWrapping="Wrap" Margin="0,12"/><TextBlock x:Name="RulesNote" TextWrapping="Wrap" Style="{StaticResource MutedText}"/></StackPanel></Expander>
@@ -168,7 +177,7 @@
       <StackPanel>
        <TextBlock x:Name="SetupSteps" TextWrapping="Wrap" LineHeight="24"/>
        <Button x:Name="SetupDownload" Click="DownloadNpcap" HorizontalAlignment="Left" Margin="0,20,0,0" Background="{DynamicResource Accent}" Foreground="{DynamicResource Background}"/>
-       <TextBlock Text="https://npcap.com/#download" Foreground="{DynamicResource Muted}" Margin="0,8,0,0"/>
+       <TextBox x:Name="SetupDownloadUrl" IsReadOnly="True" TextWrapping="Wrap" Foreground="{DynamicResource Muted}" Margin="0,8,0,0"/>
       </StackPanel>
      </Border>
      <TextBlock x:Name="SetupStatus" TextWrapping="Wrap" LineHeight="22" Margin="0,20,0,16" AutomationProperties.LiveSetting="Polite"/>

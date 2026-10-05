@@ -59,6 +59,7 @@ public sealed partial class OverlayWindow : Window
     public event Action<bool>? SnappingChanged;
     public event Action<bool>? IdleFadeChanged;
     public event Action<bool>? DiscreetChanged;
+    public event Action<double, double>? VisibilityOpacityChanged;
 
     public OverlayWindow(Preferences preferences, Style? buttonStyle = null, EncounterStore? store = null)
     {
@@ -131,7 +132,7 @@ public sealed partial class OverlayWindow : Window
         grip = new Thumb { Width = 16, Height = 24, Cursor = Cursors.SizeNWSE, Background = Brushes.Transparent };
         var glyph = new FrameworkElementFactory(typeof(TextBlock)); glyph.SetValue(TextBlock.TextProperty, "◢"); glyph.SetResourceReference(TextBlock.ForegroundProperty, "Muted");
         grip.Template = new ControlTemplate(typeof(Thumb)) { VisualTree = glyph };
-        grip.DragDelta += (_, e) => { Width = Math.Clamp(Width + e.HorizontalChange, MinWidth, MaxWidth); if (!preferences.OverlayDiscreet) Height = Math.Clamp(Height + e.VerticalChange, MinHeight, MaxHeight); };
+        grip.DragDelta += (_, e) => { Width = Math.Clamp(Width + e.HorizontalChange, MinWidth, MaxWidth); Height = Math.Clamp(Height + e.VerticalChange, MinHeight, MaxHeight); };
         grip.DragStarted += (_, _) => { SetManipulating(true); ChangeAppearance(false, preferences.OverlayCompact, preferences.OverlayOpacity); };
         grip.DragCompleted += (_, _) => { SetManipulating(false); placement.EnsureVisible(); SaveLayout(); };
         DockPanel.SetDock(grip, Dock.Right); footer.Children.Add(grip);
@@ -151,7 +152,7 @@ public sealed partial class OverlayWindow : Window
 
     private static double Bounded(double value, double fallback, double min, double max) => Math.Clamp(double.IsFinite(value) ? value : fallback, min, Math.Max(min, max));
     private void SaveLayout() => LayoutSaved?.Invoke(Left, idleCollapsed ? expandedTop + Top - collapsedTop : Top, Width,
-        preferences.OverlayDiscreet ? detailedHeight ?? preferences.OverlayHeight : idleCollapsed ? expandedHeight : Height);
+        idleCollapsed ? expandedHeight : Height);
     private Button SmallButton(string text, Action action)
     {
         var button = new Button { Content = text, FontSize = 11, Padding = new Thickness(6, 3, 6, 3), Margin = new Thickness(0, 0, 4, 0), MinWidth = 24 };
@@ -207,7 +208,10 @@ public sealed partial class OverlayWindow : Window
         UpdateSurface();
         // A retained last encounter is not proof that a fight is still active.
         var reading = !locked && (pointerInside || manipulating || openMenus > 0);
-        var opacity = !preferences.OverlayFadeWhenIdle || captureStatus == "capturing" || archived is not null || reading ? 1 : IdleOpacity;
+        var activeOpacity = Bounded(preferences.OverlayCombatOpacity, 1, .15, 1);
+        var opacity = archived is not null || reading ? 1
+            : !preferences.OverlayFadeWhenIdle || captureStatus == "capturing" ? activeOpacity
+            : Bounded(preferences.OverlayIdleOpacity, IdleOpacity, .05, 1);
         if (visibilityOpacity == opacity) return;
         visibilityOpacity = opacity;
         var previous = frame.Opacity;
@@ -238,10 +242,11 @@ public sealed partial class OverlayWindow : Window
             var item = new MenuItem { Header = label, IsCheckable = check is not null, IsChecked = check == true }; item.Click += (_, _) => action(); menu.Items.Add(item);
         }
         Item(T("discreetOverlay"), ToggleDiscreet, preferences.OverlayDiscreet);
-        if (!preferences.OverlayDiscreet)
-            Item(T("autoFit"), () => ChangeAppearance(!preferences.OverlayAutoFit, preferences.OverlayCompact, preferences.OverlayOpacity), preferences.OverlayAutoFit);
+        Item(T("autoFit"), () => ChangeAppearance(!preferences.OverlayAutoFit, preferences.OverlayCompact, preferences.OverlayOpacity), preferences.OverlayAutoFit);
         Item(T("compactRows"), () => ChangeAppearance(preferences.OverlayAutoFit, !preferences.OverlayCompact, preferences.OverlayOpacity), preferences.OverlayCompact);
         Item(T("fadeWhenIdle"), ToggleIdleFade, preferences.OverlayFadeWhenIdle);
+        menu.Items.Add(OpacityMenu("combatOpacity", preferences.OverlayCombatOpacity, false));
+        menu.Items.Add(OpacityMenu("idleOpacity", preferences.OverlayIdleOpacity, true));
         Item(T("snapEdges"), ToggleSnapping, preferences.OverlaySnapToEdges);
         var position = new MenuItem { Header = T("overlayPosition") };
         foreach (var corner in new[] { "topLeft", "topRight", "bottomLeft", "bottomRight", "centerOverlay" })
@@ -256,6 +261,24 @@ public sealed partial class OverlayWindow : Window
         }
         menu.Items.Add(new Separator()); Item(T("finish"), () => NewFightRequested?.Invoke());
         return menu;
+    }
+    private MenuItem OpacityMenu(string key, double current, bool idle)
+    {
+        var menu = new MenuItem { Header = T(key) };
+        foreach (var level in idle ? new[] { .05, .15, .25, .5, .75, 1 } : new[] { .15, .25, .5, .75, 1 })
+        {
+            var item = new MenuItem { Header = level.ToString("P0", Culture), IsCheckable = true, IsChecked = Math.Abs(current - level) < .01 };
+            item.Click += (_, _) => ChangeVisibilityOpacity(idle ? preferences.OverlayCombatOpacity : level, idle ? level : preferences.OverlayIdleOpacity, idle);
+            menu.Items.Add(item);
+        }
+        return menu;
+    }
+    private void ChangeVisibilityOpacity(double combat, double idle, bool enableIdleFade)
+    {
+        preferences = preferences with { OverlayCombatOpacity = combat, OverlayIdleOpacity = idle };
+        if (enableIdleFade && !preferences.OverlayFadeWhenIdle) ToggleIdleFade();
+        VisibilityOpacityChanged?.Invoke(combat, idle);
+        UpdateVisibility();
     }
     private void ToggleSnapping()
     {
@@ -405,7 +428,7 @@ public sealed partial class OverlayWindow : Window
             total.ToolTip = hint.ToolTip;
         }
         ApplyPresentation();
-        if (preferences.OverlayDiscreet && !idleCollapsed)
+        if (preferences.OverlayDiscreet && preferences.OverlayAutoFit && !idleCollapsed)
         {
             var rowsHeight = (wanted.Count == 0 ? 64 : Math.Min(8, wanted.Count) * (preferences.OverlayCompact ? 26 : 32)) + (showSources ? 28 : 0);
             scroll.MaxHeight = rowsHeight + 1;

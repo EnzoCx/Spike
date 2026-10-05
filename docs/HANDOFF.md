@@ -1,7 +1,24 @@
 # Reprendre le projet
 
-État de référence : version 0.5.12, 5 octobre 2026.
+État de référence : version 0.5.13, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
+
+Depuis 0.5.13, la poignée de l’overlay règle et mémorise aussi sa hauteur en mode
+discret. `OverlayAutoFit` est respecté dans les deux présentations ; le menu permet
+de revenir à la hauteur automatique. Les opacités combat/repos sont indépendantes,
+avec restauration à 100 % au survol et dans les archives. Discord « Phobie » et
+GitHub Issues sont accessibles dans la barre latérale. Npcap pointe vers son EXE officiel 1.89.
+
+L’option `LaunchWithGame` est désactivée par défaut. Elle ajoute uniquement une entrée
+HKCU Run pour `Spike.exe --watch-game`. Une seule instance par utilisateur/session,
+avec icône de notification, observe le nom de processus AION2 toutes les trois secondes.
+Aucune capture avant ouverture du compteur ; ni mémoire du jeu, ni fenêtre manipulée.
+Le rapport automatique reste minimisé sans activation. Fermer le rapport arrête la
+capture et revient à l’attente ; Quitter Spike arrête le processus. Une nouvelle session
+du jeu peut rouvrir le compteur. Le redémarrage de mise à jour quitte aussi l’attente.
+Conserver l’EXE au même emplacement ; Windows peut désactiver l’entrée de démarrage.
+Code : `GameLaunch.cs`, `App.GameLaunch.cs`, `Dashboard.Startup.cs`. Vérification hors
+ligne par sessions simulées ; connexion Windows et lancement réel du jeu non testés.
 
 Depuis 0.5.12, les aperçus publics du rapport et de l'overlay utilisent une fixture
 dédiée : cinq personnages fictifs, six compétences d'assassin avec icônes du catalogue.

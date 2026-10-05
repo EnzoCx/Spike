@@ -3,8 +3,9 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>Spike</AssemblyName>
-    <Version>0.5.12</Version>
+    <Version>0.5.13</Version>
     <Product>Spike</Product>
     <Title>Spike</Title>
     <Description>Spike — combat analysis for AION 2 Global</Description>
@@ -16,6 +17,8 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
     <ProjectReference Include="../Spike.Core/Spike.Core.csproj" />
     <ProjectReference Include="../Spike.Engine/Spike.Engine.csproj" />
     <Resource Include="Fonts/*" />

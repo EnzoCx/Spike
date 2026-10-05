@@ -6,6 +6,8 @@ Commit: 2f237fed139fe4a173c9de9d43cdeb0eb52453f8
 Copyright (c) 2026 SkeeveTV — MIT, retained in LICENSE.
 
 No upstream updater, uploader, UI, launcher or process-elevation code is included.
+Spike 0.5.13: the Npcap download URL points directly to the official 1.89 installer;
+driver detection and installation behavior are unchanged.
 Changes: disable frame dumps, expose counters, bound pending queue, restrict capture
 to configured game ports, extract embedded lookup data to this app's own cache.
 The unused raw SegmentRecording utility is excluded from our source distribution.

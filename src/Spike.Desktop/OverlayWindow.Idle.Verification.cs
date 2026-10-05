@@ -47,7 +47,7 @@ public sealed partial class OverlayWindow
                         double savedHeight = 0, savedTop = 0;
                         window.LayoutSaved += (_, y, _, h) => { savedHeight = h; savedTop = y; };
                         window.SaveLayout();
-                        var expectedSavedHeight = discreet ? preferences.OverlayHeight : height;
+                        var expectedSavedHeight = height;
                         Check(savedHeight == expectedSavedHeight, $"reduced height must not overwrite saved dimensions ({savedHeight} != {expectedSavedHeight})");
                         Check(Math.Abs(savedTop - top) < 2, "reduction must preserve the expanded saved position");
                         window.SavePreview(directory, $"overlay-reduced-{language}-{theme}-{autoFit}-{discreet}.png");

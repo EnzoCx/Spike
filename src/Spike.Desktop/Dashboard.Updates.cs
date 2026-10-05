@@ -50,7 +50,7 @@ public partial class Dashboard
         {
             var executable = AutomaticUpdater.PublishedExecutable();
             return executable is not null && AutomaticUpdater.TryApplyPending(executable);
-        }), Close);
+        }), () => Application.Current.Shutdown());
     }
 
     private async Task RestartForUpdateAsync(Func<Task<bool>> prepare, Action close)

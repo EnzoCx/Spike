@@ -40,6 +40,7 @@ public partial class App : Application
             }
             return;
         }
+        if (!AcquireApplicationInstance(e.Args.Contains("--watch-game"))) { Shutdown(0); return; }
         var executable = e.Args.Length == 0 || e.Args.SequenceEqual(new[] { "--update-restarted" })
             ? AutomaticUpdater.PublishedExecutable() : null;
         if (executable is not null && e.Args.Length == 0 && AutomaticUpdater.TryApplyPending(executable))
@@ -47,9 +48,10 @@ public partial class App : Application
             Shutdown(0);
             return;
         }
-        var dashboard = new Dashboard();
-        MainWindow = dashboard;
-        MainWindow.Show();
-        if (executable is not null) dashboard.StartUpdates();
+        ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        var preferences = Preferences.Load();
+        ConfigureGameLaunch(preferences);
+        if (!e.Args.Contains("--watch-game")) OpenDashboard(false);
+        else if (!preferences.LaunchWithGame) Shutdown(0);
     }
 }

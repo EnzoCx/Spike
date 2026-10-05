@@ -16,7 +16,7 @@ public sealed partial class OverlayWindow
         foreach (var language in Text.Languages)
             foreach (var theme in Themes.Ids)
             {
-                var window = new OverlayWindow(preferences with { Language = language, Theme = theme, OverlayWidth = 360, OverlayAutoFit = false, OverlayDiscreet = false }, style);
+                var window = new OverlayWindow(preferences with { Language = language, Theme = theme, OverlayWidth = 360, OverlayAutoFit = true, OverlayDiscreet = false }, style);
                 window.Update(encounter, "capturing");
                 var first = window.rows.Children[0];
                 var detailedHeight = window.Height;
@@ -26,8 +26,8 @@ public sealed partial class OverlayWindow
                 double savedHeight = 0;
                 window.LayoutSaved += (_, _, _, height) => savedHeight = height;
                 window.SaveLayout();
-                if (savedHeight != detailedHeight)
-                    throw new InvalidOperationException("Discreet sizing must preserve the saved detailed height.");
+                if (savedHeight != window.Height)
+                    throw new InvalidOperationException("Discreet sizing must save the displayed height.");
                 window.SavePreview(directory, $"overlay-discreet-{language}-{theme}.png");
                 if (!saved || !ReferenceEquals(first, window.rows.Children[0]) || window.Height >= detailedHeight || window.scroll.ScrollableHeight > 0)
                     throw new InvalidOperationException($"Discreet layout must shrink without replacing or clipping rows: {language}/{theme}, saved={saved}, stable={ReferenceEquals(first, window.rows.Children[0])}, height={window.Height}/{detailedHeight}, overflow={window.scroll.ScrollableHeight}.");
@@ -62,7 +62,8 @@ public sealed partial class OverlayWindow
                 if (window.scroll.ScrollableHeight > 0)
                     throw new InvalidOperationException("Empty-state guidance must fit in the discreet layout.");
                 window.ToggleDiscreet();
-                if (saved || window.preferences.OverlayDiscreet || window.preferences.OverlayAutoFit || window.preferences.OverlayCompact || window.frame.Background.Opacity != preferences.OverlayOpacity || window.Height != detailedHeight)
+                window.Update(encounter, "capturing");
+                if (saved || window.preferences.OverlayDiscreet || !window.preferences.OverlayAutoFit || window.preferences.OverlayCompact || window.frame.Background.Opacity != preferences.OverlayOpacity || window.Height != detailedHeight)
                     throw new InvalidOperationException("Detailed layout must remain available with existing preferences.");
                 window.Close();
             }

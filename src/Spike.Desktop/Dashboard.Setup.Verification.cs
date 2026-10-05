@@ -15,6 +15,9 @@ public partial class Dashboard
                 ApplyTheme(); Translate();
                 var installed = false;
                 ShowSetup(detect: () => installed);
+                var download = new Uri(SetupDownloadUrl.Text);
+                if (download.Scheme != "https" || download.Host != "npcap.com" || !download.AbsolutePath.EndsWith(".exe") || !SetupDownloadUrl.IsReadOnly)
+                    throw new InvalidOperationException("Npcap must expose the direct official installer URL and allow copying it.");
                 if (LiveNav.IsEnabled || SetupContinue.IsEnabled)
                     throw new InvalidOperationException("Setup must block background navigation and completion.");
                 SetupCheck.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));

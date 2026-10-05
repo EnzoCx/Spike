@@ -6,20 +6,12 @@ namespace Spike.Desktop;
 public sealed partial class OverlayWindow
 {
     private double ExpandedMinHeight => preferences.OverlayDiscreet ? 112 : 180;
-    private double? detailedHeight;
 
     private void ToggleDiscreet()
     {
-        if (!preferences.OverlayDiscreet) detailedHeight = idleCollapsed ? expandedHeight : Height;
         preferences = preferences with { OverlayDiscreet = !preferences.OverlayDiscreet };
         DiscreetChanged?.Invoke(preferences.OverlayDiscreet);
         Apply(preferences);
-        if (!preferences.OverlayDiscreet && !preferences.OverlayAutoFit)
-        {
-            var height = Bounded(detailedHeight ?? preferences.OverlayHeight, 504, ExpandedMinHeight, MaxHeight);
-            if (idleCollapsed) expandedHeight = height;
-            else placement.SetHeight(height);
-        }
     }
 
     private void UpdateSurface()

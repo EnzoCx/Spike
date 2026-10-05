@@ -35,6 +35,7 @@ public partial class Dashboard
         SetupTitle.Text = T("setupTitle"); SetupIntro.Text = T("setupIntro");
         SetupSteps.Text = T("setupSteps"); SetupStatus.Text = T(setupStatusKey);
         SetupDownload.Content = T("setupDownload"); SetupCheck.Content = T("setupCheck");
+        SetupDownloadUrl.Text = NpcapAvailability.DownloadUrl;
         SetupContinue.Content = T("setupContinue"); SetupLater.Content = T("setupLater");
         SetupLanguages.Children.Clear();
         string[] names = ["Français", "English", "Español"];
@@ -56,7 +57,7 @@ public partial class Dashboard
         catch (Exception error) when (error is Win32Exception or InvalidOperationException)
         {
             setupStatusKey = "setupBrowserError";
-            SetupStatus.Text = T(setupStatusKey);
+            SetupStatus.Text = T(setupStatusKey) + "\n" + NpcapAvailability.DownloadUrl;
         }
     }
 

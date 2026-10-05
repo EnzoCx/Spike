@@ -18,6 +18,10 @@ du combat) avant son remplacement et sa relance. Si la préparation échoue, Spi
 et le bouton permet de réessayer. Une mise à jour prête reste accessible même hors ligne.
 Sans clic, l’installation attend la prochaine ouverture. La capture continue pendant les
 vérifications et téléchargements ; aucun redémarrage n’est imposé.
+Avec le lancement automatique au jeu (0.5.13), fermer le rapport laisse l’attente active
+dans la zone de notification. Utiliser « Redémarrer pour mettre à jour », ou quitter
+Spike depuis cette icône puis rouvrir l’EXE, pour installer une mise à jour déjà prête.
+L’ouverture automatique du compteur par le jeu n’impose pas de remplacement ni de redémarrage.
 Les diagnostics et builds de développement ne consultent pas GitHub.
 Le démarrage et la capture n'attendent pas le réseau. Aucun dialogue ni redémarrage forcé.
 

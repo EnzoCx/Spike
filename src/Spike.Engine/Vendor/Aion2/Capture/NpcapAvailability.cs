@@ -7,7 +7,7 @@ namespace AionDPS.Aion2.Capture;
 /// wpcap.dll load fails with a bare DllNotFoundException otherwise, which is a worse message than
 /// "install Npcap". Detection is by the files the Npcap installer places, not the registry, so it
 /// works unprivileged. The meter never installs the driver itself - a kernel driver is the user's
-/// call, so the UI links to npcap.com instead.
+/// call, so the UI links to the official installer on npcap.com instead.
 /// </summary>
 public sealed class NpcapAvailability
 {
@@ -21,7 +21,7 @@ public sealed class NpcapAvailability
 
     public string? Location { get; }
 
-    public static string DownloadUrl => "https://npcap.com/#download";
+    public static string DownloadUrl => "https://npcap.com/dist/npcap-1.89.exe";
 
     public static NpcapAvailability Detect()
     {

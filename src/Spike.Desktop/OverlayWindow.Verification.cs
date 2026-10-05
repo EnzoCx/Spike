@@ -65,6 +65,8 @@ public sealed partial class OverlayWindow
     {
         VerifyIdleCollapse(preferences, encounter, directory, buttonStyle);
         VerifyDiscreet(preferences, encounter, directory, buttonStyle);
+        VerifyManualHeight(preferences, encounter, directory, buttonStyle);
+        VerifyOpacityPreferences(preferences, encounter, buttonStyle);
         var window = new OverlayWindow(preferences with { OverlayWidth = 460 }, buttonStyle);
         window.CopySummary(_ => throw new InvalidOperationException("Empty overlay must not copy."));
         if (window.copy.IsEnabled) throw new InvalidOperationException("Empty overlay enables copy.");

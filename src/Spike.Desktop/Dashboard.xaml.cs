@@ -113,6 +113,7 @@ public partial class Dashboard : Window
     {
         Title = Text.ProductName;
         TranslateUpdate();
+        TranslateSupport();
         TranslateProgress();
         LiveNav.Content = T("live"); HistoryNav.Content = T("history"); SettingsNav.Content = T("settings");
         SidebarFoot.Text = T("localHistory"); PageTitle.Text = T(page);
@@ -134,6 +135,9 @@ public partial class Dashboard : Window
         CharacterName.Text = preferences.PlayerName; AutoStartCheck.Content = T("autoStart"); AutoStartCheck.IsChecked = preferences.AutoStart;
         OnTopCheck.Content = T("top"); OnTopCheck.IsChecked = preferences.AlwaysOnTop; SaveSettingsButton.Content = T("apply");
         OverlayStartupCheck.Content = T("overlayStartup"); OverlayStartupCheck.IsChecked = preferences.ShowOverlayOnStartup;
+        LaunchWithGameCheck.Content = T("launchWithGame"); LaunchWithGameCheck.IsChecked = preferences.LaunchWithGame;
+        LaunchWithGameCheck.IsEnabled = verifying || Updates.AutomaticUpdater.PublishedExecutable() is not null;
+        LaunchWithGameHint.Text = T("launchWithGameHint");
         RecoverOverlayButton.Content = T("recoverOverlay");
         OverlayHint.Text = T("overlayHint"); DiagnosticsExpander.Header = T("diagnostics"); LicenseNote.Text = T("licenseNote"); RulesNote.Text = T("rulesNote");
         LicensesExpander.Header = "Licences / Licenses / Licencias";
@@ -162,6 +166,7 @@ public partial class Dashboard : Window
         preferences = value;
         if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
         ApplyTheme(); Translate(); RenderFight(); FilterHistory();
+        if (!verifying) ((App)Application.Current).ConfigureGameLaunch(preferences);
     }
 
     private void StartCapture()
@@ -342,7 +347,12 @@ public partial class Dashboard : Window
     private void FilterBossHistory(object sender, RoutedEventArgs e) => FilterHistory();
     private void TargetChanged(object sender, SelectionChangedEventArgs e) { if (refreshing) return; target = (TargetBox.SelectedItem as TargetChoice)?.Id; RenderFight(); }
     private void TimelineResized(object sender, SizeChangedEventArgs e) => DrawTimeline();
-    private void SaveSettings(object sender, RoutedEventArgs e) { Change(preferences with { PlayerName = CharacterName.Text.Trim(), AutoStart = AutoStartCheck.IsChecked == true, AlwaysOnTop = OnTopCheck.IsChecked == true, ShowOverlayOnStartup = OverlayStartupCheck.IsChecked == true }); SetNotice("restartHint"); }
+    private void SaveSettings(object sender, RoutedEventArgs e)
+    {
+        if (!SaveGameStartup(LaunchWithGameCheck.IsChecked == true)) return;
+        Change(preferences with { PlayerName = CharacterName.Text.Trim(), AutoStart = AutoStartCheck.IsChecked == true, AlwaysOnTop = OnTopCheck.IsChecked == true, ShowOverlayOnStartup = OverlayStartupCheck.IsChecked == true });
+        SetNotice("restartHint");
+    }
     private void SearchHistory(object sender, TextChangedEventArgs e)
     {
         if (HistoryPlaceholder is not null) HistoryPlaceholder.Visibility = string.IsNullOrEmpty(HistorySearch.Text) ? Visibility.Visible : Visibility.Collapsed;
@@ -440,6 +450,11 @@ public partial class Dashboard : Window
         overlay.IdleFadeChanged += enabled =>
         {
             preferences = preferences with { OverlayFadeWhenIdle = enabled };
+            if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
+        };
+        overlay.VisibilityOpacityChanged += (combat, idle) =>
+        {
+            preferences = preferences with { OverlayCombatOpacity = combat, OverlayIdleOpacity = idle };
             if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
         };
         overlay.DetailsRequested += (fight, player, healing, selectedTarget) =>
