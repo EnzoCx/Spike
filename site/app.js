@@ -45,7 +45,7 @@ const translations = {
     q5: 'I already use DPSMeter. What happens to my history?', a5: 'Preferences, fights and JSON v2 files remain compatible. Download Spike.exe 0.5.2 manually once if you use an earlier version. Your DPSMeter data is copied on first launch, preserving the originals. Future updates download in the background; the arrow beside the version lets you retry. Installation happens on the next launch, with no forced restart.',
     closing: 'Your turn to play.', footerLine: 'Your combat, clearly. Your data, at home.', feedback: 'A problem or an idea? ↗',
     legal: 'Independent project. AION 2 and its artwork belong to NCSOFT. Code under the MIT license; third-party resources under their respective licenses.', credits: 'Credits and licenses',
-    overlayAlt: 'Spike mini meter: ranking of four fictional characters.', reportAlt: 'Spike fictional fight report: damage, skills and duration.',
+    overlayAlt: 'Spike mini meter: ranking of five fictional characters.', reportAlt: 'Spike fictional fight report: damage, skill icons and duration.',
     description: 'Spike, the damage and healing meter for AION 2 Global. A discreet overlay, detailed reports and fights stored on your PC.'
   },
   es: {
@@ -94,7 +94,7 @@ const translations = {
     q5: 'Ya uso DPSMeter. ¿Qué ocurre con mi historial?', a5: 'Tus preferencias, combates y archivos JSON v2 siguen siendo compatibles. Descarga Spike.exe 0.5.2 manualmente una vez si usas una versión anterior. Tus datos de DPSMeter se copian al primer inicio, conservando los originales. Las siguientes actualizaciones se descargan en segundo plano; la flecha junto a la versión permite reintentar. Se instalan al volver a abrir la app, sin reinicio forzado.',
     closing: 'Te toca jugar.', footerLine: 'Tu combate, claro. Tus datos, en casa.', feedback: '¿Un problema o una idea? ↗',
     legal: 'Proyecto independiente. AION 2 y sus imágenes pertenecen a NCSOFT. Código bajo licencia MIT; recursos de terceros bajo sus respectivas licencias.', credits: 'Créditos y licencias',
-    overlayAlt: 'Minimedidor Spike: clasificación de cuatro personajes ficticios.', reportAlt: 'Informe Spike de un combate ficticio: daño, habilidades y duración.',
+    overlayAlt: 'Minimedidor Spike: clasificación de cinco personajes ficticios.', reportAlt: 'Informe Spike de un combate ficticio: daño, iconos de habilidades y duración.',
     description: 'Spike, el medidor de daño y sanación para AION 2 Global. Un overlay discreto, informes detallados y combates guardados en tu PC.'
   }
 };
@@ -116,11 +116,11 @@ let theme = [readPreference('spike-theme'), 'dark'].find(value => themes.include
 
 function updatePreviews() {
   const copy = translations[language];
-  document.querySelector('#overlay-preview').src = `assets/overlay-en-${theme}.png`;
+  document.querySelector('#overlay-preview').src = `assets/overlay-en-${theme}.png?v=0.5.12`;
   document.querySelector('#overlay-preview').alt = copy.overlayAlt;
-  document.querySelector('#report-preview').src = `assets/report-en-${theme}.png`;
+  document.querySelector('#report-preview').src = `assets/report-en-${theme}.png?v=0.5.12`;
   document.querySelector('#report-preview').alt = copy.reportAlt;
-  document.querySelector('#report-link').href = `assets/report-en-${theme}.png`;
+  document.querySelector('#report-link').href = `assets/report-en-${theme}.png?v=0.5.12`;
 }
 
 function setLanguage(value) {

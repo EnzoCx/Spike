@@ -53,7 +53,7 @@ internal static class CombatHoverCard
         foreach (var spell in EncounterMath.Spells(fight, actor, heals, target).Take(8))
         {
             var entry = new DockPanel();
-            var artwork = GameArtwork.SkillIcon(fight.Origin == "demo" ? 0 : spell.Id, Aion2SkillNames.Display(spell.Name), 32);
+            var artwork = GameArtwork.SkillIcon(spell.Id, Aion2SkillNames.Display(spell.Name), 32);
             artwork.Margin = new Thickness(0, 2, 10, 0); artwork.VerticalAlignment = VerticalAlignment.Top;
             DockPanel.SetDock(artwork, Dock.Left); entry.Children.Add(artwork);
             var body = new StackPanel(); entry.Children.Add(body); stack.Children.Add(entry);

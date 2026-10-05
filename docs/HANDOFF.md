@@ -1,7 +1,12 @@
 # Reprendre le projet
 
-État de référence : version 0.5.11, 5 octobre 2026.
+État de référence : version 0.5.12, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
+
+Depuis 0.5.12, les aperçus publics du rapport et de l'overlay utilisent une fixture
+dédiée : cinq personnages fictifs, six compétences d'assassin avec icônes du catalogue.
+`PublicPreviewFixture.cs` et les vérifications `*.PublicPreview.Verification.cs`
+produisent les images sans capture ni fenêtre visible. Voir `site/README.md`.
 
 Depuis 0.5.9, les mises à jour sont recherchées au lancement puis toutes les 15 minutes.
 Une mise à jour prête affiche « Redémarrer pour mettre à jour » : fermeture normale avec

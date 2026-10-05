@@ -48,7 +48,7 @@ Values carry **≈** and a **partial estimate** label. The coverage indicator co
 **During combat, see what matters without leaving the game.** The discreet overlay shows one row per observed player, with DPS and damage share. Its height fits the ranking, and abbreviated values keep it readable. Hover over a player to see total damage, observed critical hits, and their top skills.
 
 <p align="center">
-  <img src="docs/images/overlay-demo.png" alt="Current discreet overlay: four fictional players, abbreviated DPS, damage share, and Copy and Report buttons" width="360">
+  <img src="docs/images/overlay-demo.png" alt="Current discreet overlay: five fictional players, abbreviated DPS, damage share, and Copy and Report buttons" width="460">
 </p>
 
 ### Skill breakdown
@@ -56,14 +56,14 @@ Values carry **≈** and a **partial estimate** label. The coverage indicator co
 **Click a player to replace the ranking with their skills.** Each row shows the skill's DPS and its share of that player's damage. Use **←** to return to the ranking. The total at the bottom still covers all observed participants.
 
 <p align="center">
-  <img src="docs/images/sorts-demo.png" alt="Aster's skill view: two demo skills showing their DPS and respective damage shares of 50.3% and 49.7%" width="460">
+  <img src="docs/images/sorts-demo.png" alt="Aster's skill view: six Assassin skills with their catalog icons, DPS and damage shares; fictional combat data" width="460">
 </p>
 
 **Click a skill or Report to open the full analysis.** The selected player and target scope carry over from the overlay. In the app, selecting another player updates the **Skills** panel; use the search field to find a skill by name.
 
 ![Spike combat report in English: fictional players, skill damage and DPS, hits, ticks, and observed critical hits](docs/images/report-demo.png)
 
-*The redesigned combat report, shown in English with fictional demonstration data.*
+*The current combat report, with catalog skill icons and fictional players and combat values.*
 
 | Per-skill metric | What the report shows |
 | --- | --- |
@@ -89,7 +89,7 @@ The summary above the skills shows the player's damage, hits, critical rate, **L
 
 </details>
 
-> All previews use **fictional demonstration data**, rendered in English with the redesigned interface from version **0.5.3** and the Graphite theme. They should not be used to compare class performance.
+> All previews use **fictional demonstration data**, rendered in English with the Graphite theme. The report and overlay previews show version **0.5.12**, with actual catalog skill names and icons. They should not be used to compare class performance.
 
 | During your session | When reviewing your performance |
 | --- | --- |

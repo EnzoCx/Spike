@@ -276,7 +276,7 @@ public partial class Dashboard : Window
             Total = N(row.Total),
             Rate = N(row.PerSecond) + (heals ? " HPS" : " DPS"),
             Share = row.Share.ToString("N1", Culture) + " %",
-            Icon = GameArtwork.SkillIcon(shown.Origin == "demo" ? 0 : row.Id, Aion2SkillNames.Display(row.Name), 32),
+            Icon = GameArtwork.SkillIcon(row.Id, Aion2SkillNames.Display(row.Name), 32),
             Bar = new GridLength(row.Share, GridUnitType.Star),
             Rest = new GridLength(Math.Max(.01, 100 - row.Share), GridUnitType.Star),
             Extra = $"{N(row.Hits)} {T("hits")} · {N(row.Ticks)} {T("ticks")} · {row.CriticalRate.ToString("N1", Culture)} % {T("critical")}"

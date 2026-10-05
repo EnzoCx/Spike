@@ -33,13 +33,17 @@ ou de capture concurrente n’a été réalisé.
 ## Aperçus
 
 Les 6 images de `images/` sont des rendus démo de `tools/Verify.ps1`, avec l'interface
-0.5.3 en anglais (y compris les noms des compétences fictives), dans les trois thèmes :
-- `overlay-en-{thème}.png` vient du fichier de même nom dans `artifacts/verification`.
-- `report-en-{thème}.png` vient de `en-{thème}-live.png`.
+0.5.12 en anglais, dans les trois thèmes. `PublicPreviewFixture.cs` crée cinq personnages
+fictifs et des chiffres inventés ; les noms et icônes des compétences viennent du catalogue
+embarqué. Aucun combat réel n'est utilisé. Dans `artifacts/verification` :
+- `overlay-en-{thème}.png` vient de `public-overlay-en-{thème}.png`.
+- `report-en-{thème}.png` vient de `public-report-en-{thème}.png` (1424 × 900).
 
 Les captures restent en anglais quelle que soit la langue du texte du site.
-Le README principal utilise `overlay-discreet-en-dark.png`, `overlay-skills-en-dark.png`,
-`en-dark-live.png` et `en-dark-history.png` du même dossier de vérification.
+Le README principal utilise `public-overlay-en-dark.png`, `public-skills-en-dark.png`,
+`public-report-en-dark.png` et `en-dark-history.png` du même dossier de vérification.
+Lors du remplacement des aperçus, actualiser aussi leur paramètre de version dans
+`index.html` et `app.js` pour rafraîchir les images mises en cache.
 
 Seuls ces fichiers synthétiques explicitement nommés sont copiés. Ne jamais copier
 un répertoire de diagnostics, un combat réel ou `docs/images/rapport-atiel.png` sur le site.

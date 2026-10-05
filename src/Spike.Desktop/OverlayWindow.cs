@@ -368,7 +368,7 @@ public sealed partial class OverlayWindow : Window
                 Entry("s" + spell.Id + ":" + spell.Name, control =>
                 {
                     control.Update(Aion2SkillNames.Display(spell.Name), $"{N(spell.Hits)} {T("hits")} · {spell.CriticalRate.ToString("N1", Culture)} % {T("criticalShort")}",
-                        Rate(spell.PerSecond), spell.Share.ToString("N1", Culture) + "%", CombatPresentation.Short(spell.Total, preferences.Language), spell.Total * 100d / maximum, className, preferences, skillId: fight.Origin == "demo" ? 0 : spell.Id);
+                        Rate(spell.PerSecond), spell.Share.ToString("N1", Culture) + "%", CombatPresentation.Short(spell.Total, preferences.Language), spell.Total * 100d / maximum, className, preferences, skillId: spell.Id);
                     control.Selected = OpenReport; control.HoverContent = () => CombatHoverCard.Create(Selected!, id, heals, Target, preferences);
                 });
         }
