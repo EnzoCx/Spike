@@ -43,7 +43,7 @@ public sealed partial class OverlayWindow
         heading.FontSize = duration.FontSize = discreet ? 14 : 16;
         total.FontSize = discreet ? 13 : 16;
         duration.FontWeight = discreet ? FontWeights.Normal : FontWeights.SemiBold;
-        foreach (var button in new[] { picker, historyPicker, damage, healing, scope, back, report, copy, locking, close, options, expand })
+        foreach (var button in new[] { picker, historyPicker, damage, healing, raid, scope, back, report, copy, locking, close, options, expand })
         {
             button.BorderThickness = new Thickness(discreet ? 0 : 1);
             button.Background = (Brush)Resources["Surface"];
@@ -56,14 +56,14 @@ public sealed partial class OverlayWindow
             picker.Background = (Brush)Resources["Accent"];
             picker.Foreground = (Brush)Resources["Background"];
         }
-        var active = heals ? healing : damage;
+        var active = RaidMode ? raid : heals ? healing : damage;
         active.Background = discreet ? Brushes.Transparent : (Brush)Resources["Accent"];
         active.Foreground = (Brush)Resources[discreet ? "Accent" : "Background"];
         active.FontWeight = FontWeights.SemiBold;
-        (heals ? damage : healing).FontWeight = FontWeights.Normal;
+        foreach (var inactive in new[] { damage, healing, raid }.Where(button => button != active)) inactive.FontWeight = FontWeights.Normal;
         report.Content = T(discreet ? "reportShort" : "fightDetails");
         report.ToolTip = T("fightDetails");
-        hint.Visibility = discreet ? Visibility.Collapsed : Visibility.Visible;
+        hint.Visibility = discreet && !RaidMode ? Visibility.Collapsed : Visibility.Visible;
         var qualified = Selected?.Origin == "demo" || Selected?.Origin.Contains("unverified") == true || archived is not null
             || captureStatus is "captureError" or "paused" or "stopped";
         if (!idleCollapsed)

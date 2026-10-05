@@ -23,3 +23,12 @@ Spike 0.5.7 behavioral changes:
   on local character records / decoded zone changes. Expire roster evidence against observed time.
 - Count observed positive-to-zero HP transitions, deduplicating repeated zeros. Missing HP
   remains unknown; this is not complete death detection. No kill-opcode completeness claimed.
+
+Spike 0.5.11 beta behavior:
+- The decoder calls the independently authored host `BetaBuffTracker` for candidate
+  2A38/2B38 frames and attaches an optional frozen contribution to damage events.
+- Pause and detected stream desynchronization clear aura evidence. Original damage
+  remains unchanged. Only two aura families are modeled with a provisional 10.5%
+  level-one final multiplier; no Global protocol or accuracy validation is claimed.
+- Wire-format research references and limitations: docs/RDPS-RESEARCH.md and docs/RDPS.md.
+  No GPL source files were incorporated; no raw packet recording was enabled.

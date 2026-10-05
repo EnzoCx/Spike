@@ -21,6 +21,8 @@ public static class EncounterFile
             || encounter.Participants is null || encounter.Participants.Length is < 1 or > 4096 || encounter.Events is null || encounter.Events.Length > 250_000)
             throw new InvalidDataException("Invalid encounter.");
         CheckText(encounter.Patch); CheckText(encounter.Origin); CheckText(encounter.Zone); CheckText(encounter.EndReason);
+        if (encounter.RdpsModel is not null && encounter.RdpsModel != RaidDamage.Model)
+            throw new InvalidDataException("Unknown rDPS model.");
         var ids = new HashSet<int>();
         foreach (var actor in encounter.Participants)
         {
@@ -37,6 +39,10 @@ public static class EncounterFile
             if (hit is null || !ids.Contains(hit.Source) || !ids.Contains(hit.Target) || hit.Amount is < 0 or > 1_000_000_000_000
                 || hit.AtMs < 0 || hit.AtMs > encounter.DurationMs) throw new InvalidDataException("Invalid event.");
             CheckText(hit.Skill);
+            if (hit.Raid is { } raid && (encounter.RdpsModel != RaidDamage.Model || hit.Heal
+                || !ids.Contains(raid.Provider) || raid.SkillId is not (17410000 or 18190000)
+                || raid.Bonus < 0 || raid.Bonus > hit.Amount || raid.Provider == hit.Source && raid.Bonus != 0))
+                throw new InvalidDataException("Invalid rDPS estimate.");
             if (hit.OriginalSource is { } original && !ids.Contains(original)
                 || hit.Attribution is not (null or "owner-id" or "owner-name"))
                 throw new InvalidDataException("Invalid attribution evidence.");
@@ -53,8 +59,13 @@ public static class EncounterFile
             Id = Guid.NewGuid(),
             Origin = encounter.Origin == "demo" ? "demo" : "shared-unverified",
             Participants = encounter.Participants.Select(actor => actor with { Id = ids[actor.Id], Name = actor.IsPlayer || actor.IsUnidentifiedSource || originalSources.Contains(actor.Id) ? $"Player {ids[actor.Id]}" : actor.Name, IsSelf = false }).ToArray(),
-            Events = encounter.Events.Select(hit => hit with { Source = ids[hit.Source], Target = ids[hit.Target],
-                OriginalSource = hit.OriginalSource is { } original ? ids[original] : null }).ToArray()
+            Events = encounter.Events.Select(hit => hit with
+            {
+                Source = ids[hit.Source],
+                Target = ids[hit.Target],
+                OriginalSource = hit.OriginalSource is { } original ? ids[original] : null,
+                Raid = hit.Raid is { } raid ? raid with { Provider = ids[raid.Provider] } : null
+            }).ToArray()
         };
     }
 

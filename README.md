@@ -1,5 +1,7 @@
 **Spike — AION 2 Global combat meter.** [Visit the website](https://enzocx.github.io/Spike/) · [Download for Windows](https://github.com/EnzoCx/Spike/releases/latest/download/Spike.exe)
 
+**New: [rDPS beta](#rdps-beta)** — explore estimated support contribution in the overlay and reports. Partial, experimental and not yet validated in game.
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.svg">
@@ -32,6 +34,14 @@
 ---
 
 ## Preview
+
+### rDPS beta
+
+Select **rDPS β** in the overlay or **rDPS beta** in a report. The estimate subtracts the modeled damage received from an external aura and credits it to the support who provided it. Raw DPS remains the default. Hover details show estimated contributions received and provided; copying and JSON v2 exports retain the beta data.
+
+This first model covers **Light of Protection (Cleric)** and **Undefeated Mantra (Chanter)** only. It provisionally treats the nominal level-one **10.5%** bonus as a final multiplier, without knowing the actual level or personal stats. Other buffs, debuffs, specializations and early removals are not modeled. These assumptions can be wrong on Global: **this is not a reliable class comparison or a complete rDPS ranking**.
+
+Values carry **≈** and a **partial estimate** label. The coverage indicator counts damage with an observed, attributed aura; even 100% does not validate accuracy or include every buff. Ambiguous or missing evidence displays **—**, including older archives. Skill details and the timeline continue to show raw damage. See [the model and test guide](docs/RDPS.md).
 
 ### In-game ranking
 

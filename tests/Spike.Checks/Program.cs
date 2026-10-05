@@ -150,4 +150,5 @@ Directory.Delete(testFolder);
 await UpdateChecks.Run(Check);
 ApplicationDataChecks.Run(Check);
 ProgressChecks.Run(Check);
+RaidChecks.Run(Check);
 Console.WriteLine($"{count} checks passed.");

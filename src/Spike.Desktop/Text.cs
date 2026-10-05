@@ -6,6 +6,16 @@ public static class Text
     public static readonly string[] Languages = ["fr", "en", "es"];
     private static readonly Dictionary<string, string[]> Strings = new()
     {
+        ["rdps"] = ["rDPS bêta", "rDPS beta", "rDPS beta"],
+        ["rdpsShort"] = ["rDPS β", "rDPS β", "rDPS β"],
+        ["rdpsPartial"] = ["Estimation partielle", "Partial estimate", "Estimación parcial"],
+        ["rdpsUnavailable"] = ["rDPS indisponible : aucune aura prise en charge observée avec un auteur identifié.", "rDPS unavailable: no supported aura observed with an identified caster.", "rDPS no disponible: no se observó un aura compatible con autor identificado."],
+        ["rdpsLegacy"] = ["rDPS indisponible dans cette archive : données de buffs non enregistrées.", "rDPS unavailable in this archive: buff data was not recorded.", "rDPS no disponible en este archivo: no se guardaron datos de buffs."],
+        ["rdpsModel"] = ["Bêta non validée en jeu : 2 auras clerc/aède, bonus provisoire de 10,5 % (niveau 1), statistiques personnelles ignorées. Autres buffs et retraits anticipés non couverts. Ne pas utiliser pour comparer les classes.", "Not validated in game: 2 Cleric/Chanter auras, provisional 10.5% bonus (level 1), personal stats ignored. Other buffs and early removals are not covered. Do not use to compare classes.", "Sin validar en el juego: 2 auras de clérigo/cantor, bonificación provisional del 10,5 % (nivel 1), sin estadísticas personales. No cubre otros buffs ni retiradas anticipadas. No usar para comparar clases."],
+        ["rdpsObserved"] = ["Dégâts sous aura modélisée", "Damage under a modelled aura", "Daño bajo un aura modelada"],
+        ["rdpsReceived"] = ["Bonus reçus estimés", "Estimated bonus received", "Bonificación recibida estimada"],
+        ["rdpsProvided"] = ["Bonus apportés estimés", "Estimated bonus provided", "Bonificación aportada estimada"],
+        ["rdpsRawDetails"] = ["Compétences et courbe : DPS brut", "Skills and timeline: raw DPS", "Habilidades y curva: DPS bruto"],
         ["progress"] = ["Progression", "Progress", "Progreso"],
         ["legacyAttempts"] = ["Anciennes archives", "Older archives", "Archivos antiguos"],
         ["serverLabel"] = ["Serveur", "Server", "Servidor"],

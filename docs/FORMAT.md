@@ -36,6 +36,17 @@ réception ; une réutilisation d'ID ne réattribue pas les anciens dégâts. L'
 également cet identifiant original et conserve les références valides. Ces métadonnées
 ne prouvent pas l'authenticité d'un import.
 
+## Métadonnées facultatives rDPS bêta
+
+`rdpsModel: "auras-level1-v1"` identifie le modèle provisoire. Un événement de dégâts
+peut porter `raid: { "provider": 2, "skillId": 18190000, "bonus": 105 }`.
+`amount` conserve les dégâts bruts ; `bonus` est une contribution figée, comprise
+entre zéro et ces dégâts. Le fournisseur doit exister dans les participants ;
+seules les familles 17410000 et 18190000 sont acceptées. Une aura personnelle a
+un bonus transféré nul. Aucun crédit n’est accepté sur un soin ou sans modèle.
+L’export remplace également `provider`. L’absence de métadonnées signifie inconnu,
+jamais zéro buff. Voir [RDPS.md](RDPS.md) pour les hypothèses et limites.
+
 ## JSON v1 — ancien prototype, non importé par l'interface actuelle
 
 UTF-8, 10 Mo maximum. Voir `samples/combat.spike.json`.

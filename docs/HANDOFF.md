@@ -1,6 +1,6 @@
 # Reprendre le projet
 
-État de référence : version 0.5.9, 5 octobre 2026.
+État de référence : version 0.5.11, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 Depuis 0.5.9, les mises à jour sont recherchées au lancement puis toutes les 15 minutes.
@@ -156,6 +156,14 @@ Voir `EncounterProgress.cs`, `Dashboard.Progress.cs`, `Dashboard.Progress.Verifi
 - SDK/runtime .NET 9 : migration LTS à planifier séparément, pas intégrée à ce nettoyage.
 
 ## Fichiers d’entrée
+
+rDPS bêta depuis 0.5.11 : `docs/RDPS.md` décrit le modèle partiel de deux auras
+(clerc/aède), l’hypothèse nominale 10,5 % niveau 1 et les essais à faire en jeu.
+Rapport, overlay, survols, copie et archives v2 portent les limites ; le DPS brut
+reste le défaut. `BetaBuffTracker.cs` suit les messages candidats, `RaidDamage.cs`
+réattribue les bonus sans changer les totaux. Aucun cycle de vie ni coefficient
+Global n’est validé. Aucune capture lancée pour ce développement. Sources et
+protocole de calibration : `docs/RDPS-RESEARCH.md`, outils hors ligne : `tools/rdps/`.
 
 `docs/ARCHITECTURE.md`, `docs/FORMAT.md`, `docs/DECISIONS.md`, `CONTRIBUTING.md`,
 `THIRD-PARTY-NOTICES.md`. Présentation : `Dashboard.xaml`, `Dashboard.xaml.cs`,

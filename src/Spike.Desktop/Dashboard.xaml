@@ -55,9 +55,9 @@
        <StackPanel Grid.Column="2"><TextBlock x:Name="DurationCaption" Style="{StaticResource MutedText}"/><TextBlock x:Name="DurationValue" FontSize="26" FontWeight="Medium" Margin="0,5,0,0"/></StackPanel>
       </Grid>
       <Border Grid.Row="3" BorderBrush="{DynamicResource Border}" BorderThickness="0,1,0,0" Padding="0,16,0,20">
-       <DockPanel><ComboBox x:Name="TargetBox" DockPanel.Dock="Right" MinWidth="180" MaxWidth="280" DisplayMemberPath="Name" SelectionChanged="TargetChanged"/>
-        <StackPanel Orientation="Horizontal"><Button x:Name="DamageButton" Click="ShowDamage"/><Button x:Name="HealingButton" Click="ShowHealing"/></StackPanel>
-       </DockPanel>
+       <StackPanel><DockPanel><ComboBox x:Name="TargetBox" DockPanel.Dock="Right" MinWidth="180" MaxWidth="280" DisplayMemberPath="Name" SelectionChanged="TargetChanged"/>
+        <StackPanel Orientation="Horizontal"><Button x:Name="DamageButton" Click="ShowDamage"/><Button x:Name="HealingButton" Click="ShowHealing"/><Button x:Name="RaidButton" Click="ShowRaid"/></StackPanel>
+       </DockPanel><TextBlock x:Name="RaidNote" Visibility="Collapsed" Style="{StaticResource MutedText}" TextWrapping="Wrap" FontSize="11" Margin="0,8,0,0"/></StackPanel>
       </Border>
       <Grid Grid.Row="4">
        <Grid.ColumnDefinitions><ColumnDefinition Width="1*"/><ColumnDefinition Width="32"/><ColumnDefinition Width="1.15*"/></Grid.ColumnDefinitions>

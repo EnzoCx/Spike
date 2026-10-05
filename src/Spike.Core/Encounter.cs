@@ -5,10 +5,12 @@ public sealed record Participant(int Id, string Name, string ClassName, bool IsP
     bool IsUnidentifiedSource = false, int? NpcId = null, int? ServerId = null,
     int? ObservedDeaths = null, string? IdentityEvidence = null);
 public sealed record CombatEvent(long AtMs, int Source, int Target, int SkillId, string Skill,
-    long Amount, bool Heal, bool Critical, bool Tick, int? OriginalSource = null, string? Attribution = null);
+    long Amount, bool Heal, bool Critical, bool Tick, int? OriginalSource = null, string? Attribution = null,
+    RaidCredit? Raid = null);
 public sealed record Encounter(int Version, Guid Id, DateTimeOffset StartedAt, string Region, string Patch,
     string Origin, string Zone, string EndReason, long DurationMs, Participant[] Participants, CombatEvent[] Events)
 {
+    public string? RdpsModel { get; init; }
     public string Title => Participants.FirstOrDefault(actor => actor.IsBoss)?.Name
         ?? (string.IsNullOrWhiteSpace(Zone) ? "—" : Zone);
     public double Seconds => Math.Max(1, DurationMs / 1000d);

@@ -89,7 +89,8 @@ public sealed class LiveMeter : IDisposable
             var engaged = EngagedBoss(hit, directory);
             if (boss is not null && engaged is not null
                 && (boss.EntityId != engaged.EntityId || boss.NpcId != engaged.NpcId)) Finish("boss-changed");
-            var hitIds = new[] { hit.SourceObjectId, hit.TargetObjectId, hit.OriginalSource ?? hit.SourceObjectId };
+            var hitIds = new[] { hit.SourceObjectId, hit.TargetObjectId, hit.OriginalSource ?? hit.SourceObjectId,
+                hit.Raid?.Provider ?? hit.SourceObjectId };
             if (events.Count >= 250_000 || participantIds.Count + hitIds.Distinct().Count(actor => !participantIds.Contains(actor)) > 4096
                 || (events.Count > 0 && (hit.Timestamp - first).TotalHours >= 23)) Finish("limit");
             var active = KeepsCombatActive(hit, directory);
@@ -128,8 +129,13 @@ public sealed class LiveMeter : IDisposable
     {
         if (hit.AttributionCaptured) return hit;
         var owner = directory.EvidenceApplies(hit.SourceObjectId, hit.Timestamp) ? directory.SummonOwnerOf(hit.SourceObjectId) : null;
-        return hit with { SourceObjectId = owner ?? hit.SourceObjectId, OriginalSource = owner is null ? null : hit.SourceObjectId,
-            Attribution = owner is null ? null : directory.OwnerEvidence(hit.SourceObjectId), AttributionCaptured = true };
+        return hit with
+        {
+            SourceObjectId = owner ?? hit.SourceObjectId,
+            OriginalSource = owner is null ? null : hit.SourceObjectId,
+            Attribution = owner is null ? null : directory.OwnerEvidence(hit.SourceObjectId),
+            AttributionCaptured = true
+        };
     }
 
     private BossAttempt? EngagedBoss(DamageEvent hit, Aion2EntityDirectory directory)
@@ -191,7 +197,8 @@ public sealed class LiveMeter : IDisposable
         var mapped = events.ToArray();
         var sources = mapped.Select(h => h.SourceObjectId).ToHashSet();
         var actorTimes = mapped.SelectMany(h => new[] { (Id: h.SourceObjectId, h.Timestamp), (Id: h.TargetObjectId, h.Timestamp),
-            (Id: h.OriginalSource ?? h.SourceObjectId, h.Timestamp) }).GroupBy(a => a.Id).ToDictionary(g => g.Key, g => g.Min(a => a.Timestamp));
+            (Id: h.OriginalSource ?? h.SourceObjectId, h.Timestamp), (Id: h.Raid?.Provider ?? h.SourceObjectId, h.Timestamp) })
+            .GroupBy(a => a.Id).ToDictionary(g => g.Key, g => g.Min(a => a.Timestamp));
         var actors = actorTimes.Select(entry =>
         {
             var actor = entry.Key;
@@ -213,8 +220,9 @@ public sealed class LiveMeter : IDisposable
         // Do not dilute the finished boss's DPS while waiting for the inactivity timeout.
         var duration = Math.Max(0, (long)(last - first).TotalMilliseconds);
         var hits = mapped.Select(hit => new CombatEvent(Math.Max(0, (long)(hit.Timestamp - first).TotalMilliseconds), hit.SourceObjectId,
-            hit.TargetObjectId, hit.SkillId, hit.Skill ?? "—", hit.Amount, hit.IsHeal, hit.IsCritical, hit.IsTick, hit.OriginalSource, hit.Attribution)).ToArray();
-        return EncounterSources.Classify(new(2, id, new DateTimeOffset(first), "Global", protocol.GameVersion, "live", encounterZone, "active", duration, actors, hits));
+            hit.TargetObjectId, hit.SkillId, hit.Skill ?? "—", hit.Amount, hit.IsHeal, hit.IsCritical, hit.IsTick, hit.OriginalSource, hit.Attribution, hit.Raid)).ToArray();
+        return EncounterSources.Classify(new Encounter(2, id, new DateTimeOffset(first), "Global", protocol.GameVersion, "live", encounterZone, "active", duration, actors, hits)
+        { RdpsModel = RaidDamage.Model });
     }
 
     public void Finish(string reason = "manual")
