@@ -1,4 +1,4 @@
-**DPSMeter is now Spike.** [Visit the website](https://enzocx.github.io/Spike/) · [Download for Windows](https://github.com/EnzoCx/Spike/releases/latest/download/DPSMeter.exe)
+**Spike — AION 2 Global combat meter.** [Visit the website](https://enzocx.github.io/Spike/) · [Download for Windows](https://github.com/EnzoCx/Spike/releases/latest/download/Spike.exe)
 
 <p align="center">
   <picture>
@@ -100,7 +100,7 @@ The executable is self-contained: **you do not need to install .NET to use it**.
 
 ### Download and launch
 
-1. Download **DPSMeter.exe** from the [latest release](https://github.com/EnzoCx/Spike/releases/latest) and save it in a personal folder.
+1. Download **Spike.exe** from the [latest release](https://github.com/EnzoCx/Spike/releases/latest) and save it in a personal folder.
 2. Open the executable. If Npcap is missing, setup asks you to close the game and download the installer from the official website.
 3. Install Npcap, return to Spike, click **Check installation**, then **Continue**. Launch the game afterward.
 
@@ -113,7 +113,7 @@ The app is not yet signed, so Windows may display a security warning. Check that
 
 Starting with version 0.4.6, the app checks for stable releases on launch, downloads them in the background, and installs them the next time you launch it. No restart is forced; your fights and preferences are preserved.
 
-After the account and repository rename, users of 0.5.0 or earlier must download 0.5.1 manually once. Their strict updater rejects the new repository's asset URLs. Automatic updates resume with 0.5.1.
+Download Spike.exe 0.5.2 manually once if you use an earlier version: older updaters expect the previous filename. Your settings and history are copied on first launch, preserving the originals. The download arrow beside the app version checks again and prepares any newer release for the next launch.
 
 Users of version 0.4.5 or earlier must update manually once, as those versions have no updater. Installing updates requires a writable folder. The meter remains usable without a network connection or an available release.
 
@@ -170,7 +170,7 @@ If the meter starts mid-session, it may need to wait for the game to send their 
 
 ### Where are my fights stored?
 
-They stay on your PC in `%LOCALAPPDATA%\DPSMeter\fights\`. Preferences are in `%LOCALAPPDATA%\DPSMeter\settings.json`. Fights are not automatically deleted; a very large collection may take longer to load.
+Existing DPSMeter preferences and fights are copied once to Spike storage, with the originals preserved. They stay on your PC in `%LOCALAPPDATA%\Spike\fights\`. Preferences are in `%LOCALAPPDATA%\Spike\settings.json`. Fights are not automatically deleted; a very large collection may take longer to load.
 
 ### Can I share a report?
 
@@ -217,4 +217,4 @@ This script restores locked dependencies, builds the app, checks calculations an
 
 ---
 
-Project code is under the [MIT license](LICENSE). AION 2 artwork and data: © NCSOFT, excluded from the project's MIT license. The engine is derived from SkeeveTV's work under MIT; PacketDotNet is under MPL-2.0, and Barlow fonts under SIL OFL 1.1. See [third-party notices](THIRD-PARTY-NOTICES.md) and [engine provenance](src/DPSMeter.Engine/Vendor/ORIGIN.md).
+Project code is under the [MIT license](LICENSE). AION 2 artwork and data: © NCSOFT, excluded from the project's MIT license. The engine is derived from SkeeveTV's work under MIT; PacketDotNet is under MPL-2.0, and Barlow fonts under SIL OFL 1.1. See [third-party notices](THIRD-PARTY-NOTICES.md) and [engine provenance](src/Spike.Engine/Vendor/ORIGIN.md).

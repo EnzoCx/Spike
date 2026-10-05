@@ -1,17 +1,21 @@
 # Reprendre le projet
 
-État de référence : version 0.5.1, 4 octobre 2026.
+État de référence : version 0.5.2, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
 ## Identité et site
 
 Le produit s’appelle **Spike** depuis 0.5.0, avec un symbole S en trois barres.
-Le dépôt s'appelle `EnzoCx/Spike`. L’exécutable `DPSMeter.exe`, les espaces de noms et les chemins locaux
-restent inchangés pour préserver sauvegardes et mises à jour.
+Le dépôt s’appelle `EnzoCx/Spike`. Depuis 0.5.2, l’exécutable `Spike.exe`, les projets,
+les espaces de noms et les nouveaux chemins locaux portent tous le nom Spike. Les réglages
+et combats DPSMeter sont copiés une fois sans supprimer les originaux ; en cas d’échec,
+l’ancien dossier reste utilisé et la migration est retentée au lancement suivant.
 Landing page FR/EN/ES et trois thèmes : https://enzocx.github.io/Spike/.
 Sources dans `site/`, publication limitée au dossier assemblé par `tools/Build-Site.ps1`.
 Les aperçus proviennent uniquement des fixtures démo hors écran. Voir `site/README.md`.
-La migration vers 0.5.1 nécessite un téléchargement manuel pour les anciennes installations.
+La migration vers 0.5.2 nécessite un téléchargement manuel de Spike.exe pour les anciennes installations.
+La flèche de téléchargement près de la version relance la recherche et affiche son état,
+sans redémarrage forcé ; installation au lancement suivant.
 
 ## Ce qui fonctionne
 
@@ -95,7 +99,7 @@ les changements d’instance et les IDs réutilisés. Préserver les événement
 - Pas de site communautaire, classements en ligne ou signature Windows.
 - Mise à jour automatique depuis GitHub Releases : téléchargement en arrière-plan,
   installation au lancement suivant, ancienne version conservée. Voir `docs/UPDATES.md`.
-  Première installation manuelle requise pour les utilisateurs de 0.4.5 ou antérieur.
+  Téléchargement manuel de Spike.exe requis pour les versions antérieures à 0.5.2.
 - SDK/runtime .NET 9 : migration LTS à planifier séparément, pas intégrée à ce nettoyage.
 
 ## Fichiers d’entrée
@@ -112,7 +116,7 @@ Le fonctionnement des mises à jour et la procédure de publication sont décrit
 
 `tools/Verify.ps1` lance les tests hors ligne et les rendus hors écran. Aucun clic ni fenêtre
 visible au-dessus du jeu. La CI Windows utilise le même script.
-Les données réelles restent dans `%LOCALAPPDATA%/DPSMeter`, jamais dans Git.
+Les données réelles restent dans `%LOCALAPPDATA%/Spike`, jamais dans Git.
 `artifacts/` est local et ignoré. Ne pas publier ses captures de combats réels.
 Les tests sont des programmes console : leur code de sortie est l’autorité, pas `dotnet test`.
 Les comptes rendus de validation passée ne sont pas une certification du protocole.

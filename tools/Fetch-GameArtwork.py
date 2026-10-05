@@ -13,14 +13,14 @@ import re
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-DEST = ROOT / "src/DPSMeter.Desktop/GameArt"
+DEST = ROOT / "src/Spike.Desktop/GameArt"
 MANIFEST = DEST / "sources.json"
 DEST.mkdir(parents=True, exist_ok=True)
 previous = json.loads(MANIFEST.read_text("utf-8")) if MANIFEST.exists() else {}
 sources = []
 
 def fetch(url):
-    with urlopen(Request(url, headers={"User-Agent": "DPSMeter-artwork-build/0.4.1"}), timeout=30) as response:
+    with urlopen(Request(url, headers={"User-Agent": "Spike-artwork-build/0.4.1"}), timeout=30) as response:
         data = response.read(8 * 1024 * 1024 + 1)
     if len(data) > 8 * 1024 * 1024:
         raise ValueError("Artwork exceeds size limit")

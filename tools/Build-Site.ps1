@@ -12,7 +12,7 @@ foreach ($name in @('symbol-dark.svg', 'symbol-light.svg', 'icon-32.png', 'socia
     Copy-Item -LiteralPath (Join-Path $project "brand/$name") -Destination $assets -Force
 }
 foreach ($name in @('Barlow-Regular.ttf', 'BarlowCondensed-SemiBold.ttf', 'Barlow-OFL.txt', 'BarlowCondensed-OFL.txt')) {
-    Copy-Item -LiteralPath (Join-Path $project "src/DPSMeter.Desktop/Fonts/$name") -Destination (Join-Path $assets 'Fonts') -Force
+    Copy-Item -LiteralPath (Join-Path $project "src/Spike.Desktop/Fonts/$name") -Destination (Join-Path $assets 'Fonts') -Force
 }
 foreach ($name in @('LICENSE', 'THIRD-PARTY-NOTICES.md')) {
     Copy-Item -LiteralPath (Join-Path $project $name) -Destination $assets -Force

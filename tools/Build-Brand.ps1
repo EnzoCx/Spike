@@ -3,12 +3,12 @@ $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName PresentationCore, PresentationFramework, WindowsBase
 $project = Split-Path $PSScriptRoot -Parent
 $brand = Join-Path $project 'brand'
-$desktopBrand = Join-Path $project 'src/DPSMeter.Desktop/Brand'
+$desktopBrand = Join-Path $project 'src/Spike.Desktop/Brand'
 [IO.Directory]::CreateDirectory($desktopBrand) | Out-Null
 $culture = [Globalization.CultureInfo]::InvariantCulture
 $symbolPath = [IO.File]::ReadAllText((Join-Path $brand 'symbol.path')).Trim()
 $symbol = [Windows.Media.Geometry]::Parse($symbolPath)
-$fontRoot = [Uri]((Join-Path $project 'src/DPSMeter.Desktop/Fonts') + '/')
+$fontRoot = [Uri]((Join-Path $project 'src/Spike.Desktop/Fonts') + '/')
 $body = [Windows.Media.FontFamily]::new($fontRoot, './#Barlow')
 $display = [Windows.Media.FontFamily]::new($fontRoot, './#Barlow Condensed SemiBold')
 $faceCheck = [Windows.Media.Typeface]::new($display, [Windows.FontStyles]::Normal, [Windows.FontWeights]::SemiBold, [Windows.FontStretches]::Normal)
@@ -84,7 +84,7 @@ foreach ($size in @(16, 24, 32, 48, 64, 128, 256)) {
     SavePng $visual $size $size $path
     $frames += ,@{ Size = $size; Bytes = [IO.File]::ReadAllBytes($path) }
 }
-$icoPath = Join-Path $brand 'dpsmeter.ico'
+$icoPath = Join-Path $brand 'spike.ico'
 $stream = [IO.File]::Create($icoPath); $writer = [IO.BinaryWriter]::new($stream)
 try {
     $writer.Write([uint16]0); $writer.Write([uint16]1); $writer.Write([uint16]$frames.Count)
@@ -97,7 +97,7 @@ try {
     }
     foreach ($frame in $frames) { $writer.Write([byte[]]$frame.Bytes) }
 } finally { $writer.Dispose() }
-Copy-Item -LiteralPath $icoPath -Destination (Join-Path $desktopBrand 'dpsmeter.ico') -Force
+Copy-Item -LiteralPath $icoPath -Destination (Join-Path $desktopBrand 'spike.ico') -Force
 
 $visual = [Windows.Media.DrawingVisual]::new(); $dc = $visual.RenderOpen()
 $dc.DrawRectangle((Brush '#191A18'), $null, [Windows.Rect]::new(0, 0, 1280, 640))

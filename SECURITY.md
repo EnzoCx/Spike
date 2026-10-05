@@ -1,6 +1,6 @@
 # Security and privacy
 
-DPSMeter passively observes game traffic and stores derived combat records locally.
+Spike passively observes game traffic and stores derived combat records locally.
 It has no automatic upload or telemetry. Raw traffic is not written by the application.
 Local fight files contain character names; sharing them is a separate, explicit action.
 Export replaces player names and entity IDs, but free-text metadata can still identify

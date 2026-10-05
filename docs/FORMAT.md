@@ -2,7 +2,7 @@
 
 ## JSON v2 — application actuelle
 
-Contrat `Encounter` dans `src/DPSMeter.Core/Encounter.cs`. Version 2, UUID de combat,
+Contrat `Encounter` dans `src/Spike.Core/Encounter.cs`. Version 2, UUID de combat,
 date avec fuseau, région Global, version du protocole, origine, zone, motif de fin,
 durée en millisecondes. Participants : ID, nom, classe, joueur/boss. Événements :
 temps relatif, source, cible, ID/nom de compétence, quantité, soin, critique et tick.
@@ -25,7 +25,7 @@ Les imports sont non vérifiés ; une démo conserve son marqueur de démo.
 
 ## JSON v1 — ancien prototype, non importé par l'interface actuelle
 
-UTF-8, 10 Mo maximum. Voir `samples/combat.dpsmeter.json`.
+UTF-8, 10 Mo maximum. Voir `samples/combat.spike.json`.
 
 | Champ | Rôle |
 | --- | --- |

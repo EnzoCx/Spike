@@ -1,7 +1,7 @@
 param()
 $ErrorActionPreference = 'Stop'
 $project = Split-Path $PSScriptRoot -Parent
-$harness = Join-Path $project 'tests/DPSMeter.UpdateHarness/DPSMeter.UpdateHarness.csproj'
+$harness = Join-Path $project 'tests/Spike.UpdateHarness/Spike.UpdateHarness.csproj'
 $buildRoot = Join-Path $project 'artifacts/update-harness'
 $runRoot = Join-Path $buildRoot ([Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $runRoot -Force | Out-Null
@@ -33,8 +33,8 @@ Invoke-Dotnet @('restore', $harness, '--locked-mode')
 foreach ($version in @('0.4.6', '0.4.7')) {
     Invoke-Dotnet @('publish', $harness, '-c', 'Release', '--no-restore', "-p:Version=$version", '-o', (Join-Path $buildRoot $version))
 }
-$old = Join-Path $buildRoot '0.4.6/DPSMeter.UpdateHarness.exe'
-$new = Join-Path $buildRoot '0.4.7/DPSMeter.UpdateHarness.exe'
+$old = Join-Path $buildRoot '0.4.6/Spike.UpdateHarness.exe'
+$new = Join-Path $buildRoot '0.4.7/Spike.UpdateHarness.exe'
 $targets = @()
 try {
     foreach ($scenario in @('replace', 'locked')) {
@@ -73,7 +73,7 @@ try {
     foreach ($target in $targets) {
         if (!(Test-Path -LiteralPath "$target.cache")) { continue }
         $cache = [IO.Path]::GetFullPath((Get-Content -LiteralPath "$target.cache" -Raw))
-        $allowed = [IO.Path]::GetFullPath((Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'DPSMeter/updates'))
+        $allowed = [IO.Path]::GetFullPath((Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'Spike/updates'))
         if ([IO.Path]::GetDirectoryName($cache) -ne $allowed -or [IO.Path]::GetFileName($cache) -notmatch '^[A-F0-9]{64}$') {
             throw 'Refusing cleanup outside the fixture update cache.'
         }

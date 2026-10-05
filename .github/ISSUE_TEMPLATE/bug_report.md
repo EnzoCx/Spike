@@ -4,7 +4,7 @@ about: Signaler un comportement incorrect
 labels: bug
 ---
 
-**Version DPSMeter / Windows / langue / thème**
+**Version Spike / Windows / langue / thème**
 
 **Comportement attendu et observé**
 

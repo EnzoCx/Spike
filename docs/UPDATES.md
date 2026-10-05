@@ -2,20 +2,24 @@
 
 L'EXE autonome consulte `https://api.github.com/repos/EnzoCx/Spike/releases/latest`
 une fois à chaque démarrage normal, sans authentification ni données de combat.
-Après le changement de compte et de dépôt, les versions 0.5.0 et antérieures doivent
-télécharger manuellement la version 0.5.1 une fois : leur validation stricte refuse
-les assets dont l'adresse utilise le nouveau dépôt. Les versions suivantes utilisent
-la nouvelle adresse sans assouplir la vérification du dépôt officiel.
+Depuis 0.5.2, l’asset publié et l’exécutable s’appellent `Spike.exe`. Les versions
+antérieures recherchent `DPSMeter.exe` et nécessitent un téléchargement manuel de
+Spike.exe une fois. Les réglages et combats sont copiés de `%LOCALAPPDATA%/DPSMeter`
+vers `%LOCALAPPDATA%/Spike` au premier lancement, sans supprimer ni écraser les originaux.
+Une migration interrompue conserve l’ancien stockage et est retentée au lancement suivant.
+La petite flèche à côté de la version relance immédiatement la recherche et le téléchargement
+d’une version plus récente. Son état indique téléchargement, mise à jour prête, version à jour
+ou échec avec possibilité de réessayer. La capture continue ; aucun redémarrage n’est imposé.
 Les diagnostics et builds de développement ne consultent pas GitHub.
 Le démarrage et la capture n'attendent pas le réseau. Aucun dialogue ni redémarrage forcé.
 
 Seules les releases stables avec une version numérique supérieure sont acceptées.
-L'asset doit s'appeler `DPSMeter.exe`, provenir du dépôt officiel, mesurer au maximum
+L'asset doit s'appeler `Spike.exe`, provenir du dépôt officiel, mesurer au maximum
 300 Mio et posséder un digest SHA-256 fourni par GitHub. Un téléchargement incomplet
 ou incorrect ne devient jamais une mise à jour installable. Le téléchargement peut durer
 au maximum cinq minutes ; sa préparation réseau est bornée à trente secondes.
 
-Le cache `%LOCALAPPDATA%/DPSMeter/updates/` est séparé par chemin d'installation et
+Le cache `%LOCALAPPDATA%/Spike/updates/` est séparé par chemin d'installation et
 protégé contre les accès simultanés par un verrou de fichier. Au lancement suivant,
 l'application revalide le cache et la version Windows du binaire. Une copie de l'EXE
 actuel sert d'assistant sans fenêtre : elle attend la sortie du processus de démarrage,
@@ -38,7 +42,7 @@ en cas de régression fonctionnelle de la nouvelle version.
 
 ## Publier une version
 
-1. Augmenter `Version` dans `src/DPSMeter.Desktop/DPSMeter.Desktop.csproj` et rédiger
+1. Augmenter `Version` dans `src/Spike.Desktop/Spike.Desktop.csproj` et rédiger
    `docs/RELEASE-X.Y.Z.md`.
 2. Exécuter `tools/Verify.ps1` et examiner les changements indexés.
    Ne pas publier si les vérifications échouent ou si le travail est incomplet.
@@ -47,7 +51,7 @@ en cas de régression fonctionnelle de la nouvelle version.
 4. Il prépare une release brouillon avec l'EXE puis la rend publique et la marque Latest.
    Un échec laisse au plus un brouillon à inspecter ; ne pas remplacer silencieusement
    les assets d'une version déjà publiée. Publier une nouvelle version corrective.
-5. Vérifier la réussite du workflow et la disponibilité de `DPSMeter.exe` sur la release avant
+5. Vérifier la réussite du workflow et la disponibilité de `Spike.exe` sur la release avant
    d'annoncer la publication terminée.
 
 La première version équipée de ce système doit être téléchargée manuellement depuis

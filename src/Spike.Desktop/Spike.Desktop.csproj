@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>Spike</AssemblyName>
+    <Version>0.5.2</Version>
+    <Product>Spike</Product>
+    <Title>Spike</Title>
+    <Description>Spike — combat analysis for AION 2 Global</Description>
+    <ApplicationIcon>Brand/spike.ico</ApplicationIcon>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Spike.Core/Spike.Core.csproj" />
+    <ProjectReference Include="../Spike.Engine/Spike.Engine.csproj" />
+    <Resource Include="Fonts/*" />
+    <Resource Include="Brand/spike.ico" />
+    <Resource Include="GameArt/**/*" />
+    <Resource Include="../../brand/symbol.path" Link="Brand/symbol.path" />
+    <Resource Include="../Spike.Engine/Vendor/LICENSE" Link="Licenses/Engine.txt" />
+    <Resource Include="../../LICENSE" Link="Licenses/Spike.txt" />
+    <Resource Include="../../THIRD-PARTY-NOTICES.md" Link="Licenses/ThirdParty.txt" />
+  </ItemGroup>
+</Project>

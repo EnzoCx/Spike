@@ -2,7 +2,7 @@ name: Publish website
 on:
   push:
     branches: [main]
-    paths: ['site/**', 'brand/**', 'tools/Build-Site.ps1', '.github/workflows/pages.yml', 'src/DPSMeter.Desktop/Fonts/**', 'LICENSE', 'THIRD-PARTY-NOTICES.md']
+    paths: ['site/**', 'brand/**', 'tools/Build-Site.ps1', '.github/workflows/pages.yml', 'src/Spike.Desktop/Fonts/**', 'LICENSE', 'THIRD-PARTY-NOTICES.md']
   workflow_dispatch:
 permissions:
   contents: read

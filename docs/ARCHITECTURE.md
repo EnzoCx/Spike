@@ -70,7 +70,7 @@ hors écran avec `RenderTargetBitmap`, sans piloter le bureau.
 ## Ressources
 
 Polices, marque, tables et icônes sont intégrées à la compilation. Les tables du moteur
-sont extraites dans le cache local propre à DPSMeter. Aucun téléchargement d’image à
+sont extraites dans le cache local propre à Spike. Aucun téléchargement d’image à
 l’exécution. `tools/Fetch-GameArtwork.py` est réservé à une mise à jour volontaire du
 catalogue : URLs et empreintes sont conservées, les changements distants sont refusés.
 

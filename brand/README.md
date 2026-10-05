@@ -31,7 +31,7 @@ Le fond sombre est le choix par défaut pour limiter la gêne pendant le jeu. Le
 
 ## Typographie et interface
 
-**Barlow Condensed SemiBold** pour la signature et les titres de marque. **Barlow** pour les noms, actions et valeurs. Polices embarquées sous SIL OFL ; notices dans `src/DPSMeter.Desktop/Fonts`.
+**Barlow Condensed SemiBold** pour la signature et les titres de marque. **Barlow** pour les noms, actions et valeurs. Polices embarquées sous SIL OFL ; notices dans `src/Spike.Desktop/Fonts`.
 
 - Échelle : 12, 15, 19, 24, 30 px ; l’overlay utilise 10–12 px pour les valeurs secondaires et 18 px pour sa signature.
 - Les chiffres sont alignés à droite ; les noms sont alignés à gauche. Les unités restent visibles.
@@ -43,7 +43,7 @@ Le fond sombre est le choix par défaut pour limiter la gêne pendant le jeu. Le
 ## Application au site
 
 Depuis 0.4.1, les repères de combat utilisent les emblèmes AION 2 et les couleurs
-de classes du site NotMeter : voir `src/DPSMeter.Desktop/GameArt/sources.json` et
+de classes du site NotMeter : voir `src/Spike.Desktop/GameArt/sources.json` et
 `CREDITS.txt`. Ces couleurs de classes sont des conventions NotMeter, pas une
 palette officielle NCSOFT. La marque Spike et les thèmes restent graphite /
 bronze / ivoire. Les illustrations du jeu ne sont pas couvertes par notre licence MIT.
@@ -57,7 +57,7 @@ Reprendre la signature, la palette et la typographie. La liste de combats, les c
 - `logo-{dark,light,mono}.png` : mêmes signatures sur fond transparent, hauteur 256 px.
 - `symbol-{dark,light,mono}.svg` : symboles seuls.
 - `symbol-transparent.png` : symbole bronze transparent, 1024 px.
-- `dpsmeter.ico` : icône Windows, 16 / 24 / 32 / 48 / 64 / 128 / 256 px.
+- `spike.ico` : icône Windows, 16 / 24 / 32 / 48 / 64 / 128 / 256 px.
 - `icon-*.png` : icônes séparées, utilisables notamment pour le web.
 - `social-cover.png` : couverture pour une future présentation du projet.
 - `tokens.css` : palette, typographie et espacements pour le web.
@@ -68,4 +68,4 @@ Régénération sous Windows, sans accès réseau :
 powershell -NoProfile -STA -File tools/Build-Brand.ps1
 ```
 
-Les éléments dessinés pour ce projet suivent sa licence MIT. Spike est le nom du produit ; aucune recherche juridique d’antériorité de marque n’a été effectuée. Le dépôt, le nom technique DPSMeter.exe et les chemins de sauvegarde restent stables pour les mises à jour.
+Les éléments dessinés pour ce projet suivent sa licence MIT. Spike est le nom du produit ; aucune recherche juridique d’antériorité de marque n’a été effectuée. Depuis 0.5.2, les projets, l’exécutable Spike.exe et les nouveaux chemins de sauvegarde portent ce nom. Les anciennes données DPSMeter sont copiées au premier lancement, sans supprimer les originaux.

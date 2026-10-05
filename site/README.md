@@ -22,9 +22,9 @@ Seuls ces fichiers synthétiques explicitement nommés sont copiés. Ne jamais c
 un répertoire de diagnostics, un combat réel ou `docs/images/rapport-atiel.png` sur le site.
 Les aperçus sont signalés comme fictifs et ne comparent pas les performances des classes.
 
-Le nom technique `DPSMeter.exe` est conservé pour les
+Le nom technique `Spike.exe` est conservé pour les
 mises à jour des installations existantes. Le bouton de téléchargement cible
-`releases/latest/download/DPSMeter.exe`, sans numéro de version figé ni appel API.
+`releases/latest/download/Spike.exe`, sans numéro de version figé ni appel API.
 
 Les ressources AION 2 visibles dans les aperçus appartiennent à NCSOFT. Les notices
 MIT, tierces et OFL sont publiées avec le site et accessibles depuis son pied de page.
