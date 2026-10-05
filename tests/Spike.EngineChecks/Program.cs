@@ -44,7 +44,6 @@ Console.WriteLine("PASS LZ4 decode and bounds");
 LiveMeterChecks.Run(protocol);
 BossAttemptChecks.Run(protocol);
 EvidenceChecks.Run(protocol);
-RaidChecks.Run(protocol);
 if (args.Length == 0) return;
 if (args.Length != 3 || args[0] != "--probe") throw new ArgumentException("--probe seconds output.json");
 var seconds = Math.Clamp(int.Parse(args[1]), 5, 120);

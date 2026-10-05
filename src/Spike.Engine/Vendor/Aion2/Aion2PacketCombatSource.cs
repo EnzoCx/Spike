@@ -110,7 +110,6 @@ public sealed class Aion2PacketCombatSource : ICombatSource
 
     public CombatBatch Poll(bool paused)
     {
-        if (paused) { lock (_reassembler) _decoder.ResetBetaBuffs(); }
         ReportLiveCounters();
 
         if (_entities.LearnedLocalName is string learned && learned != _learnedReported)
@@ -176,9 +175,7 @@ public sealed class Aion2PacketCombatSource : ICombatSource
 
         lock (_reassembler)
         {
-            var previousDesyncs = _reassembler.Desyncs;
             var frames = _reassembler.Push(segment, _protocol.FrameLayout, _protocol.SyncOpcodes);
-            if (_reassembler.Desyncs != previousDesyncs) _decoder.ResetBetaBuffs();
             foreach (ReadOnlyMemory<byte> frame in frames)
             {
                 foreach (DamageEvent ev in _decoder.Decode(frame.Span, segment.Timestamp))

@@ -39,13 +39,6 @@ internal static class CombatHoverCard
             var block = new StackPanel(); block.Children.Add(Label(caption, 10, true)); block.Children.Add(Label(value, 18)); metrics.Children.Add(block);
         }
         stack.Children.Add(metrics);
-        if (!heals)
-        {
-            var raidDetails = Label(RaidPresentation.Details(fight, actor, target, language), 11, true);
-            raidDetails.Margin = new Thickness(0, 0, 0, 10);
-            raidDetails.ToolTip = T("rdpsModel");
-            stack.Children.Add(raidDetails);
-        }
         stack.Children.Add(Label($"{N(row?.Hits ?? 0)} {T("hits")}   ·   {T("criticalObserved")} {(row?.CriticalRate ?? 0).ToString("N1", culture)} %", 12));
         if (person.IsPlayer) stack.Children.Add(Label($"{T("observedDeaths")} : {(person.ObservedDeaths is { } deaths ? N(deaths) : T("notRecorded"))}", 12, true));
         if (person.CombatPower is { } power) stack.Children.Add(Label($"{T("combatPower")} : {N(power)}", 12, true));

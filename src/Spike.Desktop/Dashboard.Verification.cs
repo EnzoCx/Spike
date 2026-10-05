@@ -23,7 +23,6 @@ public partial class Dashboard
         VerifySharing(directory);
         VerifySetup(directory);
         VerifyProgress(directory);
-        VerifyRaid(directory);
         var placementChecks = OverlayPlacement.Verify();
         GameArtwork.Verify();
         preferences = JsonSerializer.Deserialize<Preferences>("{\"Language\":\"fr\"}")!;

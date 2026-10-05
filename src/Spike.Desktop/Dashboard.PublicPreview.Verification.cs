@@ -15,7 +15,6 @@ public partial class Dashboard
             noticeKey = null;
             ApplyTheme(); Translate();
             SpellSearch.Clear(); TimelineExpander.IsExpanded = false;
-            rdps = false;
             DisplayEncounter(demo, 1, false);
             StatusLabel.Text = T("stopped");
             SaveDashboard(directory, $"public-report-en-{theme}.png", 1424, 900);

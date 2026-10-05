@@ -17,6 +17,7 @@ public sealed class LiveMeter : IDisposable
     private readonly Dictionary<int, DateTime> assistedPlayers = new();
     private BossAttempt? boss;
     private bool dormant;
+    private bool defeated;
     private string encounterZone = "";
     private Guid id;
     private DateTime observedUntil;
@@ -28,7 +29,7 @@ public sealed class LiveMeter : IDisposable
     public long Packets => source.Packets;
     public long DecodedEvents => source.DecodedEvents;
     public int Errors => source.CallbackErrors + source.DroppedEvents;
-    public bool CanFinish => events.Count > 0;
+    public bool CanFinish => events.Count > 0 && !defeated;
     public bool HasCombat => CanFinish && !dormant;
     public event Action<Encounter>? Completed;
     public DateTime LastEvent => last;
@@ -52,6 +53,9 @@ public sealed class LiveMeter : IDisposable
 
     internal void Process(IReadOnlyList<DamageEvent> damage, DateTime now)
     {
+        var wasDefeated = defeated;
+        var previousId = id;
+        var previousCount = events.Count;
         var directory = (Aion2EntityDirectory)source.Entities;
         directory.AdvanceTime(now);
         if (contextVersion != directory.ContextVersion) Finish("context");
@@ -60,6 +64,7 @@ public sealed class LiveMeter : IDisposable
         var localPlayer = directory.LocalPlayerId;
         if (activityPlayer >= 0 && localPlayer != activityPlayer) Finish("identity");
         if (boss is not null && directory.BossNpcIdOf(boss.EntityId) != boss.NpcId) Finish("boss-changed");
+        if (defeated && boss is not null && !directory.EvidenceApplies(boss.EntityId, boss.StartedAt)) Finish("boss-respawned");
         if (localPlayer != activityPlayer)
         {
             activityPlayer = localPlayer;
@@ -85,23 +90,32 @@ public sealed class LiveMeter : IDisposable
             observedUntil = hit.Timestamp;
             if (hit.Amount < 0 || hit.Amount > 1_000_000_000_000) continue;
             if (events.Count > 0 && hit.Timestamp < first) continue;
-            if (boss?.EndReasonAt(hit.Timestamp) is { } ended) Finish(ended);
+            if (boss?.EndReasonAt(hit.Timestamp) is { } ended)
+            {
+                if (ended == "boss-defeated") defeated = true;
+                else Finish(ended);
+            }
             var engaged = EngagedBoss(hit, directory);
             if (boss is not null && engaged is not null
                 && (boss.EntityId != engaged.EntityId || boss.NpcId != engaged.NpcId)) Finish("boss-changed");
-            var hitIds = new[] { hit.SourceObjectId, hit.TargetObjectId, hit.OriginalSource ?? hit.SourceObjectId,
-                hit.Raid?.Provider ?? hit.SourceObjectId };
+            var hitIds = new[] { hit.SourceObjectId, hit.TargetObjectId, hit.OriginalSource ?? hit.SourceObjectId };
             if (events.Count >= 250_000 || participantIds.Count + hitIds.Distinct().Count(actor => !participantIds.Contains(actor)) > 4096
                 || (events.Count > 0 && (hit.Timestamp - first).TotalHours >= 23)) Finish("limit");
             var active = KeepsCombatActive(hit, directory);
             var sameBoss = boss?.Includes(hit) == true;
+            if (defeated && (!sameBoss || boss!.HasRespawnedAt(hit.Timestamp)))
+            {
+                if (!active && engaged is null) continue;
+                Finish("boss-defeated");
+                sameBoss = false;
+            }
             if (HasCombat && !sameBoss && (hit.Timestamp - lastActivity).TotalSeconds >= 12) EndIdle();
-            if (dormant)
+            if (dormant && !defeated)
             {
                 if (sameBoss || active) dormant = false;
                 else continue;
             }
-            if (!HasCombat)
+            if (events.Count == 0)
             {
                 if (!active && engaged is null) continue;
                 first = last = lastActivity = hit.Timestamp;
@@ -120,9 +134,18 @@ public sealed class LiveMeter : IDisposable
             participantIds.UnionWith(hitIds);
         }
         observedUntil = now;
-        if (boss?.EndReasonAt(now, afterBatch: true) is { } reason) Finish(reason);
+        if (boss?.EndReasonAt(now, afterBatch: true) is { } reason)
+        {
+            if (reason == "boss-defeated") defeated = true;
+            else Finish(reason);
+        }
+        // HP zero can arrive before the last damage frames. Keep those hits in the
+        // completed archive, without reopening the overlay or creating a tiny new fight.
+        var changed = !wasDefeated || previousId != id || previousCount != events.Count;
+        if (defeated && changed)
+            Completed?.Invoke(BuildSnapshot()! with { EndReason = "boss-defeated" });
         if (HasCombat && (now - lastActivity).TotalSeconds >= 12) EndIdle();
-        if (CanFinish) cachedSnapshot = BuildSnapshot();
+        if (events.Count > 0 && (!defeated || changed)) cachedSnapshot = BuildSnapshot();
     }
 
     private static DamageEvent CaptureAttribution(DamageEvent hit, Aion2EntityDirectory directory)
@@ -197,7 +220,7 @@ public sealed class LiveMeter : IDisposable
         var mapped = events.ToArray();
         var sources = mapped.Select(h => h.SourceObjectId).ToHashSet();
         var actorTimes = mapped.SelectMany(h => new[] { (Id: h.SourceObjectId, h.Timestamp), (Id: h.TargetObjectId, h.Timestamp),
-            (Id: h.OriginalSource ?? h.SourceObjectId, h.Timestamp), (Id: h.Raid?.Provider ?? h.SourceObjectId, h.Timestamp) })
+            (Id: h.OriginalSource ?? h.SourceObjectId, h.Timestamp) })
             .GroupBy(a => a.Id).ToDictionary(g => g.Key, g => g.Min(a => a.Timestamp));
         var actors = actorTimes.Select(entry =>
         {
@@ -220,19 +243,20 @@ public sealed class LiveMeter : IDisposable
         // Do not dilute the finished boss's DPS while waiting for the inactivity timeout.
         var duration = Math.Max(0, (long)(last - first).TotalMilliseconds);
         var hits = mapped.Select(hit => new CombatEvent(Math.Max(0, (long)(hit.Timestamp - first).TotalMilliseconds), hit.SourceObjectId,
-            hit.TargetObjectId, hit.SkillId, hit.Skill ?? "—", hit.Amount, hit.IsHeal, hit.IsCritical, hit.IsTick, hit.OriginalSource, hit.Attribution, hit.Raid)).ToArray();
-        return EncounterSources.Classify(new Encounter(2, id, new DateTimeOffset(first), "Global", protocol.GameVersion, "live", encounterZone, "active", duration, actors, hits)
-        { RdpsModel = RaidDamage.Model });
+            hit.TargetObjectId, hit.SkillId, hit.Skill ?? "—", hit.Amount, hit.IsHeal, hit.IsCritical, hit.IsTick, hit.OriginalSource, hit.Attribution)).ToArray();
+        return EncounterSources.Classify(new Encounter(2, id, new DateTimeOffset(first), "Global", protocol.GameVersion, "live", encounterZone, "active", duration, actors, hits));
     }
 
     public void Finish(string reason = "manual")
     {
+        if (defeated) reason = "boss-defeated";
         var snapshot = BuildSnapshot();
         events.Clear();
         participantIds.Clear();
         assistedPlayers.Clear();
         boss = null;
         dormant = false;
+        defeated = false;
         cachedSnapshot = null;
         if (snapshot is not null) Completed?.Invoke(snapshot with { EndReason = reason });
     }

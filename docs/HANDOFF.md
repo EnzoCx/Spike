@@ -1,7 +1,16 @@
 # Reprendre le projet
 
-État de référence : version 0.5.14, 5 octobre 2026.
+État de référence : version 0.5.15, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
+
+Depuis 0.5.15, le mode expérimental de contribution des supports est retiré du moteur,
+de l'interface et des supports publics. Les métadonnées facultatives des anciennes
+archives restent validées et conservées à l'import/export, sans calcul ni affichage.
+Les dégâts tardifs du boss après ses PV à zéro complètent la même archive terminée,
+sans rouvrir un mini-combat ni réactiver l'overlay. Des PV positifs après la mort,
+une réapparition explicite ou un nouveau combat permettent une nouvelle tentative.
+Les phases silencieuses de cinq minutes sont couvertes par une régression synthétique.
+La coupure signalée pendant une phase de Bakarma n'a pas été reproduite en jeu.
 
 Depuis 0.5.14, Réglages expose les opacités combat/repos sous Apparence, avec
 application et sauvegarde immédiates. Les options du mini-meter restent synchronisées.
@@ -183,14 +192,6 @@ Voir `EncounterProgress.cs`, `Dashboard.Progress.cs`, `Dashboard.Progress.Verifi
 - SDK/runtime .NET 9 : migration LTS à planifier séparément, pas intégrée à ce nettoyage.
 
 ## Fichiers d’entrée
-
-rDPS bêta depuis 0.5.11 : `docs/RDPS.md` décrit le modèle partiel de deux auras
-(clerc/aède), l’hypothèse nominale 10,5 % niveau 1 et les essais à faire en jeu.
-Rapport, overlay, survols, copie et archives v2 portent les limites ; le DPS brut
-reste le défaut. `BetaBuffTracker.cs` suit les messages candidats, `RaidDamage.cs`
-réattribue les bonus sans changer les totaux. Aucun cycle de vie ni coefficient
-Global n’est validé. Aucune capture lancée pour ce développement. Sources et
-protocole de calibration : `docs/RDPS-RESEARCH.md`, outils hors ligne : `tools/rdps/`.
 
 `docs/ARCHITECTURE.md`, `docs/FORMAT.md`, `docs/DECISIONS.md`, `CONTRIBUTING.md`,
 `THIRD-PARTY-NOTICES.md`. Présentation : `Dashboard.xaml`, `Dashboard.xaml.cs`,

@@ -15,11 +15,7 @@ public sealed class Aion2FrameDecoder
 {
     private readonly Aion2Protocol _protocol;
     private readonly Aion2EntityDirectory _entities;
-    private readonly Spike.Engine.BetaBuffTracker _betaBuffs = new();
-    public void ResetBetaBuffs() => _betaBuffs.Reset();
 
-    private DamageEvent[] EstimateRaid(IEnumerable<DamageEvent> events) =>
-        events.Select(hit => _betaBuffs.Estimate(hit, _entities)).ToArray();
     private readonly Queue<(string Actor, string Skill)> _skillUses = new();
     private readonly List<KillEvent> _kills = new();
     private readonly List<AvoidEvent> _avoids = new();
@@ -70,7 +66,6 @@ public sealed class Aion2FrameDecoder
     private IEnumerable<DamageEvent> DecodeFrame(ReadOnlySpan<byte> frame, DateTime timestamp, bool nested)
     {
         _entities.AdvanceTime(timestamp);
-        _betaBuffs.Observe(frame, timestamp, _entities);
         FrameLayout layout = _protocol.FrameLayout;
         if (frame.Length < layout.OpcodeOffset + layout.OpcodeSize)
         {
@@ -110,16 +105,16 @@ public sealed class Aion2FrameDecoder
         switch (family)
         {
             case OpcodeFamily.Damage when string.Equals(_protocol.DamageLayout, "varint-v1", StringComparison.Ordinal):
-                return EstimateRaid(DecodeVarintDamage(frame, timestamp));
+                return DecodeVarintDamage(frame, timestamp);
             case OpcodeFamily.HpUpdate when string.Equals(_protocol.HpLayout, "varint-v1", StringComparison.Ordinal):
                 DecodeHp(frame, timestamp);
                 return Array.Empty<DamageEvent>();
             case OpcodeFamily.Dot when string.Equals(_protocol.DotLayout, "varint-v1", StringComparison.Ordinal):
-                return EstimateRaid(DecodeVarintDot(frame, timestamp));
+                return DecodeVarintDot(frame, timestamp);
             case OpcodeFamily.Damage:
             case OpcodeFamily.Dot:
             case OpcodeFamily.Heal:
-                return EstimateRaid(DecodeAmount(frame, timestamp, fields, isHeal: family == OpcodeFamily.Heal, layout.LittleEndian));
+                return DecodeAmount(frame, timestamp, fields, isHeal: family == OpcodeFamily.Heal, layout.LittleEndian);
             case OpcodeFamily.Nickname when string.Equals(_protocol.NicknameLayout, "varint-v1", StringComparison.Ordinal):
                 DecodeVarintNickname(frame);
                 return Array.Empty<DamageEvent>();

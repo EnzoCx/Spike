@@ -1,10 +1,5 @@
 const translations = {
   en: {
-    rdpsLink: 'New: rDPS beta — estimated support contribution ↗',
-    rdpsTitle: 'rDPS beta: how much do supports contribute?',
-    rdpsIntro: 'Choose rDPS β in the overlay or rDPS beta in a report. Estimated external bonus damage is subtracted from the attacker and credited to the support. Total damage is unchanged and raw DPS remains available.',
-    rdpsLimits: 'Partial beta, not yet validated in game: only Light of Protection (Cleric) and Undefeated Mantra (Chanter) are modeled. The model assumes a level-one 10.5% bonus without knowing the actual level or personal stats. Other buffs, debuffs and early removals are excluded. Do not use it to compare classes.',
-    rdpsEvidence: '≈ marks an estimate; — means missing or ambiguous evidence, including older archives. The percentage counts damage associated with an observed aura, not calculation accuracy. Skill details and the timeline remain raw DPS.',
     compareDate: 'As of 5 October 2026', compareLegend: 'Not confirmed: not documented in the sources', compareMethod: 'Sources and comparison methodology',
     navCompare: 'Compare', compareEyebrow: 'CHOOSE YOUR METER', compareTitle: 'Features, side by side.',
     compareIntro: 'Spike focuses on in-game readability and local reports, in French, English and Spanish. Here is what NotMeter, A2Tools and Abyss Logs offer too.',
@@ -49,11 +44,6 @@ const translations = {
     description: 'Spike, the damage and healing meter for AION 2 Global. A discreet overlay, detailed reports and fights stored on your PC.'
   },
   es: {
-    rdpsLink: 'Nuevo: rDPS beta — contribución estimada de los apoyos ↗',
-    rdpsTitle: 'rDPS beta: ¿cuánto aportan los apoyos?',
-    rdpsIntro: 'Elige rDPS β en el overlay o rDPS beta en un informe. El daño adicional externo estimado se resta al atacante y se atribuye al apoyo. El daño total no cambia y el DPS bruto sigue disponible.',
-    rdpsLimits: 'Beta parcial, aún sin validar en el juego: solo incluye Light of Protection (Clérigo) y Undefeated Mantra (Aedo). El modelo supone un bonus del 10,5 % de nivel 1 sin conocer el nivel real ni las estadísticas personales. Excluye otros buffs, debuffs y retiradas anticipadas. No lo uses para comparar clases.',
-    rdpsEvidence: '≈ indica una estimación; — significa datos ausentes o ambiguos, también en archivos antiguos. El porcentaje indica el daño asociado a un aura observada, no la precisión del cálculo. Las habilidades y la gráfica mantienen el DPS bruto.',
     compareDate: 'A 5 de octubre de 2026', compareLegend: 'Sin confirmar: información no documentada', compareMethod: 'Fuentes y método de comparación',
     navCompare: 'Comparativa', compareEyebrow: 'ELIGE TU MEDIDOR', compareTitle: 'Las funciones, lado a lado.',
     compareIntro: 'Spike se centra en la legibilidad durante el juego y los informes locales, en francés, inglés y español. Esto es lo que también ofrecen NotMeter, A2Tools y Abyss Logs.',
@@ -116,11 +106,11 @@ let theme = [readPreference('spike-theme'), 'dark'].find(value => themes.include
 
 function updatePreviews() {
   const copy = translations[language];
-  document.querySelector('#overlay-preview').src = `assets/overlay-en-${theme}.png?v=0.5.12`;
+  document.querySelector('#overlay-preview').src = `assets/overlay-en-${theme}.png?v=0.5.15`;
   document.querySelector('#overlay-preview').alt = copy.overlayAlt;
-  document.querySelector('#report-preview').src = `assets/report-en-${theme}.png?v=0.5.12`;
+  document.querySelector('#report-preview').src = `assets/report-en-${theme}.png?v=0.5.15`;
   document.querySelector('#report-preview').alt = copy.reportAlt;
-  document.querySelector('#report-link').href = `assets/report-en-${theme}.png?v=0.5.12`;
+  document.querySelector('#report-link').href = `assets/report-en-${theme}.png?v=0.5.15`;
 }
 
 function setLanguage(value) {

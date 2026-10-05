@@ -44,7 +44,16 @@ après une lecture inférieure à 95 % de ce maximum. Ses horodatages séparent 
 tentatives même si plusieurs pulls arrivent dans le même lot. Les PV de mort au même
 instant qu’un dégât sont appliqués après ce dégât pour conserver le coup final.
 Le bouton Terminer reste disponible pour un boss au repos. La continuation reste en
-mémoire pendant la session ; aucune fusion d’anciennes archives n’est effectuée.
+mémoire pendant la session ; aucune fusion d'anciennes archives n'est effectuée.
+
+Depuis 0.5.15, la mort clôture immédiatement l'affichage actif, mais conserve la
+tentative en mémoire pour rattacher les derniers dégâts de cette même entité à
+l'archive terminée. Les PV à zéro peuvent précéder ces événements. Ces ajouts ne
+rouvrent pas le combat et ne remplacent pas le résultat par un segment de quelques
+coups. Les PV redevenus positifs, une réapparition explicite, un autre combat
+personnel ou les frontières de contexte existantes libèrent cette continuation.
+Le maximum de taille/durée reste applicable. Sans preuve de réapparition reçue,
+des dégâts sur la même entité restent associés à la tentative terminée.
 
 Sans signal de reset/mort reçu, une nouvelle tentative sur la même entité peut être
 confondue avec une phase ; une remontée complète des PV pendant une mécanique peut

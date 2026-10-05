@@ -82,6 +82,65 @@ internal static class BossAttemptChecks
 
         using (var fight = new Fixture(protocol))
         {
+            fight.Hp(0, 1000); fight.Hp(3, 0);
+            fight.Feed(fight.Hit(1), fight.Hit(3));
+            var id = fight.Completed.Single().Id;
+            fight.Feed(fight.Hit(4, actor: 400));
+            Check(!fight.Meter.HasCombat && !fight.Meter.CanFinish && fight.Completed[^1].Id == id
+                && fight.Completed[^1].Events.Length == 3 && fight.Completed[^1].EndReason == "boss-defeated",
+                "Late unidentified damage updates the defeated boss archive without reopening combat");
+            var completed = fight.Completed.Count;
+            fight.Poll(20);
+            Check(fight.Completed.Count == completed, "A defeated boss is not saved repeatedly while idle");
+            fight.Hp(21, 200);
+            fight.Feed(fight.Hit(22));
+            Check(fight.Current.Id != id && fight.Current.Events.Length == 1,
+                "Positive HP after death starts a fresh attempt even below the previous maximum");
+        }
+
+        using (var fight = new Fixture(protocol))
+        {
+            fight.Hp(0, 1000); fight.Hp(3, 0);
+            fight.Feed(fight.Hit(1), fight.Hit(3), fight.Hit(4, actor: 2));
+            Check(fight.Completed.Count == 1 && fight.Completed[0].Events.Length == 3 && !fight.Meter.HasCombat,
+                "Death before the final damage in one batch retains every hit in one completed attempt");
+            fight.Feed(fight.Hit(5, target: 999));
+            Check(fight.Current.Id != fight.Completed[0].Id && fight.Current.Events.Single().Target == 999,
+                "New personal combat on another target does not extend the defeated boss");
+        }
+
+        using (var fight = new Fixture(protocol))
+        {
+            fight.Hp(0, 1000); fight.Hp(3, 0); fight.Hp(5, 1000);
+            fight.Feed(fight.Hit(1), fight.Hit(3), fight.Hit(4), fight.Hit(5));
+            Check(fight.Completed.Single().Events.Length == 3 && fight.Current.Events.Length == 1,
+                "A death and respawn within one batch separate attempts at positive HP");
+        }
+
+        using (var fight = new Fixture(protocol))
+        {
+            fight.Hp(0, 1000); fight.Hp(3, 0);
+            fight.Feed(fight.Hit(1), fight.Hit(3));
+            var id = fight.Completed.Single().Id;
+            fight.Directory.NoteSpawned(100, fight.At(5));
+            fight.Directory.RegisterNpc(100, 2300171);
+            fight.Feed(fight.Hit(6));
+            Check(fight.Current.Id != id, "An explicit respawn without HP clears the defeated boss continuation");
+        }
+
+        using (var fight = new Fixture(protocol))
+        {
+            fight.Feed(fight.Hit(0), fight.Hit(10));
+            var id = fight.Current.Id;
+            fight.Poll(22); fight.Poll(300);
+            fight.Feed(fight.Hit(310, actor: 2), fight.Hit(315));
+            Check(fight.Current.Id == id && fight.Current.Events.Length == 4
+                && EncounterMath.Window(fight.Current, 100).DurationMs == 315000,
+                "A five-minute silent boss phase resumes the same archive and damage window");
+        }
+
+        using (var fight = new Fixture(protocol))
+        {
             fight.Feed(fight.Hit(1), fight.Hit(5, target: 200));
             Check(fight.Completed.Single().EndReason == "boss-changed" && fight.Current.Events.Single().Target == 200,
                 "Another entity is a different boss even with the same NPC and name");

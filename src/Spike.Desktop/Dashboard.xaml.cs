@@ -123,7 +123,6 @@ public partial class Dashboard : Window
         CopyButton.Content = T("copy"); CopyButton.ToolTip = T("copyHint");
         EmptyTitle.Text = T("noFight"); EmptyHint.Text = T("liveHint");
         DamageButton.Content = T("damage"); HealingButton.Content = T("heals");
-        RaidButton.Content = T("rdps"); RaidButton.ToolTip = T("rdpsModel");
         DurationCaption.Text = T("duration"); TimelineCaption.Text = T("timeline"); ImportButton.Content = T("import");
         HistorySearch.ToolTip = T("search"); System.Windows.Automation.AutomationProperties.SetName(HistorySearch, T("search"));
         OpenHistoryButton.Content = T("fightDetails"); HistoryHint.Text = T("historyHint");
@@ -234,16 +233,14 @@ public partial class Dashboard : Window
         if (!targets.Any(choice => choice.Id == target)) target = null;
         TargetBox.ItemsSource = targets; TargetBox.SelectedItem = targets.First(choice => choice.Id == target);
         TargetBox.IsEnabled = !heals;
-        raidResult = rdps ? RaidDamage.Calculate(shown, target) : null;
-        var rows = rdps ? raidResult!.Rows.Select(r => r.Meter).ToArray() : EncounterMath.Players(shown, heals, target);
+        var rows = EncounterMath.Players(shown, heals, target);
         var total = rows.Sum(row => row.Total);
         DpsCaption.Text = T(heals ? "groupHps" : "groupDps"); TotalCaption.Text = T(heals ? "heals" : "damage");
         DpsValue.Text = N(total / EncounterMath.Seconds(shown, target)); TotalValue.Text = N(total); DurationValue.Text = Duration(EncounterMath.Window(shown, target).DurationMs);
         ScopeLabel.Text = $"{T("scopeNote")} : {targets.First(choice => choice.Id == target).Name} · {shown.StartedAt.ToLocalTime().ToString("g", Culture)}";
         DurationValue.ToolTip = T(target is null ? "durationAllHint" : "durationBossHint");
-        DamageButton.Background = (Brush)Resources[heals || rdps ? "Surface" : "Accent"]; DamageButton.Foreground = (Brush)Resources[heals || rdps ? "Foreground" : "Background"];
+        DamageButton.Background = (Brush)Resources[heals ? "Surface" : "Accent"]; DamageButton.Foreground = (Brush)Resources[heals ? "Foreground" : "Background"];
         HealingButton.Background = (Brush)Resources[heals ? "Accent" : "Surface"]; HealingButton.Foreground = (Brush)Resources[heals ? "Background" : "Foreground"];
-        RenderRaid();
         var displays = rows.Select((row, index) => Display(row, index)).ToArray();
         PlayerList.ItemsSource = displays;
         if (!displays.Any(row => row.Id == selectedActor)) selectedActor = displays.FirstOrDefault()?.Id;
@@ -256,11 +253,9 @@ public partial class Dashboard : Window
     {
         var unresolved = shown?.Participants.First(p => p.Id == row.Id).IsUnidentifiedSource == true;
         var className = unresolved ? "" : row.ClassName;
-        var unavailable = rdps && raidResult?.Rows.FirstOrDefault(r => r.Meter.Id == row.Id)?.HasEvidence != true;
-        if (unavailable) row = row with { MaximumShare = 0 };
         return new(row.Id, unresolved ? "—" : (index + 1).ToString("00"), unresolved ? $"{T("sourceLabel")} #{row.Id}" : row.Name,
-            unresolved ? T("unidentifiedSource") : string.IsNullOrEmpty(row.ClassName) ? T("unknown") : T(row.ClassName), unavailable ? "—" : (rdps ? "≈ " : "") + N(row.PerSecond), N(row.Total),
-            unavailable ? "—" : row.Share.ToString("N1", Culture) + " %", new GridLength(Math.Max(0.01, row.MaximumShare), GridUnitType.Star),
+            unresolved ? T("unidentifiedSource") : string.IsNullOrEmpty(row.ClassName) ? T("unknown") : T(row.ClassName), N(row.PerSecond), N(row.Total),
+            row.Share.ToString("N1", Culture) + " %", new GridLength(Math.Max(0.01, row.MaximumShare), GridUnitType.Star),
             new GridLength(Math.Max(.01, 100 - row.MaximumShare), GridUnitType.Star), ClassColor(className), CombatPresentation.Emblem(className, 24));
     }
 
@@ -289,11 +284,6 @@ public partial class Dashboard : Window
         }).ToArray();
         if (person.IsPlayer) DetailsSummary.Text += $"\n{T("observedDeaths")} : {Deaths(person.ObservedDeaths)}";
         MetricNote.Text = T(person.IsUnidentifiedSource ? "sourceHint" : heals ? "rawHealing" : "critNote");
-        if (rdps)
-        {
-            DetailsSummary.Text = RaidPresentation.Details(shown, selectedActor.Value, target, preferences.Language) + "\n" + T("rdpsRawDetails");
-            MetricNote.Text = T("rdpsModel");
-        }
     }
 
     private void DrawTimeline()
@@ -336,8 +326,8 @@ public partial class Dashboard : Window
     }
     private void Pause(object sender, RoutedEventArgs e) { meter?.TogglePause(); Translate(); Tick(); }
     private void Finish(object sender, RoutedEventArgs e) { meter?.Finish(); Tick(); }
-    private void ShowDamage(object sender, RoutedEventArgs e) { rdps = false; heals = false; target = shown is null ? null : EncounterMath.PrimaryBoss(shown)?.Id; RenderFight(); }
-    private void ShowHealing(object sender, RoutedEventArgs e) { rdps = false; heals = true; target = null; RenderFight(); }
+    private void ShowDamage(object sender, RoutedEventArgs e) { heals = false; target = shown is null ? null : EncounterMath.PrimaryBoss(shown)?.Id; RenderFight(); }
+    private void ShowHealing(object sender, RoutedEventArgs e) { heals = true; target = null; RenderFight(); }
     private void PlayerSelected(object sender, SelectionChangedEventArgs e) { if (refreshing) return; selectedActor = (PlayerList.SelectedItem as PlayerDisplay)?.Id; RenderDetails(); DrawTimeline(); }
     private void SearchSkills(object sender, TextChangedEventArgs e)
     {
@@ -398,7 +388,7 @@ public partial class Dashboard : Window
     private void CopySummary(Action<string> write)
     {
         if (shown is null) return;
-        SetNotice(FightSummary.Copy(FightSummary.Format(shown, heals, target, preferences.Language, rdps), write));
+        SetNotice(FightSummary.Copy(FightSummary.Format(shown, heals, target, preferences.Language), write));
     }
 
     private async void Export(object sender, RoutedEventArgs e)
@@ -462,7 +452,6 @@ public partial class Dashboard : Window
         };
         overlay.DetailsRequested += (fight, player, healing, selectedTarget) =>
         {
-            rdps = overlay.RaidMode;
             DisplayEncounter(fight, player, healing, selectedTarget, false);
             if (verifying) return;
             if (WindowState == WindowState.Minimized) WindowState = WindowState.Normal;
@@ -475,7 +464,6 @@ public partial class Dashboard : Window
     private void DisplayEncounter(Encounter fight, int? player, bool healing, int? selectedTarget = null, bool defaultTarget = true)
     {
         shown = fight; viewingHistory = true; selectedActor = player; heals = healing; scopeFight = fight.Id;
-        if (healing) rdps = false;
         target = healing ? null : defaultTarget ? EncounterMath.PrimaryBoss(fight)?.Id : selectedTarget;
         SwitchPage("live"); RenderFight();
     }

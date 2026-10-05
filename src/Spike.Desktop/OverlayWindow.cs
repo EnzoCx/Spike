@@ -32,13 +32,12 @@ public sealed partial class OverlayWindow : Window
     private readonly ScrollViewer scroll;
     private readonly StackPanel healthArea;
     private readonly DockPanel columnHead;
-    private readonly Button picker, historyPicker, damage, healing, raid, scope, back, report, copy, locking, close, options, unresolvedToggle;
+    private readonly Button picker, historyPicker, damage, healing, scope, back, report, copy, locking, close, options, unresolvedToggle;
     private readonly Thumb grip;
     private readonly OverlayPlacement placement;
     private Encounter? live, archived;
     private int? actor;
     private bool heals, locked, bossOnly = true, showUnidentified;
-    public bool RaidMode { get; private set; }
     private bool pointerInside, manipulating;
     private int openMenus;
     private double visibilityOpacity = double.NaN;
@@ -111,8 +110,6 @@ public sealed partial class OverlayWindow : Window
         healthArea.Children.Add(healthLine); healthArea.Children.Add(hpBar); Grid.SetRow(healthArea, 1); layout.Children.Add(healthArea);
         var controls = new DockPanel { Margin = new Thickness(0, 0, 0, 4) };
         healing = SmallButton("HPS", () => SetMetric(true)); DockPanel.SetDock(healing, Dock.Right); controls.Children.Add(healing);
-        raid = SmallButton(T("rdpsShort"), () => { RaidMode = true; heals = false; actor = null; Render(); });
-        DockPanel.SetDock(raid, Dock.Right); controls.Children.Add(raid);
         damage = SmallButton("DPS", () => SetMetric(false)); DockPanel.SetDock(damage, Dock.Right); controls.Children.Add(damage);
         scope = SmallButton("", () => { bossOnly = !bossOnly; Render(); }); DockPanel.SetDock(scope, Dock.Right); controls.Children.Add(scope);
         historyPicker = SmallButton("▾", () => _ = ShowHistory()); DockPanel.SetDock(historyPicker, Dock.Right); controls.Children.Add(historyPicker);
@@ -175,7 +172,7 @@ public sealed partial class OverlayWindow : Window
         back.ToolTip = T("back"); historyPicker.ToolTip = T("fightPicker"); report.Content = T("fightDetails");
         System.Windows.Automation.AutomationProperties.SetName(historyPicker, T("fightPicker"));
         copy.Content = T("copy"); copy.ToolTip = T("copyHint");
-        damage.ToolTip = T("damage"); healing.ToolTip = T("heals"); raid.ToolTip = T("rdpsModel"); Render();
+        damage.ToolTip = T("damage"); healing.ToolTip = T("heals"); Render();
     }
 
     public void Update(Encounter? encounter, string? state = null)
@@ -185,13 +182,13 @@ public sealed partial class OverlayWindow : Window
         if (archived is null) Render();
         else UpdateVisibility();
     }
-    private void SetMetric(bool value) { RaidMode = false; heals = value; Render(); }
+    private void SetMetric(bool value) { heals = value; Render(); }
     private void SelectFight(Encounter? value) { archived = value; actor = null; Render(); }
     private void OpenReport() { if (Selected is { } fight) DetailsRequested?.Invoke(fight, actor, heals, Target); }
     private void CopySummary(Action<string> write)
     {
         if (Selected is not { } fight) return;
-        copyNotice = FightSummary.Copy(FightSummary.Format(fight, heals, Target, preferences.Language, RaidMode), write);
+        copyNotice = FightSummary.Copy(FightSummary.Format(fight, heals, Target, preferences.Language), write);
         copyNoticeUntil = DateTime.UtcNow.AddSeconds(5);
         Render();
     }
@@ -351,7 +348,7 @@ public sealed partial class OverlayWindow : Window
         damage.Background = (Brush)Resources[heals ? "Surface" : "Accent"]; damage.Foreground = (Brush)Resources[heals ? "Foreground" : "Background"];
         healing.Background = (Brush)Resources[heals ? "Accent" : "Surface"]; healing.Foreground = (Brush)Resources[heals ? "Background" : "Foreground"];
         columns.Text = actor is null ? T("overlayColumns") : T("skillColumns");
-        rateHead.Text = (RaidMode && actor is null ? T("rdpsShort") : heals ? "HPS" : "DPS") + " / %";
+        rateHead.Text = (heals ? "HPS" : "DPS") + " / %";
         var wanted = new List<string>();
         void Entry(string key, Action<CombatantRow> update)
         {
@@ -361,8 +358,7 @@ public sealed partial class OverlayWindow : Window
             var index = wanted.Count - 1;
             if (rows.Children.IndexOf(control) != index) { rows.Children.Remove(control); rows.Children.Insert(Math.Min(index, rows.Children.Count), control); }
         }
-        var raidResult = fight is not null && RaidMode ? RaidDamage.Calculate(fight, target) : null;
-        var people = fight is null ? [] : raidResult is not null ? raidResult.Rows.Select(r => r.Meter).ToArray() : EncounterMath.Players(fight, heals, target);
+        var people = fight is null ? [] : EncounterMath.Players(fight, heals, target);
         if (fight is not null && actor is null)
         {
             foreach (var (row, rank) in people.Select((row, index) => (row, index + 1)))
@@ -375,10 +371,9 @@ public sealed partial class OverlayWindow : Window
                     if (person.CombatPower is { } power) subtitle += $" · {CombatPresentation.Short(power, preferences.Language)} {T("powerShort")}";
                     if (person.IsUnidentifiedSource) subtitle = T("unidentifiedSource");
                     var title = person.IsUnidentifiedSource ? $"{T("sourceLabel")} #{row.Id}" : $"{rank}. {row.Name}" + (person.IsSelf ? $" · {T("you")}" : "");
-                    var unavailable = RaidMode && raidResult?.Rows.FirstOrDefault(r => r.Meter.Id == row.Id)?.HasEvidence != true;
-                    control.Update(title, subtitle, unavailable ? "—" : (RaidMode ? "≈ " : "") + Rate(row.PerSecond), unavailable ? "—" : row.Share.ToString("N1", Culture) + "%",
-                        $"{CombatPresentation.Short(row.Total, preferences.Language)} {T(heals ? "heals" : "damage")}", unavailable ? 0 : row.MaximumShare, person.IsUnidentifiedSource ? "" : row.ClassName, preferences, person.IsSelf);
-                    control.Selected = () => { actor = row.Id; if (RaidMode) { OpenReport(); actor = null; } else Render(); };
+                    control.Update(title, subtitle, Rate(row.PerSecond), row.Share.ToString("N1", Culture) + "%",
+                        $"{CombatPresentation.Short(row.Total, preferences.Language)} {T(heals ? "heals" : "damage")}", row.MaximumShare, person.IsUnidentifiedSource ? "" : row.ClassName, preferences, person.IsSelf);
+                    control.Selected = () => { actor = row.Id; Render(); };
                     control.HoverContent = () => CombatHoverCard.Create(Selected!, row.Id, heals, Target, preferences);
                 });
             }
@@ -420,23 +415,16 @@ public sealed partial class OverlayWindow : Window
         }
         total.Text = $"{Rate(people.Sum(p => p.PerSecond))} {(heals ? "HPS" : "DPS")}";
         total.ToolTip = fight is null ? "" : $"{N(people.Sum(p => p.Total))} {T(heals ? "heals" : "damage")} · {T(target is null ? "allTargets" : "scopeBoss")}";
-        if (RaidMode)
-        {
-            hint.Text = fight is not null && raidResult is not null ? RaidPresentation.Status(fight, raidResult, preferences.Language) : T("rdpsUnavailable");
-            hint.ToolTip = hint.Text + "\n" + T("rdpsModel");
-            total.Text = T("rdpsShort") + (raidResult?.Available == true ? " · " + T("rdpsPartial") : " —");
-            total.ToolTip = hint.ToolTip;
-        }
         ApplyPresentation();
         if (preferences.OverlayDiscreet && preferences.OverlayAutoFit && !idleCollapsed)
         {
             var rowsHeight = (wanted.Count == 0 ? 64 : Math.Min(8, wanted.Count) * (preferences.OverlayCompact ? 26 : 32)) + (showSources ? 28 : 0);
             scroll.MaxHeight = rowsHeight + 1;
-            placement.SetHeight(100 + (RaidMode ? 16 : 0) + (healthArea.Visibility == Visibility.Visible ? 16 : 0) + rowsHeight);
+            placement.SetHeight(100 + (healthArea.Visibility == Visibility.Visible ? 16 : 0) + rowsHeight);
         }
         else if (preferences.OverlayAutoFit && !idleCollapsed)
         {
-            var desired = 144 + (RaidMode ? 20 : 0) + Math.Max(1, Math.Min(8, wanted.Count)) * (preferences.OverlayCompact ? 30 : 44) + (showSources ? 24 : 0);
+            var desired = 144 + Math.Max(1, Math.Min(8, wanted.Count)) * (preferences.OverlayCompact ? 30 : 44) + (showSources ? 24 : 0);
             placement.SetHeight(desired);
         }
     }

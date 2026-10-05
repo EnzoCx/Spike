@@ -21,7 +21,7 @@ public static class EncounterFile
             || encounter.Participants is null || encounter.Participants.Length is < 1 or > 4096 || encounter.Events is null || encounter.Events.Length > 250_000)
             throw new InvalidDataException("Invalid encounter.");
         CheckText(encounter.Patch); CheckText(encounter.Origin); CheckText(encounter.Zone); CheckText(encounter.EndReason);
-        if (encounter.RdpsModel is not null && encounter.RdpsModel != RaidDamage.Model)
+        if (encounter.RdpsModel is not null && encounter.RdpsModel != RaidCredit.LegacyModel)
             throw new InvalidDataException("Unknown rDPS model.");
         var ids = new HashSet<int>();
         foreach (var actor in encounter.Participants)
@@ -39,7 +39,7 @@ public static class EncounterFile
             if (hit is null || !ids.Contains(hit.Source) || !ids.Contains(hit.Target) || hit.Amount is < 0 or > 1_000_000_000_000
                 || hit.AtMs < 0 || hit.AtMs > encounter.DurationMs) throw new InvalidDataException("Invalid event.");
             CheckText(hit.Skill);
-            if (hit.Raid is { } raid && (encounter.RdpsModel != RaidDamage.Model || hit.Heal
+            if (hit.Raid is { } raid && (encounter.RdpsModel != RaidCredit.LegacyModel || hit.Heal
                 || !ids.Contains(raid.Provider) || raid.SkillId is not (17410000 or 18190000)
                 || raid.Bonus < 0 || raid.Bonus > hit.Amount || raid.Provider == hit.Source && raid.Bonus != 0))
                 throw new InvalidDataException("Invalid rDPS estimate.");

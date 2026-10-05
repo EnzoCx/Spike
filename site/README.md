@@ -33,7 +33,7 @@ ou de capture concurrente n’a été réalisé.
 ## Aperçus
 
 Les 6 images de `images/` sont des rendus démo de `tools/Verify.ps1`, avec l'interface
-0.5.12 en anglais, dans les trois thèmes. `PublicPreviewFixture.cs` crée cinq personnages
+0.5.15 en anglais, dans les trois thèmes. `PublicPreviewFixture.cs` crée cinq personnages
 fictifs et des chiffres inventés ; les noms et icônes des compétences viennent du catalogue
 embarqué. Aucun combat réel n'est utilisé. Dans `artifacts/verification` :
 - `overlay-en-{thème}.png` vient de `public-overlay-en-{thème}.png`.
