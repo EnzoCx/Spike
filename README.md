@@ -114,7 +114,7 @@ Shugo and Rift presets are included, alongside community schedules for Artifact 
 
 Reserve controls use **±1** for keys/attempts and **±40** for Odyle. Click the balance to enter an exact value. Weekly Wind Breeze purchases are tracked separately: **4 per character + 16 per server**, with help and the [Global item source](https://aion2.gaming.tools/items/503700031).
 
-The overlay starts enabled. Its Meter / Tasks switch shares the title row. **Outside combat, the meter automatically becomes a compact list of the next three enabled events**, with live countdowns; combat restores the meter immediately. An explicitly opened Tasks view stays open. Disable this behavior in the overlay’s **··· → Events outside combat** menu. Combat and idle opacity use sliders in Settings and the overlay menu. Event reminders have a subtle entrance animation and an original soft chime, which can be muted.
+The overlay starts enabled. Its Meter / Tasks switch shares the title row. **Outside combat, the meter automatically becomes a compact list of the next three enabled events**, with live countdowns; combat restores the meter immediately. Click Meter to review the last fight while idle. An explicitly opened Tasks view stays open. Disable this behavior in the overlay’s **··· → Events outside combat** menu. Combat and idle opacity use sliders in Settings and the overlay menu. Event reminders have a subtle entrance animation and an original soft chime, which can be muted.
 
 - **Daily / Weekly:** check a goal to finish it, or use **− / +** for partial progress.
 - **Reserves:** Shugo keys, Invasion keys, Nightmare attempts and Odyle accumulate. Record the in-game balance; Spike never resets or estimates it. Unknown balances start as **—**, not zero.

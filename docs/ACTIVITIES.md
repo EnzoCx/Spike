@@ -41,7 +41,8 @@ de réduction des animations. Le plein écran exclusif peut masquer les fenêtre
 L’overlay est activé par défaut, y compris avant l’installation de Npcap. Les onglets
 Compteur / Tâches sont dans son en-tête. Hors combat, la vue Compteur affiche les
 **trois prochains événements activés**, triés par heure, avec un compte à rebours.
-Elle revient au compteur à la reprise du combat ; une liste de tâches ouverte
+Cliquer sur Compteur permet de revoir le dernier combat jusqu’au prochain combat.
+Elle revient automatiquement au compteur à la reprise du combat ; une liste de tâches ouverte
 volontairement ou un rapport archivé ne sont pas remplacés. L’option est activée
 par défaut et se désactive via **··· → Événements hors combat**. Ce planning fonctionne
 même si les notifications sonores/visuelles sont coupées. Les opacités se règlent par

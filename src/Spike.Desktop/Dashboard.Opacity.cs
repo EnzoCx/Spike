@@ -34,8 +34,8 @@ public partial class Dashboard
             IdleOpacityLabel.Text = T("idleOpacity");
             IdleOpacityCheck.Content = T("useIdleOpacity");
             OpacityHint.Text = T("opacitySettingsHint");
-            CombatOpacityChoice.Value = Math.Clamp(preferences.OverlayCombatOpacity * 100, 15, 100);
-            IdleOpacityChoice.Value = Math.Clamp(preferences.OverlayIdleOpacity * 100, 5, 100);
+            CombatOpacityChoice.Value = double.IsFinite(preferences.OverlayCombatOpacity) ? Math.Clamp(preferences.OverlayCombatOpacity * 100, 15, 100) : 100;
+            IdleOpacityChoice.Value = double.IsFinite(preferences.OverlayIdleOpacity) ? Math.Clamp(preferences.OverlayIdleOpacity * 100, 5, 100) : 15;
             IdleOpacityCheck.IsChecked = preferences.OverlayFadeWhenIdle;
             IdleOpacityChoice.IsEnabled = preferences.OverlayFadeWhenIdle;
             AutomationProperties.SetName(CombatOpacityChoice, CombatOpacityLabel.Text);

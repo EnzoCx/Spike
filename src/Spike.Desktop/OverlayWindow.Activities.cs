@@ -14,6 +14,7 @@ public sealed partial class OverlayWindow
     private ActivityController? activityController;
     private readonly StackPanel upcomingPanel = new() { Margin = new Thickness(4, 4, 4, 0) };
     private bool showingUpcoming;
+    private bool keepMeterWhileIdle;
     private double beforeUpcomingHeight;
     public event Action<bool>? IdleEventsChanged;
 
@@ -47,9 +48,13 @@ public sealed partial class OverlayWindow
         var header = (DockPanel)layout.Children[0];
         if (activitySwitch is not null) header.Children.Remove(activitySwitch);
         activitySwitch = ActivitySegments.Create(
-            (T("meterTab"), !activitiesOpen, () => { if (activitiesOpen) ToggleActivities(); }),
+            (T("meterTab"), !activitiesOpen, () =>
+            {
+                if (showingUpcoming) { keepMeterWhileIdle = true; Render(); }
+                else if (activitiesOpen) ToggleActivities();
+            }),
             (T("checklistTab"), activitiesOpen, () => { if (!activitiesOpen) ToggleActivities(); }));
-        activitySwitch.ToolTip = "Ctrl + Tab"; activitySwitch.Margin = new Thickness(0, 0, 4, 0);
+        activitySwitch.ToolTip = T("idleEventsHint") + "\nCtrl + Tab"; activitySwitch.Margin = new Thickness(0, 0, 4, 0);
         activitySwitch.Padding = new Thickness(1); activitySwitch.Width = 132; activitySwitch.Height = 26;
         foreach (var button in Dashboard.ActivityControls<Button>(activitySwitch))
         { button.FontSize = 10.5; button.Padding = new Thickness(3, 2, 3, 2); button.Margin = new Thickness(1); button.BorderThickness = new Thickness(0); }
@@ -65,10 +70,11 @@ public sealed partial class OverlayWindow
     internal void TickActivities() { if (activitiesOpen) activityChecklist?.Tick(); else if (showingUpcoming) RenderUpcoming(); }
 
     private bool WantsUpcoming => activityController is not null && preferences.OverlayIdleEvents
-        && !activitiesOpen && archived is null && captureStatus != "capturing";
+        && !activitiesOpen && !keepMeterWhileIdle && archived is null && captureStatus != "capturing";
 
     private void UpdateUpcomingMode()
     {
+        if (captureStatus == "capturing") keepMeterWhileIdle = false;
         var wanted = WantsUpcoming;
         if (wanted == showingUpcoming) return;
         SetIdleCollapsed(false);

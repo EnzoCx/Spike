@@ -37,7 +37,11 @@ public sealed partial class OverlayWindow
             throw new InvalidOperationException("Outside combat the meter must show upcoming events automatically.");
         window.UpdateIdleLayout(DateTimeOffset.UtcNow.AddHours(1));
         if (window.idleCollapsed) throw new InvalidOperationException("Upcoming events must remain visible during extended idle time.");
+        window.RaiseEvent(new System.Windows.Input.MouseEventArgs(System.Windows.Input.Mouse.PrimaryDevice, 0) { RoutedEvent = MouseEnterEvent });
         window.SavePreview(directory, $"upcoming-overlay-{preferences.Language}-{preferences.Theme}.png");
+        Dashboard.ActivityControls<Button>(window.activitySwitch!).Single(b => Equals(b.Content, Text.Get("meterTab", preferences.Language))).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        if (window.showingUpcoming || window.scroll.Visibility != Visibility.Visible)
+            throw new InvalidOperationException("Choosing Meter must let the player review the last fight while idle.");
         window.Update(null, "capturing");
         if (window.showingUpcoming || window.scroll.Visibility != Visibility.Visible || window.upcomingPanel.Visibility != Visibility.Collapsed)
             throw new InvalidOperationException("Combat must immediately restore meter controls.");

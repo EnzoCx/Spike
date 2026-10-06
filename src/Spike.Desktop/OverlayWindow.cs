@@ -264,6 +264,7 @@ public sealed partial class OverlayWindow : Window
 
     private MenuItem SliderMenu(string key, double current, double minimum, Action<double> change)
     {
+        current = Bounded(current, 1, minimum / 100, 1);
         var menu = new MenuItem { Header = T(key) };
         var panel = new DockPanel { Width = 200, Margin = new Thickness(4) };
         var label = new TextBlock { Width = 44, TextAlignment = TextAlignment.Right, Text = current.ToString("P0", Culture) };

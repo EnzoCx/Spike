@@ -76,3 +76,7 @@ Le script d’assemblage publie explicitement ces six fichiers. `app.js` adapte 
 URLs au thème et leurs textes alternatifs à la langue. Recherche Global et limites :
 `docs/ACTIVITIES.md`. Publier cette présentation avec la release Windows correspondante ;
 le site seul ne met pas à jour les exécutables déjà téléchargés.
+
+Les nouveaux aperçus Activités montrent les contrôles ±1 / ±40, les onglets dans
+l’en-tête et les prochains événements hors combat. `upcoming-overlay-en-{thème}.png`
+complète la composition des rappels ; ces captures représentent des données fictives.
