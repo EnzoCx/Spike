@@ -65,7 +65,7 @@ assemblés pour la présentation. Aucune interface n’est redessinée dans l’
 
 Source reproductible : `tools/Preview-Activities.html`. Après `tools/Verify.ps1`, copier
 uniquement les images `schedule-en-*`, `reserves-en-*`, `reserves-overlay-en-*` et
-`notifications-en-*` depuis `artifacts/verification` dans un répertoire public temporaire.
+`notifications-en-*` et `upcoming-overlay-en-*` depuis `artifacts/verification` dans un répertoire public temporaire.
 Y ajouter le HTML sous `index.html` et Geist Regular/SemiBold depuis les polices de
 l’application. Servir **ce répertoire dédié**, jamais le dépôt entier. Capturer avec
 Chromium à **1600 × 1000**, échelle 1, une fois les images et polices chargées, pour

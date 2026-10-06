@@ -280,15 +280,17 @@ internal sealed class ActivitiesView : ScrollViewer
         edit.Padding = new Thickness(7, 3, 7, 3); edit.Margin = new Thickness(2, 0, 2, 0); edit.MinWidth = 70;
         actions.Children.Add(minus); actions.Children.Add(edit); actions.Children.Add(plus);
         DockPanel.SetDock(actions, Dock.Right); counterRow.Children.Add(actions);
-        var scope = Label(T(task.Shared ? "sharedScope" : "characterScope"), true, 10); scope.Margin = new Thickness(0, 0, 4, 0); counterRow.Children.Add(scope);
-        body.Children.Add(counterRow);
-        body.Children.Add(Label(recorded is null ? T("reserveUnknown")
-            : string.Format(Culture, T("reserveUpdated"), recorded.UpdatedAt.ToLocalTime().ToString("g", Culture)), true, 10));
+        var details = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 6, 0) };
+        var scope = Label(T(task.Shared ? "sharedScope" : "characterScope"), true, 10); scope.Margin = new Thickness(0);
+        var timestamp = Label(recorded is null ? T("reserveUnknown")
+            : string.Format(Culture, T("reserveUpdated"), recorded.UpdatedAt.ToLocalTime().ToString("g", Culture)), true, 10);
+        timestamp.Margin = new Thickness(0, 2, 0, 0); details.Children.Add(scope); details.Children.Add(timestamp);
+        counterRow.Children.Add(details); body.Children.Add(counterRow);
         var bar = new ProgressBar { Maximum = task.Goal, Value = recorded?.Count ?? 0, Height = 3 };
         bar.SetResourceReference(Control.StyleProperty, "ActivityProgress");
         bar.SetResourceReference(Control.ForegroundProperty, "Accent"); body.Children.Add(bar);
         if (recorded?.Count == task.Goal) { var cap = Label(T("reserveCapacity"), true, 10); cap.Margin = new Thickness(0, 5, 0, 0); body.Children.Add(cap); }
-        root.Children.Add(Card(body));
+        var card = Card(body); card.Padding = new Thickness(10); root.Children.Add(card);
     }
 
     private void BuildChecklistEditor()

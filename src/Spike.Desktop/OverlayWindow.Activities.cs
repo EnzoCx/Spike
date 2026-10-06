@@ -67,7 +67,7 @@ public sealed partial class OverlayWindow
         if (activityChecklist.ContextMenu?.Items[0] is MenuItem item) item.Header = T("openActivities");
     }
 
-    internal void TickActivities() { if (activitiesOpen) activityChecklist?.Tick(); else if (showingUpcoming) RenderUpcoming(); }
+    internal void TickActivities() { if (activitiesOpen) activityChecklist?.Tick(); }
 
     private bool WantsUpcoming => activityController is not null && preferences.OverlayIdleEvents
         && !activitiesOpen && !keepMeterWhileIdle && archived is null && captureStatus != "capturing";
@@ -98,7 +98,7 @@ public sealed partial class OverlayWindow
         {
             var remaining = occurrence.StartsAt - now;
             var name = occurrence.Activity.CustomName.Length > 0 ? occurrence.Activity.CustomName : T(occurrence.Activity.NameKey);
-            var row = new DockPanel { Height = 26, LastChildFill = true, ToolTip = occurrence.StartsAt.ToLocalTime().ToString("f", Culture) };
+            var row = new DockPanel { Height = 26, LastChildFill = true, ToolTip = name + "\n" + occurrence.StartsAt.ToLocalTime().ToString("f", Culture) };
             var countdown = new TextBlock { Text = remaining.TotalHours >= 24 ? $"{(int)remaining.TotalDays}d {remaining.Hours:00}h" : $"{(int)remaining.TotalHours:00}:{remaining.Minutes:00}:{remaining.Seconds:00}", FontSize = 12, FontWeight = FontWeights.Medium, Margin = new Thickness(10, 0, 0, 0) };
             DockPanel.SetDock(countdown, Dock.Right); row.Children.Add(countdown);
             row.Children.Add(new TextBlock { Text = name, FontSize = 12, TextTrimming = TextTrimming.CharacterEllipsis });

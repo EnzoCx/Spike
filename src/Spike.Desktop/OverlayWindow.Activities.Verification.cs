@@ -52,6 +52,10 @@ public sealed partial class OverlayWindow
         window.ToggleIdleEvents();
         if (window.showingUpcoming || window.scroll.Visibility != Visibility.Visible)
             throw new InvalidOperationException("The automatic events view must be optional.");
+        window.UpdateIdleLayout(DateTimeOffset.UtcNow.AddHours(1));
+        window.SavePreview(directory, $"collapsed-tabs-{preferences.Language}-{preferences.Theme}.png");
+        if (!window.idleCollapsed || window.Height < header.ActualHeight + window.frame.Padding.Top + window.frame.Padding.Bottom + 2)
+            throw new InvalidOperationException("Collapsed overlays must retain the complete single-row header and tabs.");
         var restored = System.Text.Json.JsonSerializer.Deserialize<Preferences>(System.Text.Json.JsonSerializer.Serialize(window.preferences))!;
         if (restored.OverlayIdleEvents || !new Preferences().OverlayIdleEvents || !new Preferences().ShowOverlayOnStartup)
             throw new InvalidOperationException("Idle events and startup overlay must default on and preserve user choices.");

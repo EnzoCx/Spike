@@ -41,8 +41,9 @@ public sealed partial class OverlayWindow
         // Resize the window itself: the hidden rows must no longer intercept game clicks.
         // Raise the minimum only after restoring height, so bottom anchoring uses
         // the reduced bounds rather than WPF's already-coerced minimum height.
-        MinHeight = 44;
-        placement.SetHeight(value ? 44 : expandedHeight);
+        var collapsedHeight = activityChecklist is null ? 44 : 48;
+        MinHeight = collapsedHeight;
+        placement.SetHeight(value ? collapsedHeight : expandedHeight);
         if (!value) MinHeight = ExpandedMinHeight;
         if (value) collapsedTop = Top;
         ApplyActivityVisibility();
