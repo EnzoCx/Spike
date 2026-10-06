@@ -54,6 +54,6 @@ public partial class Dashboard
                 + "  ·  " + string.Format(Culture, T("startsIn"), Math.Max(0, (int)Math.Ceiling((occurrence.StartsAt - now).TotalMinutes))));
         }
         if (!activityToast.IsVisible) activityToast.Show();
-        if (activities.Data.Settings.Sound) System.Media.SystemSounds.Asterisk.Play();
+        if (activities.Data.Settings.Sound) ReminderSound.Play();
     }
 }

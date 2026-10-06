@@ -7,6 +7,22 @@ namespace Spike.Desktop;
 public partial class Dashboard
 {
     private bool translatingOpacity;
+    private readonly System.Windows.Threading.DispatcherTimer opacitySaveTimer = new() { Interval = TimeSpan.FromMilliseconds(300) };
+    private bool opacitySaveConfigured;
+
+    private void QueueOpacitySave()
+    {
+        if (verifying) return;
+        if (!opacitySaveConfigured) { opacitySaveTimer.Tick += (_, _) => FlushOpacitySave(); opacitySaveConfigured = true; }
+        opacitySaveTimer.Stop(); opacitySaveTimer.Start();
+    }
+
+    private void FlushOpacitySave()
+    {
+        opacitySaveTimer.Stop();
+        if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
+    }
+
 
     private void TranslateOpacity()
     {
@@ -18,8 +34,8 @@ public partial class Dashboard
             IdleOpacityLabel.Text = T("idleOpacity");
             IdleOpacityCheck.Content = T("useIdleOpacity");
             OpacityHint.Text = T("opacitySettingsHint");
-            SetOpacityChoices(CombatOpacityChoice, preferences.OverlayCombatOpacity, 15, 100);
-            SetOpacityChoices(IdleOpacityChoice, preferences.OverlayIdleOpacity, 5, 15);
+            CombatOpacityChoice.Value = Math.Clamp(preferences.OverlayCombatOpacity * 100, 15, 100);
+            IdleOpacityChoice.Value = Math.Clamp(preferences.OverlayIdleOpacity * 100, 5, 100);
             IdleOpacityCheck.IsChecked = preferences.OverlayFadeWhenIdle;
             IdleOpacityChoice.IsEnabled = preferences.OverlayFadeWhenIdle;
             AutomationProperties.SetName(CombatOpacityChoice, CombatOpacityLabel.Text);
@@ -28,20 +44,11 @@ public partial class Dashboard
         finally { translatingOpacity = false; }
     }
 
-    private void SetOpacityChoices(ComboBox control, double opacity, int minimum, int fallback)
+    private void OpacitySelected(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
-        var percent = double.IsFinite(opacity) ? Math.Round(Math.Clamp(opacity * 100, minimum, 100), 6) : fallback;
-        var values = Enumerable.Range(minimum / 5, (100 - minimum) / 5 + 1).Select(value => value * 5d).Append(percent).Distinct().Order();
-        var choices = values.Select(value => new OpacityChoice(value / 100, (value / 100).ToString("P0", Culture))).ToArray();
-        control.ItemsSource = choices;
-        control.SelectedItem = choices.Single(value => value.Value == percent / 100);
-    }
-
-    private void OpacitySelected(object sender, SelectionChangedEventArgs e)
-    {
-        if (!IsInitialized || translatingOpacity || ((ComboBox)sender).SelectedItem is not OpacityChoice choice) return;
-        preferences = sender == CombatOpacityChoice ? preferences with { OverlayCombatOpacity = choice.Value }
-            : preferences with { OverlayIdleOpacity = choice.Value };
+        if (!IsInitialized || translatingOpacity || sender is not Slider control) return;
+        preferences = sender == CombatOpacityChoice ? preferences with { OverlayCombatOpacity = control.Value / 100 }
+            : preferences with { OverlayIdleOpacity = control.Value / 100 };
         SaveOpacity();
     }
 
@@ -56,8 +63,6 @@ public partial class Dashboard
     private void SaveOpacity()
     {
         overlay?.Apply(preferences);
-        if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
+        QueueOpacitySave();
     }
 }
-
-public sealed record OpacityChoice(double Value, string Name);

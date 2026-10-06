@@ -8,7 +8,7 @@ public sealed record Preferences(string Language = "fr", string Theme = "dark", 
     double OverlayLeft = 40, double OverlayTop = 80, double OverlayWidth = 460, double OverlayHeight = 504,
     bool ShowOverlayOnStartup = true, bool OverlayAutoFit = true, bool OverlayCompact = false, bool OverlaySnapToEdges = true,
     bool OverlayFadeWhenIdle = true, bool OverlayDiscreet = true,
-    double OverlayCombatOpacity = 1, double OverlayIdleOpacity = .15, bool LaunchWithGame = false)
+    double OverlayCombatOpacity = 1, double OverlayIdleOpacity = .15, bool LaunchWithGame = false, bool OverlayIdleEvents = true)
 {
     private static string FilePath => Path.Combine(Spike.Core.ApplicationData.Root, "settings.json");
 

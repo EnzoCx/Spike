@@ -27,9 +27,30 @@ public sealed partial class OverlayWindow
         window.Width = 320;
         window.SavePreview(directory, $"reserves-overlay-{preferences.Language}-{preferences.Theme}-minimum.png");
         if (window.activitySwitch?.Visibility != Visibility.Visible) throw new InvalidOperationException("Both overlay tabs must remain discoverable.");
+        var header = (DockPanel)((Grid)window.frame.Child).Children[0];
+        var switchBounds = window.activitySwitch!.TransformToAncestor(header).TransformBounds(new Rect(window.activitySwitch.RenderSize));
+        var closeBounds = window.close.TransformToAncestor(header).TransformBounds(new Rect(window.close.RenderSize));
+        if (switchBounds.Y < 0 || switchBounds.Bottom > header.ActualHeight + 1 || switchBounds.Right > closeBounds.Left)
+            throw new InvalidOperationException("Tabs must share the title row without overlapping close at minimum width.");
         window.ToggleActivities(); window.Update(null, "stopped");
-        if (window.activitiesOpen || window.activityChecklist.Visibility != Visibility.Collapsed || window.scroll.Visibility != Visibility.Visible)
-            throw new InvalidOperationException("Returning to combat must restore the meter.");
+        if (window.activitiesOpen || !window.showingUpcoming || window.upcomingPanel.Visibility != Visibility.Visible || window.scroll.Visibility != Visibility.Collapsed)
+            throw new InvalidOperationException("Outside combat the meter must show upcoming events automatically.");
+        window.UpdateIdleLayout(DateTimeOffset.UtcNow.AddHours(1));
+        if (window.idleCollapsed) throw new InvalidOperationException("Upcoming events must remain visible during extended idle time.");
+        window.SavePreview(directory, $"upcoming-overlay-{preferences.Language}-{preferences.Theme}.png");
+        window.Update(null, "capturing");
+        if (window.showingUpcoming || window.scroll.Visibility != Visibility.Visible || window.upcomingPanel.Visibility != Visibility.Collapsed)
+            throw new InvalidOperationException("Combat must immediately restore meter controls.");
+        window.ToggleActivities(); window.Update(null, "capturing");
+        if (!window.activitiesOpen || window.activityChecklist.Visibility != Visibility.Visible)
+            throw new InvalidOperationException("Automatic switching must respect an explicitly opened checklist.");
+        window.ToggleActivities(); window.Update(null, "stopped");
+        window.ToggleIdleEvents();
+        if (window.showingUpcoming || window.scroll.Visibility != Visibility.Visible)
+            throw new InvalidOperationException("The automatic events view must be optional.");
+        var restored = System.Text.Json.JsonSerializer.Deserialize<Preferences>(System.Text.Json.JsonSerializer.Serialize(window.preferences))!;
+        if (restored.OverlayIdleEvents || !new Preferences().OverlayIdleEvents || !new Preferences().ShowOverlayOnStartup)
+            throw new InvalidOperationException("Idle events and startup overlay must default on and preserve user choices.");
         window.Close();
     }
 }

@@ -24,10 +24,12 @@ public sealed record ActivityOccurrence(ScheduledActivity Activity, DateTimeOffs
 /// <summary>Offline Global presets, reviewed 2026-10-06. See docs/ACTIVITIES.md for evidence and conflicts.</summary>
 public static class ActivityCatalog
 {
+    public static int ReserveStep(ChecklistActivity task) => task.NameKey == "taskOdyle" ? 40 : 1;
+
     public static ActivityData Create()
     {
         DayOfWeek[] daily = Enum.GetValues<DayOfWeek>();
-        return new(2, new(),
+        return new(3, new(),
         [
             new("shugo", "eventShugo", "", Enumerable.Range(0, 24).Select(h => h * 60).ToArray(), daily, true),
             new("rift", "eventRift", "", Enumerable.Range(0, 8).Select(h => h * 180).ToArray(), daily, true,
@@ -51,6 +53,8 @@ public static class ActivityCatalog
             new("altgard", "taskAltgard", "", ActivityPeriod.Weekly, Shared: true),
             new("abyss", "taskAbyss", "", ActivityPeriod.Weekly, Shared: true),
             new("season", "taskSeason", "", ActivityPeriod.Weekly),
+            new("windbreeze-character", "taskWindbreeze", "", ActivityPeriod.Weekly, 4),
+            new("windbreeze-server", "taskWindbreezeShared", "", ActivityPeriod.Weekly, 16, Shared: true),
             new("shops", "taskShops", "", ActivityPeriod.Weekly),
             new("ludra", "taskLudra", "", ActivityPeriod.Weekly, Visible: false)
         ], [new("main", "", new())], "main", new());
@@ -138,7 +142,7 @@ public sealed class ActivityReminders
 
 public sealed class ActivityStore(string path)
 {
-    private bool backupLegacy;
+    private int backupVersion;
     private const int MaximumBytes = 2 * 1024 * 1024;
     private static readonly JsonSerializerOptions Json = new() { WriteIndented = true };
 
@@ -149,7 +153,7 @@ public sealed class ActivityStore(string path)
         var data = JsonSerializer.Deserialize<ActivityData>(File.ReadAllText(path), Json)
             ?? throw new InvalidDataException("Missing activities.");
         Validate(data);
-        backupLegacy = data.Version == 1;
+        backupVersion = data.Version < 3 ? data.Version : 0;
         data = Migrate(data);
         Validate(data);
         return data;
@@ -158,6 +162,12 @@ public sealed class ActivityStore(string path)
     /// <summary>Upgrade built-in presets without discarding user tasks, settings or unrelated progress.</summary>
     public static ActivityData Migrate(ActivityData data)
     {
+        if (data.Version == 2)
+        {
+            var additions = ActivityCatalog.Create().Tasks.Where(t => t.Id.StartsWith("windbreeze-", StringComparison.Ordinal)
+                && data.Tasks.All(existing => existing.Id != t.Id)).Take(Math.Max(0, 100 - data.Tasks.Length));
+            return data with { Version = 3, Tasks = [.. data.Tasks, .. additions] };
+        }
         if (data.Version != 1) return data;
         var presets = ActivityCatalog.Create().Tasks;
         var changedUnits = new HashSet<string>();
@@ -173,7 +183,7 @@ public sealed class ActivityStore(string path)
         tasks.AddRange(presets.Where(p => tasks.All(t => t.Id != p.Id)).Take(Math.Max(0, 100 - tasks.Count)));
         return data with
         {
-            Version = 2, Tasks = tasks.ToArray(),
+            Version = 3, Tasks = tasks.ToArray(),
             Profiles = data.Profiles.Select(p => p with
             { Completed = p.Completed.Where(c => !changedUnits.Contains(c.Key)).ToDictionary(c => c.Key, c => c.Value) }).ToArray()
         };
@@ -189,8 +199,9 @@ public sealed class ActivityStore(string path)
         try
         {
             File.WriteAllText(temporary, json);
-            if (backupLegacy && File.Exists(path) && !File.Exists(path + ".v1.bak")) File.Copy(path, path + ".v1.bak");
-            File.Move(temporary, path, overwrite: true); backupLegacy = false;
+            var backup = path + $".v{backupVersion}.bak";
+            if (backupVersion > 0 && File.Exists(path) && !File.Exists(backup)) File.Copy(path, backup);
+            File.Move(temporary, path, overwrite: true); backupVersion = 0;
         }
         finally { if (File.Exists(temporary)) File.Delete(temporary); }
     }
@@ -200,7 +211,7 @@ public sealed class ActivityStore(string path)
         static bool Id(string? value) => !string.IsNullOrWhiteSpace(value) && value.Length <= 80;
         static bool Label(string? value) => value is not null && value.Length <= 120 && !value.Any(char.IsControl);
         var s = data.Settings;
-        if (data.Version is not (1 or 2) || s is null || s.UtcOffsetMinutes is < -720 or > 840 || s.UtcOffsetMinutes % 15 != 0
+        if (data.Version is not (1 or 2 or 3) || s is null || s.UtcOffsetMinutes is < -720 or > 840 || s.UtcOffsetMinutes % 15 != 0
             || s.ResetMinute is < 0 or >= 1440 || s.LeadMinutes is < 0 or > 60 || !Enum.IsDefined(s.WeeklyResetDay)
             || data.Events is null || data.Tasks is null || data.Profiles is null || data.Delivered is null
             || data.Events.Length > 100 || data.Tasks.Length > 100 || data.Profiles.Length is < 1 or > 20)

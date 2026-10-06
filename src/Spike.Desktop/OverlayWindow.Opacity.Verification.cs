@@ -11,7 +11,7 @@ public sealed partial class OverlayWindow
     internal void VerifySelectOpacity(bool idle, double value)
     {
         var menu = BuildOptionsMenu().Items.OfType<MenuItem>().Single(item => Equals(item.Header, T(idle ? "idleOpacity" : "combatOpacity")));
-        menu.Items.OfType<MenuItem>().Single(item => Equals(item.Header, value.ToString("P0", Culture))).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        Dashboard.ActivityControls<Slider>((DockPanel)((MenuItem)menu.Items[0]).Header).Single().Value = value * 100;
     }
 
     private static void VerifyOpacityPreferences(Preferences defaults, Encounter encounter, Style style)
@@ -27,8 +27,7 @@ public sealed partial class OverlayWindow
                     if (Math.Abs(window.frame.Opacity - expected) > .001) throw new InvalidOperationException("Separate combat/idle opacity was not applied.");
                 }
                 window.Update(encounter, "capturing");
-                var menu = window.BuildOptionsMenu().Items.OfType<MenuItem>().Single(item => Equals(item.Header, window.T("combatOpacity")));
-                menu.Items.OfType<MenuItem>().Single(item => Equals(item.Header, .5.ToString("P0", window.Culture))).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                window.VerifySelectOpacity(false, .5);
                 Check(.5);
                 window.ChangeVisibilityOpacity(.5, .25, true);
                 foreach (var state in new[] { "paused", "waiting", "connected", "stopped" }) { window.Update(encounter, state); Check(.25); }

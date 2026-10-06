@@ -94,10 +94,40 @@ internal static class ActivityChecks
         controller.SetCount(nightmare, 9);
         check(ActivitySchedule.Count(controller.Data with { ActiveProfile = "alt" }, nightmare, recordedAt) == 0, "Nightmare balances remain character-specific");
         check(ActivitySchedule.Recorded(controller.Data, reserve, recordedAt.AddSeconds(-1)) is null, "Future reserve readings are not shown after clock rollback");
+        var odyle = controller.Data.Tasks.Single(t => t.Id == "odyle");
+        check(!controller.AdjustReserve(odyle, 1), "Quick controls never infer an unknown starting balance");
+        controller.SetCount(odyle, 480);
+        check(controller.AdjustReserve(odyle, 1) && ActivitySchedule.Count(controller.Data, odyle, recordedAt) == 520,
+            "Odyle plus adds exactly 40 points");
+        check(controller.AdjustReserve(odyle, -1) && ActivitySchedule.Count(controller.Data, odyle, recordedAt) == 480,
+            "Odyle minus removes exactly 40 points");
+        controller.SetCount(odyle, 550);
+        check(!controller.AdjustReserve(odyle, 1) && ActivitySchedule.Count(controller.Data, odyle, recordedAt) == 550,
+            "Reserve controls never silently apply a partial step near the cap");
+        controller.SetCount(odyle, 15);
+        check(!controller.AdjustReserve(odyle, -1) && !controller.AdjustReserve(odyle, 0) && !controller.AdjustReserve(daily, 1),
+            "Reserve steps reject underflow, invalid direction and ordinary tasks");
+        controller.SetCount(reserve, 6);
+        check(controller.AdjustReserve(reserve, 1) && ActivitySchedule.Count(controller.Data, reserve, recordedAt) == 7
+            && controller.AdjustReserve(reserve, -1) && ActivitySchedule.Count(controller.Data, reserve, recordedAt) == 6,
+            "Keys increment and decrement one at a time");
+        var windCharacter = controller.Data.Tasks.Single(t => t.Id == "windbreeze-character");
+        var windServer = controller.Data.Tasks.Single(t => t.Id == "windbreeze-server");
+        check(windCharacter.Goal == 4 && !windCharacter.Shared && windServer.Goal == 16 && windServer.Shared,
+            "Wind Breeze purchases separate character and server limits");
+        controller.SetCount(windCharacter, 2); controller.SetCount(windServer, 9);
+        var altData = controller.Data with { ActiveProfile = "alt" };
+        check(ActivitySchedule.Count(altData, windCharacter, recordedAt) == 0 && ActivitySchedule.Count(altData, windServer, recordedAt) == 9,
+            "Wind Breeze server purchases synchronize across characters independently of personal purchases");
+        var v2 = controller.Data with { Version = 2, Tasks = controller.Data.Tasks.Where(t => !t.Id.StartsWith("windbreeze-")).ToArray() };
+        var v3 = ActivityStore.Migrate(v2);
+        check(v3.Version == 3 && v3.Tasks.Length == v2.Tasks.Length + 2 && ReferenceEquals(v3.Profiles, v2.Profiles)
+            && ReferenceEquals(v3.Settings, v2.Settings) && ReferenceEquals(v3.Events, v2.Events) && ReferenceEquals(ActivityStore.Migrate(v3), v3),
+            "Version 2 migration restores Wind Breeze once without changing existing settings, progress or schedules");
         var legacy = ActivityCatalog.Create() with { Version = 1, Tasks = [new("shugo", "taskShugo", "", ActivityPeriod.Daily, 2), new("custom", "", "My routine", ActivityPeriod.Weekly, 3)],
             Profiles = [new("main", "", new() { ["shugo"] = new(2, recordedAt), ["custom"] = new(1, recordedAt) })] };
         var migrated = ActivityStore.Migrate(legacy);
-        check(migrated.Version == 2 && migrated.Tasks.Single(t => t.Id == "shugo").Period == ActivityPeriod.Reserve,
+        check(migrated.Version == 3 && migrated.Tasks.Single(t => t.Id == "shugo").Period == ActivityPeriod.Reserve,
             "Legacy Shugo completions migrate to accumulating reserves");
         check(!migrated.Profiles[0].Completed.ContainsKey("shugo") && migrated.Profiles[0].Completed["custom"].Count == 1,
             "Migration never interprets completed runs as remaining keys; unrelated user progress survives");
@@ -110,7 +140,7 @@ internal static class ActivityChecks
         var store = new ActivityStore(path);
         try
         {
-            check(store.Load().Tasks.Length == 14, "First use creates daily and weekly templates without writing a file");
+            check(store.Load().Tasks.Length == 16, "First use creates daily and weekly templates without writing a file");
             store.Save(data);
             var reopened = store.Load();
             check(reopened.Profiles.Length == 2 && reopened.Delivered.Count == 2 && reopened.Profiles[0].Completed[weekly.Id].Count == 8, "Atomic storage retains profiles, partial progress, schedules and reminder history");
@@ -118,7 +148,7 @@ internal static class ActivityChecks
             void Reject(ActivityData invalid, string label)
             {
                 try { store.Save(invalid); }
-                catch (InvalidDataException) { check(store.Load().Tasks.Length == 14, label); return; }
+                catch (InvalidDataException) { check(store.Load().Tasks.Length == 16, label); return; }
                 throw new Exception("Accepted invalid activities: " + label);
             }
             Reject(data with { Version = 99 }, "Unsupported schema cannot overwrite a valid save");
@@ -130,13 +160,18 @@ internal static class ActivityChecks
             Reject(data with { Tasks = [daily with { Goal = 0 }] }, "Reject empty checklist goals");
             Reject(data with { ActiveProfile = "missing" }, "Reject a nonexistent active character");
             Reject(data with { Tasks = [daily with { Notes = new string('x', 1001) }] }, "Reject oversized activity notes");
+            var v2Json = JsonSerializer.Serialize(v2);
+            File.WriteAllText(path, v2Json);
+            var restoredShop = store.Load(); store.Save(restoredShop);
+            check(File.ReadAllText(path + ".v2.bak") == v2Json && store.Load().Version == 3,
+                "Version 2 state is backed up before writing the restored shop catalogue");
             var legacyJson = JsonSerializer.Serialize(legacy);
             File.WriteAllText(path, legacyJson);
             var upgraded = store.Load();
-            check(upgraded.Version == 2 && File.ReadAllText(path) == legacyJson && !File.Exists(path + ".v1.bak"),
+            check(upgraded.Version == 3 && File.ReadAllText(path) == legacyJson && !File.Exists(path + ".v1.bak"),
                 "Loading legacy state migrates in memory without changing the user's original file");
             store.Save(upgraded);
-            check(File.ReadAllText(path + ".v1.bak") == legacyJson && store.Load().Version == 2,
+            check(File.ReadAllText(path + ".v1.bak") == legacyJson && store.Load().Version == 3,
                 "First migrated save retains an exact backup of the original checklist");
             var withNotes = upgraded with { Tasks = upgraded.Tasks.Select(t => t.Id == "custom" ? t with { Notes = "Where\r\nMy route" } : t).ToArray() };
             store.Save(withNotes);

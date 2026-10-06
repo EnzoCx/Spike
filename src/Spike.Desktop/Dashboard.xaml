@@ -159,8 +159,8 @@
      <TextBlock x:Name="ThemeCaption" FontSize="13" FontWeight="Medium"/><StackPanel x:Name="ThemeChoices" Orientation="Horizontal" Margin="0,8,0,18"/>
      <TextBlock x:Name="OpacityCaption" ToolTip="{Binding Text, ElementName=OpacityHint}" AutomationProperties.HelpText="{Binding Text, ElementName=OpacityHint}" FontSize="13" FontWeight="Medium"/>
      <Grid Margin="0,8,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
-      <StackPanel><TextBlock x:Name="CombatOpacityLabel" TextWrapping="Wrap" Margin="0,0,0,8"/><ComboBox x:Name="CombatOpacityChoice" DisplayMemberPath="Name" SelectionChanged="OpacitySelected"/></StackPanel>
-      <StackPanel Grid.Column="2"><TextBlock x:Name="IdleOpacityLabel" TextWrapping="Wrap" Margin="0,0,0,8"/><ComboBox x:Name="IdleOpacityChoice" DisplayMemberPath="Name" SelectionChanged="OpacitySelected"/></StackPanel>
+      <StackPanel><TextBlock x:Name="CombatOpacityLabel" TextWrapping="Wrap" Margin="0,0,0,8"/><DockPanel><TextBlock DockPanel.Dock="Right" Width="44" TextAlignment="Right" Text="{Binding Value, ElementName=CombatOpacityChoice, StringFormat={}{0:0} %}"/><Slider x:Name="CombatOpacityChoice" Minimum="15" Maximum="100" SmallChange="1" LargeChange="5" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="OpacitySelected"/></DockPanel></StackPanel>
+      <StackPanel Grid.Column="2"><TextBlock x:Name="IdleOpacityLabel" TextWrapping="Wrap" Margin="0,0,0,8"/><DockPanel><TextBlock DockPanel.Dock="Right" Width="44" TextAlignment="Right" Text="{Binding Value, ElementName=IdleOpacityChoice, StringFormat={}{0:0} %}"/><Slider x:Name="IdleOpacityChoice" Minimum="5" Maximum="100" SmallChange="1" LargeChange="5" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="OpacitySelected"/></DockPanel></StackPanel>
      </Grid>
      <CheckBox x:Name="IdleOpacityCheck" Margin="0,8,0,0" Checked="IdleOpacityToggled" Unchecked="IdleOpacityToggled"/>
      <TextBlock x:Name="OpacityHint" Visibility="Collapsed" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,4,0,28"/>

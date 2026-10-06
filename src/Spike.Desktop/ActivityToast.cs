@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Windows.Media.Animation;
 
 namespace Spike.Desktop;
 
@@ -67,6 +68,14 @@ internal sealed partial class ActivityToast : Window
             panel.Children.Add(view);
             var card = new Border { Child = panel, Height = 104, Padding = new Thickness(14, 12, 12, 12), CornerRadius = new CornerRadius(12), BorderThickness = new Thickness(1), Margin = new Thickness(0, 0, 0, 8) };
             card.SetResourceReference(Border.BackgroundProperty, "Background"); card.SetResourceReference(Border.BorderBrushProperty, "Border");
+            card.Loaded += (_, _) =>
+            {
+                if (!IsVisible || !SystemParameters.ClientAreaAnimation) return;
+                var shift = new TranslateTransform(); card.RenderTransform = shift;
+                var ease = new CubicEase { EasingMode = EasingMode.EaseOut };
+                shift.BeginAnimation(TranslateTransform.XProperty, new DoubleAnimation(12, 0, TimeSpan.FromMilliseconds(220)) { EasingFunction = ease, FillBehavior = FillBehavior.Stop });
+                card.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(180)) { FillBehavior = FillBehavior.Stop });
+            };
             close.Click += (_, _) => Dismiss(card);
             view.Click += (_, _) => { open(); Dismiss(card); };
             visible.Add((card, DateTimeOffset.UtcNow.AddSeconds(12))); cards.Children.Add(card);

@@ -54,7 +54,8 @@ public partial class Dashboard : Window
         }));
         ApplyTheme(); InitializeActivities(); Translate(); RenderFight();
         timer.Tick += (_, _) => Tick();
-        Loaded += (_, _) => { if (!verifying) StartSession(); };
+        var sessionStarted = false;
+        Loaded += (_, _) => { if (!verifying && !sessionStarted) { sessionStarted = true; StartSession(); } };
         SourceInitialized += (_, _) =>
         {
             if (verifying) return;
@@ -63,8 +64,10 @@ public partial class Dashboard : Window
             if (!OverlayWindow.RegisterHotKey(hwndSource!.Handle, 73, 0x4003, 0x4D))
                 SetNotice("overlayShortcutUnavailable");
         };
-        Closing += (_, _) =>
+        Closing += (_, e) =>
         {
+            if (!verifying && Application.Current is App { IsExiting: false }) { e.Cancel = true; Hide(); return; }
+            FlushOpacitySave();
             activityToast?.Close();
             activitiesView.Detach();
             StopUpdates();
@@ -88,14 +91,17 @@ public partial class Dashboard : Window
         return IntPtr.Zero;
     }
 
+    internal bool OverlayOpen => overlay is not null;
+    internal void SetOverlayVisible(bool visible) { if (visible) OpenOverlay(); else overlay?.Close(); }
+
     private void StartSession()
     {
+        if (preferences.ShowOverlayOnStartup) OpenOverlay();
         if (!verifying)
         {
             timer.Start();
             if (!NpcapAvailability.Detect().IsInstalled) { ShowSetup(); return; }
         }
-        if (preferences.ShowOverlayOnStartup) OpenOverlay();
         if (verifying) return;
         if (preferences.AutoStart) StartCapture();
     }
@@ -434,6 +440,11 @@ public partial class Dashboard : Window
             if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
         };
         overlay.NewFightRequested += () => { meter?.Finish(); Tick(); };
+        overlay.IdleEventsChanged += enabled =>
+        {
+            preferences = preferences with { OverlayIdleEvents = enabled };
+            if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
+        };
         overlay.DiscreetChanged += enabled =>
         {
             preferences = preferences with { OverlayDiscreet = enabled };
@@ -454,14 +465,14 @@ public partial class Dashboard : Window
         {
             preferences = preferences with { OverlayCombatOpacity = combat, OverlayIdleOpacity = idle };
             TranslateOpacity();
-            if (!verifying) try { preferences.Save(); } catch (Exception error) when (IsFileError(error)) { SetNotice("saveError"); }
+            QueueOpacitySave();
         };
         overlay.DetailsRequested += (fight, player, healing, selectedTarget) =>
         {
             DisplayEncounter(fight, player, healing, selectedTarget, false);
             if (verifying) return;
             if (WindowState == WindowState.Minimized) WindowState = WindowState.Normal;
-            Activate();
+            Show(); Activate();
         };
         overlay.Closed += (_, _) => { overlay = null; UpdateOverlayButton(); };
         if (!verifying) overlay.Show();

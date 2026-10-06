@@ -142,7 +142,16 @@ internal sealed class ActivitiesView : ScrollViewer
 
     private Button Info(ChecklistActivity task)
     {
-        var button = Button("i", () => { }, task.Id + "-info"); button.Padding = new Thickness(7, 2, 7, 2);
+        var button = Button("", () => { }, task.Id + "-info");
+        button.Content = new System.Windows.Shapes.Path
+        {
+            Data = Geometry.Parse("M8,1 A7,7 0 1 1 7.999,1 M8,7 L8,11 M8,4.5 L8,4.6"),
+            Width = 16, Height = 16, Stretch = Stretch.Uniform, StrokeThickness = 1.3,
+            StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round
+        };
+        ((System.Windows.Shapes.Path)button.Content).SetResourceReference(System.Windows.Shapes.Shape.StrokeProperty, "Muted");
+        button.Width = 28; button.Height = 28; button.Padding = new Thickness(4);
+        button.Background = Brushes.Transparent; button.BorderThickness = new Thickness(0);
         button.Margin = new Thickness(4, 0, 0, 0); button.VerticalAlignment = VerticalAlignment.Center;
         var text = HelpText(task);
         button.ToolTip = new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, MaxWidth = 300 };
@@ -155,6 +164,7 @@ internal sealed class ActivitiesView : ScrollViewer
             body.Children.Add(Label(T(task.Shared ? "sharedScope" : "characterScope"), true, 11));
             if (task.NameKey.Length > 0)
             {
+                if (task.Id.StartsWith("windbreeze-", StringComparison.Ordinal)) body.Children.Add(SourceLink("https://aion2.gaming.tools/items/503700031"));
                 body.Children.Add(SourceLink("https://corpus.gg/blog/aion-2/daily-weekly-checklist"));
                 body.Children.Add(SourceLink("https://metabot.gg/en/aion-2/guides/daily-weekly-checklist"));
                 body.Children.Add(SourceLink("https://aion2maps.com/guides/daily-and-weekly/"));
@@ -240,7 +250,7 @@ internal sealed class ActivitiesView : ScrollViewer
         {
             var content = new StackPanel(); Section(content, ActivityName(task));
             content.Children.Add(Label(T("reserveHelp"), true, 12));
-            var value = Input(T("reserveValue"), recorded?.Count.ToString(CultureInfo.InvariantCulture) ?? "", 3);
+            var value = Input(T("reserveValue"), recorded?.Count.ToString(CultureInfo.InvariantCulture) ?? "", 3); value.Tag = task.Id + "-stock";
             content.Children.Add(value); var error = Label("", true, 12); content.Children.Add(error);
             void Save()
             {
@@ -252,11 +262,28 @@ internal sealed class ActivitiesView : ScrollViewer
             value.KeyDown += (_, e) => { if (e.Key == Key.Enter) { Save(); e.Handled = true; } };
             ShowPopup(edit, content); value.Focus(); value.SelectAll();
         };
-        DockPanel.SetDock(edit, Dock.Right); row.Children.Add(edit);
-        var name = Label(ActivityName(task), size: compact ? 12 : 14); name.FontWeight = FontWeights.SemiBold; name.Margin = new Thickness(0, 3, 0, 3); row.Children.Add(name);
+        var name = Label(ActivityName(task), size: compact ? 12 : 14); name.FontWeight = FontWeights.SemiBold; name.Margin = new Thickness(0, 0, 0, 3); row.Children.Add(name);
         body.Children.Add(row);
-        body.Children.Add(Label(T(task.Shared ? "sharedScope" : "characterScope") + " · " + (recorded is null ? T("reserveUnknown")
-            : string.Format(Culture, T("reserveUpdated"), recorded.UpdatedAt.ToLocalTime().ToString("g", Culture))), true, 10));
+        var counterRow = new DockPanel { Margin = new Thickness(0, 2, 0, 6) };
+        var actions = new StackPanel { Orientation = Orientation.Horizontal };
+        var step = ActivityCatalog.ReserveStep(task);
+        var minus = Button("−", () => controller.AdjustReserve(task, -1), task.Id + "-minus");
+        var plus = Button("+", () => controller.AdjustReserve(task, 1), task.Id + "-plus");
+        minus.IsEnabled = recorded is not null && recorded.Count >= step;
+        plus.IsEnabled = recorded is not null && recorded.Count + step <= task.Goal;
+        foreach (var (button, change) in new[] { (minus, -step), (plus, step) })
+        {
+            button.Width = 28; button.Height = 28; button.Padding = new Thickness(0); button.Margin = new Thickness(0);
+            button.ToolTip = (recorded is null ? T("reserveUnknownHint") : $"{change:+0;-0} · {ActivityName(task)}");
+            ToolTipService.SetShowOnDisabled(button, true); AutomationProperties.SetName(button, $"{change:+0;-0} · {ActivityName(task)}");
+        }
+        edit.Padding = new Thickness(7, 3, 7, 3); edit.Margin = new Thickness(2, 0, 2, 0); edit.MinWidth = 70;
+        actions.Children.Add(minus); actions.Children.Add(edit); actions.Children.Add(plus);
+        DockPanel.SetDock(actions, Dock.Right); counterRow.Children.Add(actions);
+        var scope = Label(T(task.Shared ? "sharedScope" : "characterScope"), true, 10); scope.Margin = new Thickness(0, 0, 4, 0); counterRow.Children.Add(scope);
+        body.Children.Add(counterRow);
+        body.Children.Add(Label(recorded is null ? T("reserveUnknown")
+            : string.Format(Culture, T("reserveUpdated"), recorded.UpdatedAt.ToLocalTime().ToString("g", Culture)), true, 10));
         var bar = new ProgressBar { Maximum = task.Goal, Value = recorded?.Count ?? 0, Height = 3 };
         bar.SetResourceReference(Control.StyleProperty, "ActivityProgress");
         bar.SetResourceReference(Control.ForegroundProperty, "Accent"); body.Children.Add(bar);
@@ -311,11 +338,15 @@ internal sealed class ActivitiesView : ScrollViewer
     private void BuildSchedule()
     {
         var data = controller.Data;
-        root.Children.Add(Label(T("localSchedule"), size: 18));
         var evidence = Label(T("scheduleEvidence"), true, 11); root.Children.Add(evidence);
         BuildSettings();
         var eventEditor = new StackPanel();
-        root.Children.Add(Button(T("addEvent"), () => EditEvent(null, eventEditor)));
+        var toolbar = new DockPanel { Margin = new Thickness(0, 12, 0, 10) };
+        var add = Button("+  " + T("addEvent"), () => EditEvent(null, eventEditor), "add-event");
+        add.Margin = new Thickness(12, 0, 0, 0); add.HorizontalAlignment = HorizontalAlignment.Right;
+        AutomationProperties.SetName(add, T("addEvent")); DockPanel.SetDock(add, Dock.Right); toolbar.Children.Add(add);
+        var heading = Label(T("localSchedule"), size: 16); heading.Margin = new Thickness(0); toolbar.Children.Add(heading);
+        root.Children.Add(toolbar);
         root.Children.Add(eventEditor);
         var eventList = new StackPanel(); root.Children.Add(eventList);
         var eventCards = new List<(ScheduledActivity Activity, Border Card)>();

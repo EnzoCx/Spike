@@ -51,6 +51,15 @@ internal sealed class ActivityController
         return Change(Data with { Profiles = Data.Profiles.Select(p => p.Id == profile.Id ? p with { Completed = completed } : p).ToArray() });
     }
 
+    public bool AdjustReserve(ChecklistActivity task, int direction)
+    {
+        if (task.Period != ActivityPeriod.Reserve || direction is not (-1 or 1)) return false;
+        var current = ActivitySchedule.Recorded(Data, task, Clock());
+        if (current is null) return false; // Never infer the player's initial stock.
+        var value = current.Count + direction * ActivityCatalog.ReserveStep(task);
+        return value >= 0 && value <= task.Goal && SetCount(task, value);
+    }
+
     public void Tick()
     {
         var now = Clock();

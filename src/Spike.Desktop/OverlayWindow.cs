@@ -149,7 +149,7 @@ public sealed partial class OverlayWindow : Window
 
     private static double Bounded(double value, double fallback, double min, double max) => Math.Clamp(double.IsFinite(value) ? value : fallback, min, Math.Max(min, max));
     private void SaveLayout() => LayoutSaved?.Invoke(Left, idleCollapsed ? expandedTop + Top - collapsedTop : Top, Width,
-        activitiesOpen ? combatHeight : idleCollapsed ? expandedHeight : Height);
+        activitiesOpen ? combatHeight : showingUpcoming ? beforeUpcomingHeight : idleCollapsed ? expandedHeight : Height);
     private Button SmallButton(string text, Action action)
     {
         var button = new Button { Content = text, FontSize = 11, Padding = new Thickness(6, 3, 6, 3), Margin = new Thickness(0, 0, 4, 0), MinWidth = 24 };
@@ -243,6 +243,7 @@ public sealed partial class OverlayWindow : Window
         Item(T("discreetOverlay"), ToggleDiscreet, preferences.OverlayDiscreet);
         Item(T("autoFit"), () => ChangeAppearance(!preferences.OverlayAutoFit, preferences.OverlayCompact, preferences.OverlayOpacity), preferences.OverlayAutoFit);
         Item(T("compactRows"), () => ChangeAppearance(preferences.OverlayAutoFit, !preferences.OverlayCompact, preferences.OverlayOpacity), preferences.OverlayCompact);
+        Item(T("idleEvents"), ToggleIdleEvents, preferences.OverlayIdleEvents);
         Item(T("fadeWhenIdle"), ToggleIdleFade, preferences.OverlayFadeWhenIdle);
         menu.Items.Add(OpacityMenu("combatOpacity", preferences.OverlayCombatOpacity, false));
         menu.Items.Add(OpacityMenu("idleOpacity", preferences.OverlayIdleOpacity, true));
@@ -253,23 +254,25 @@ public sealed partial class OverlayWindow : Window
             var item = new MenuItem { Header = T(corner) }; item.Click += (_, _) => placement.Place(corner); position.Items.Add(item);
         }
         menu.Items.Add(position);
-        foreach (var opacity in new[] { .75, .9, 1 })
-        {
-            var level = opacity;
-            Item($"{T("opacity")} {level:P0}", () => ChangeAppearance(preferences.OverlayAutoFit, preferences.OverlayCompact, level), Math.Abs(level - preferences.OverlayOpacity) < .01);
-        }
+        menu.Items.Add(SliderMenu("opacity", preferences.OverlayOpacity, 65,
+            value => ChangeAppearance(preferences.OverlayAutoFit, preferences.OverlayCompact, value)));
         menu.Items.Add(new Separator()); Item(T("finish"), () => NewFightRequested?.Invoke());
         return menu;
     }
-    private MenuItem OpacityMenu(string key, double current, bool idle)
+    private MenuItem OpacityMenu(string key, double current, bool idle) => SliderMenu(key, current, idle ? 5 : 15,
+        value => ChangeVisibilityOpacity(idle ? preferences.OverlayCombatOpacity : value, idle ? value : preferences.OverlayIdleOpacity, idle));
+
+    private MenuItem SliderMenu(string key, double current, double minimum, Action<double> change)
     {
         var menu = new MenuItem { Header = T(key) };
-        foreach (var level in idle ? new[] { .05, .15, .25, .5, .75, 1 } : new[] { .15, .25, .5, .75, 1 })
-        {
-            var item = new MenuItem { Header = level.ToString("P0", Culture), IsCheckable = true, IsChecked = Math.Abs(current - level) < .01 };
-            item.Click += (_, _) => ChangeVisibilityOpacity(idle ? preferences.OverlayCombatOpacity : level, idle ? level : preferences.OverlayIdleOpacity, idle);
-            menu.Items.Add(item);
-        }
+        var panel = new DockPanel { Width = 200, Margin = new Thickness(4) };
+        var label = new TextBlock { Width = 44, TextAlignment = TextAlignment.Right, Text = current.ToString("P0", Culture) };
+        DockPanel.SetDock(label, Dock.Right); panel.Children.Add(label);
+        var slider = new Slider { Minimum = minimum, Maximum = 100, Value = current * 100, SmallChange = 1, LargeChange = 5, TickFrequency = 1, IsSnapToTickEnabled = true };
+        System.Windows.Automation.AutomationProperties.SetName(slider, T(key));
+        slider.ValueChanged += (_, _) => { label.Text = (slider.Value / 100).ToString("P0", Culture); change(slider.Value / 100); };
+        panel.Children.Add(slider);
+        menu.Items.Add(new MenuItem { Header = panel, StaysOpenOnClick = true });
         return menu;
     }
     private void ChangeVisibilityOpacity(double combat, double idle, bool enableIdleFade)
@@ -327,10 +330,13 @@ public sealed partial class OverlayWindow : Window
 
     private void Render()
     {
+        UpdateUpcomingMode();
         UpdateVisibility();
+        if (showingUpcoming) { RenderUpcoming(); return; }
         if (activitiesOpen)
         {
-            ApplyActivityVisibility(); heading.Text = T("checklist"); duration.Text = "";
+            ApplyActivityVisibility(); heading.Text = Text.ProductName;
+            duration.Text = CombatPresentation.Duration(Selected is null ? 0 : EncounterMath.Window(Selected, Target).DurationMs);
             activityChecklist?.Tick(); return;
         }
         var fight = Selected; var target = Target;
@@ -423,15 +429,16 @@ public sealed partial class OverlayWindow : Window
         total.Text = $"{Rate(people.Sum(p => p.PerSecond))} {(heals ? "HPS" : "DPS")}";
         total.ToolTip = fight is null ? "" : $"{N(people.Sum(p => p.Total))} {T(heals ? "heals" : "damage")} · {T(target is null ? "allTargets" : "scopeBoss")}";
         ApplyPresentation();
+        if (activityChecklist is not null) { heading.Text = Text.ProductName; heading.FontSize = 12; duration.FontSize = 11; }
         if (preferences.OverlayDiscreet && preferences.OverlayAutoFit && !idleCollapsed)
         {
             var rowsHeight = (wanted.Count == 0 ? 64 : Math.Min(8, wanted.Count) * (preferences.OverlayCompact ? 26 : 32)) + (showSources ? 28 : 0);
             scroll.MaxHeight = rowsHeight + 1;
-            placement.SetHeight((activitySwitch is null ? 100 : 142) + (healthArea.Visibility == Visibility.Visible ? 16 : 0) + rowsHeight);
+            placement.SetHeight(100 + (healthArea.Visibility == Visibility.Visible ? 16 : 0) + rowsHeight);
         }
         else if (preferences.OverlayAutoFit && !idleCollapsed)
         {
-            var desired = (activitySwitch is null ? 144 : 186) + Math.Max(1, Math.Min(8, wanted.Count)) * (preferences.OverlayCompact ? 30 : 44) + (showSources ? 24 : 0);
+            var desired = 144 + Math.Max(1, Math.Min(8, wanted.Count)) * (preferences.OverlayCompact ? 30 : 44) + (showSources ? 24 : 0);
             placement.SetHeight(desired);
         }
     }

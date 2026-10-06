@@ -104,13 +104,17 @@ Choose **Activities → Events & reminders**, enable notifications and select yo
 
 Shugo and Rift presets are included, alongside community schedules for Artifact Siege and siege bosses. Nahma, Kaira and Dimensional Invasion are marked **Confirm in game**, with reminders off by default. Edit any event’s times and weekdays, or add your own. Notifications start disabled; no account or network connection is needed.
 
-**Keep the main window open, even minimized.** Reminders work with capture stopped or the overlay hidden. Closing the main window stops them, including when Spike returns to waiting for the game. Use windowed/borderless mode: exclusive fullscreen may hide desktop notifications. A delayed or missed event is not replayed after a long sleep.
+**Spike stays in the system tray.** Closing the main window keeps your overlay, capture and reminders running. Double-click its tray icon to reopen Spike; the tray menu controls the main window and overlay independently. **Quit Spike** exits completely. Reminders also work with capture stopped or the overlay hidden. Use windowed/borderless mode: exclusive fullscreen may hide desktop notifications. A delayed or missed event is not replayed after a long sleep.
 
 ### Make the checklist yours
 
 ![Windows previews: accumulating reserves in Spike and its overlay, with demonstration balances](site/images/checklist-en-dark.png)
 
 *Windows interface preview with synthetic balances. Both views share one local save.*
+
+Reserve controls use **±1** for keys/attempts and **±40** for Odyle. Click the balance to enter an exact value. Weekly Wind Breeze purchases are tracked separately: **4 per character + 16 per server**, with help and the [Global item source](https://aion2.gaming.tools/items/503700031).
+
+The overlay starts enabled. Its Meter / Tasks switch shares the title row. **Outside combat, the meter automatically becomes a compact list of the next three enabled events**, with live countdowns; combat restores the meter immediately. An explicitly opened Tasks view stays open. Disable this behavior in the overlay’s **··· → Events outside combat** menu. Combat and idle opacity use sliders in Settings and the overlay menu. Event reminders have a subtle entrance animation and an original soft chime, which can be muted.
 
 - **Daily / Weekly:** check a goal to finish it, or use **− / +** for partial progress.
 - **Reserves:** Shugo keys, Invasion keys, Nightmare attempts and Odyle accumulate. Record the in-game balance; Spike never resets or estimates it. Unknown balances start as **—**, not zero.

@@ -7,10 +7,10 @@ const translations = {
     remindersTitle: "Ready for the next event.",
     remindersBody: "Discreet reminders at the top right, without interrupting combat. Several events? Cards stack and the rest wait their turn. Set lead time and sound in seconds.",
     activityIllustration: "Windows interface · demonstration data · click to enlarge",
-    remindersNote: "Enable notifications in Activities → Events & reminders. Keep the main window open, even minimized. Community schedules are editable; unconfirmed boss reminders are off by default.",
+    remindersNote: "Enable notifications in Activities → Events & reminders. Close the main window: Spike and its reminders stay in the system tray. Community schedules are editable; unconfirmed boss reminders are off by default.",
     checklistTitle: "Your routine, at your pace.",
     checklistBody: "Daily, Weekly, Reserves: everything in its place. Track Shugo keys without turning them into a daily chore. Click “i” to learn what each activity is and where to find it.",
-    checklistNote: "Meter / Tasks tabs in the overlay. Local saves, shared server limits, editable caps. Goals reset; reserves stay at your last manual reading.",
+    checklistNote: "One compact overlay header. Upcoming event countdowns outside combat, live meter when combat resumes. Quick ±1 keys / ±40 Odyle controls; Wind Breeze purchases by character and server. Goals reset; reserves stay at your last manual reading.",
     activitySources: "Presets checked on 6 October 2026:",
     activitySourcesNote: "Global checklist cross-checked; counters and schedules remain adjustable to match your game.",
     eventsAlt: "Spike interface: compact settings and stacked reminders, demonstration data.",
@@ -67,10 +67,10 @@ const translations = {
     remindersTitle: "Prepárate para el próximo evento.",
     remindersBody: "Avisos discretos arriba a la derecha, sin interrumpir el combate. ¿Varios eventos? Las tarjetas se apilan y el resto espera su turno. Ajusta antelación y sonido en segundos.",
     activityIllustration: "Interfaz Windows · datos de demostración · pulsa para ampliar",
-    remindersNote: "Activa los avisos en Actividades → Eventos y avisos. Mantén abierta la ventana principal, aunque esté minimizada. Horarios comunitarios editables; avisos de jefes sin confirmar desactivados por defecto.",
+    remindersNote: "Activa los avisos en Actividades → Eventos y avisos. Cierra la ventana principal: Spike y sus avisos siguen en la bandeja del sistema. Horarios comunitarios editables; avisos de jefes sin confirmar desactivados por defecto.",
     checklistTitle: "Tu rutina, a tu ritmo.",
     checklistBody: "Diario, Semana, Reservas: cada actividad en su sitio. Sigue tus llaves Shugo sin convertirlas en una obligación diaria. Pulsa «i» para saber qué hacer y dónde encontrarlo.",
-    checklistNote: "Pestañas Medidor / Tareas en el overlay. Guardado local, límites compartidos por servidor y ajustables. Los objetivos se reinician; las reservas conservan tu último registro manual.",
+    checklistNote: "Overlay compacto: cuentas atrás fuera de combate y medidor al combatir. Controles ±1 llaves / ±40 Odyle; compras por personaje y servidor. Los objetivos se reinician; las reservas conservan tu último registro manual.",
     activitySources: "Preajustes consultados el 6 de octubre de 2026:",
     activitySourcesNote: "Lista Global contrastada; contadores y horarios ajustables según tu juego.",
     eventsAlt: "Interfaz Spike: configuración compacta y avisos apilados, datos de demostración.",
@@ -139,9 +139,9 @@ let theme = [readPreference('spike-theme'), 'dark'].find(value => themes.include
 function updatePreviews() {
   const copy = translations[language];
   for (const view of ['events', 'checklist']) {
-    document.querySelector(`#${view}-preview`).src = `assets/${view}-en-${theme}.png?v=activities-2`;
+    document.querySelector(`#${view}-preview`).src = `assets/${view}-en-${theme}.png?v=activities-3`;
     document.querySelector(`#${view}-preview`).alt = copy[`${view}Alt`];
-    document.querySelector(`#${view}-link`).href = `assets/${view}-en-${theme}.png?v=activities-2`;
+    document.querySelector(`#${view}-link`).href = `assets/${view}-en-${theme}.png?v=activities-3`;
   }
   document.querySelector('#overlay-preview').src = `assets/overlay-en-${theme}.png?v=0.5.15`;
   document.querySelector('#overlay-preview').alt = copy.overlayAlt;

@@ -22,6 +22,7 @@
     <ProjectReference Include="../Spike.Core/Spike.Core.csproj" />
     <ProjectReference Include="../Spike.Engine/Spike.Engine.csproj" />
     <Resource Include="Fonts/*" />
+    <Resource Include="Sounds/reminder.wav" />
     <Resource Include="Brand/spike.ico" />
     <Resource Include="GameArt/**/*" />
     <Resource Include="../../brand/symbol.path" Link="Brand/symbol.path" />

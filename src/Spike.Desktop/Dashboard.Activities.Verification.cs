@@ -17,8 +17,29 @@ public partial class Dashboard
         }
     }
 
+    private static void VerifyTrayMenu()
+    {
+        foreach (var language in Text.Languages)
+        {
+            var mainVisible = true; var overlayVisible = true; var exited = false;
+            using var menu = TrayMenu.Create(language, () => mainVisible, () => overlayVisible,
+                () => mainVisible = true, () => mainVisible = false, visible => overlayVisible = visible, () => exited = true);
+            menu.Items[0].PerformClick();
+            if (mainVisible || !overlayVisible || exited) throw new InvalidOperationException("Hiding the dashboard must preserve the overlay and application.");
+            menu.Items[0].PerformClick(); menu.Items[1].PerformClick();
+            if (!mainVisible || overlayVisible || exited) throw new InvalidOperationException("Tray visibility commands must operate independently.");
+            menu.Items[1].PerformClick(); menu.Items[3].PerformClick();
+            if (!overlayVisible || !exited) throw new InvalidOperationException("Tray must restore the overlay and provide an explicit exit command.");
+        }
+        using var stream = Application.GetResourceStream(new Uri("pack://application:,,,/Sounds/reminder.wav"))!.Stream;
+        using var reader = new BinaryReader(stream);
+        if (new string(reader.ReadChars(4)) != "RIFF" || reader.ReadInt32() < 20000 || new string(reader.ReadChars(4)) != "WAVE")
+            throw new InvalidOperationException("The original notification sound must be included in the executable.");
+    }
+
     private void VerifyActivities(string directory)
     {
+        VerifyTrayMenu();
         var original = activities.Data;
         var now = DateTimeOffset.Parse("2026-10-06T11:54:59Z");
         activities.Clock = () => now;

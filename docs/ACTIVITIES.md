@@ -5,11 +5,15 @@ la même sauvegarde. `Ctrl+Tab` change la vue de l’overlay. Trois périodes :
 
 - **Quotidien** : les cinq missions de devoir.
 - **Semaine** : entrées en donjon quotidien, Ascension, fabrications d’Odyle,
-  achats de contrats, boutiques et saison. Ludra est optionnel, masqué au départ.
+  achats Brisevent (4 par personnage et 16 par serveur), contrats, boutiques et saison. Ludra est optionnel, masqué au départ.
 - **Réserves** : clés Shugo et Invasion, tentatives de Cauchemar, énergie d’Odyle.
   Le nombre est un **stock restant saisi manuellement**, jamais une complétion.
   Il ne recharge pas automatiquement et ne se réinitialise pas. La date du dernier
   relevé reste visible ; un stock inconnu affiche « — », pas zéro.
+
+Les boutons **− / +** ajustent les clés et tentatives par 1, l’Odyle par 40.
+Cliquez sur la valeur pour saisir le stock initial ou corriger une valeur exacte.
+Les pas qui dépasseraient 0 ou le plafond sont désactivés.
 
 Le bouton **i** explique l’activité, son accès et ses sources, au survol comme au clic.
 Les plafonds sont modifiables dans **Personnaliser**, notamment pour l’abonnement.
@@ -28,8 +32,20 @@ de son affichage ; survoler la pile ou lui donner le focus suspend son expiratio
 Fermer une carte libère une place. Aucun lot ne remplace le précédent. Cliquer sur
 une carte ouvre Activités ; l’arrivée seule ne vole pas le focus.
 
-Les rappels fonctionnent capture arrêtée et fenêtre minimisée. Fermer la fenêtre
-principale les arrête. Le plein écran exclusif peut masquer les fenêtres de bureau.
+Fermer la fenêtre principale la masque : capture, overlay et rappels restent actifs.
+L’icône près de l’horloge Windows ouvre ou masque chaque fenêtre ; **Quitter Spike**
+arrête réellement le logiciel. Les rappels fonctionnent aussi capture arrêtée.
+Le son est un carillon original intégré ; l’animation respecte la préférence Windows
+de réduction des animations. Le plein écran exclusif peut masquer les fenêtres de bureau.
+
+L’overlay est activé par défaut, y compris avant l’installation de Npcap. Les onglets
+Compteur / Tâches sont dans son en-tête. Hors combat, la vue Compteur affiche les
+**trois prochains événements activés**, triés par heure, avec un compte à rebours.
+Elle revient au compteur à la reprise du combat ; une liste de tâches ouverte
+volontairement ou un rapport archivé ne sont pas remplacés. L’option est activée
+par défaut et se désactive via **··· → Événements hors combat**. Ce planning fonctionne
+même si les notifications sonores/visuelles sont coupées. Les opacités se règlent par
+curseurs ; une vue Tâches ou le survol garde sa lisibilité habituelle.
 
 ## Checklist Global : recoupement du 6 octobre 2026
 
@@ -39,6 +55,7 @@ principale les arrête. Le plein écran exclusif peut masquer les fenêtres de b
 | [MetaBot, actualisé le 6 octobre](https://metabot.gg/en/aion-2/guides/daily-weekly-checklist) | Tables du client Global, plafonds, cycles et portée serveur/personnage ; différence entre réserve quotidienne et entrées hebdomadaires. |
 | [Aion 2 Maps, 4 octobre](https://aion2maps.com/guides/daily-and-weekly/) | Corrobore les stocks Shugo, Cauchemar, Odyle, les 14 entrées hebdomadaires et les trois Ascensions ; distingue données extraites, observations et conseils. |
 | [Atelier Gaming, 5 octobre](https://www.ateliergaming.fr/aion-2-guide-festival-des-shugos-invasion-dimensionnelle/) | Accès au Festival près de la mini-carte, distinction entrée et récompense, clés Shugo et Invasion accumulables. |
+| [Gaming.tools, Global 2.0.5.0](https://aion2.gaming.tools/items/503700031) | Fiche Odyle et boutique Spécial : 40 énergie par objet, 100 000 kinahs, limites de 4 par personnage et 16 par serveur chaque semaine. Consultée le 6 octobre. |
 | [GuideMMO, 5 octobre](https://guidemmo.com/checklist-aion-2/) | Source initiale, conservée comme comparaison. Ses « deux Shugo quotidiens » ne sont plus un objectif imposé. Les suggestions non recoupées restent masquées après migration. |
 
 Valeurs retenues, toutes ajustables : Shugo +3/jour, plafond 12 (21 avec abonnement) ;
@@ -53,8 +70,10 @@ La checklist ne prétend pas épuiser tous les plafonds du jeu. Les raids, diffi
 versions et boutiques peuvent varier. Les fabrications sont séparées en 4 personnelles
 et 16 partagées ; les contrats suivent les achats, sans inventer une expiration des
 parchemins. Les anciens objectifs « 11 000 trophées », « 7 tickets instantanés » et
-« 20 achats d’Odyle » restent consultables mais masqués après migration, faute de
-recoupement suffisant comme objectifs universels Global.
+« 20 achats d’Odyle » restent masqués après migration. Brisevent est désormais
+rétabli avec deux limites distinctes, corroborées par le catalogue Global de la
+boutique : 4 par personnage et 16 par serveur. Les achats ne créditent pas
+automatiquement la réserve : il faut utiliser les objets en jeu.
 
 ## Sources et choix des préréglages
 
@@ -138,3 +157,8 @@ réalisations dont l’unité change sont effacés pour éviter de les présente
 stocks restants. Les objectifs explicitement personnalisés restent conservés.
 Au premier enregistrement, le fichier original est copié dans `activities.json.v1.bak`
 avant remplacement atomique. Charger seul ne modifie aucun fichier.
+
+Le schéma 3 restaure les deux objectifs Brisevent pour les sauvegardes de schéma 2,
+sans modifier les stocks, progrès, horaires ni personnalisations existants. Il
+conserve l’original dans `activities.json.v2.bak` au premier enregistrement. Les
+anciens achats combinés ne sont pas convertis en limites personnelles ou serveur.

@@ -35,12 +35,6 @@ public partial class App
     {
         watchGame = preferences.LaunchWithGame;
         if (!timerConfigured) { gameTimer.Tick += (_, _) => CheckGame(); timerConfigured = true; }
-        if (!watchGame)
-        {
-            gameTimer.Stop();
-            DisposeTray();
-            return;
-        }
         if (tray is null)
         {
             using var stream = GetResourceStream(new Uri("pack://application:,,,/Brand/spike.ico"))!.Stream;
@@ -48,12 +42,23 @@ public partial class App
             tray = new Forms.NotifyIcon { Icon = (System.Drawing.Icon)icon.Clone(), Text = Text.ProductName, Visible = true };
             tray.DoubleClick += (_, _) => OpenDashboard(false);
         }
-        var menu = new Forms.ContextMenuStrip();
-        menu.Items.Add(Text.Get("openSpike", preferences.Language), null, (_, _) => OpenDashboard(false));
-        menu.Items.Add(Text.Get("quitSpike", preferences.Language), null, (_, _) => Shutdown());
         tray.ContextMenuStrip?.Dispose();
-        tray.ContextMenuStrip = menu;
-        gameTimer.Start();
+        tray.ContextMenuStrip = TrayMenu.Create(preferences.Language,
+            () => dashboard is { IsVisible: true, WindowState: not WindowState.Minimized },
+            () => dashboard?.OverlayOpen == true,
+            () => OpenDashboard(false), () => dashboard?.Hide(),
+            visible => { if (dashboard is null) OpenDashboard(true); dashboard?.SetOverlayVisible(visible); },
+            ExitApplication);
+        if (watchGame) gameTimer.Start(); else gameTimer.Stop();
+    }
+
+    internal bool IsExiting => exiting;
+    internal void ExitApplication() { exiting = true; Shutdown(); }
+
+    protected override void OnSessionEnding(SessionEndingCancelEventArgs e)
+    {
+        exiting = true;
+        base.OnSessionEnding(e);
     }
 
     private void CheckGame()
@@ -76,17 +81,7 @@ public partial class App
         dashboard = new Dashboard();
         if (fromGame) { dashboard.ShowActivated = false; dashboard.WindowState = WindowState.Minimized; }
         MainWindow = dashboard;
-        dashboard.Closed += (_, _) =>
-        {
-            dashboard = null;
-            if (!watchGame) Shutdown();
-            else
-            {
-                // Closing immediately after game launch must not reopen the meter on the next poll.
-                try { gameLaunch.ShouldOpen(GameLaunch.IsGameRunning(), meterOpen: true); }
-                catch (Exception error) when (error is Win32Exception or InvalidOperationException) { }
-            }
-        };
+        dashboard.Closed += (_, _) => dashboard = null;
         dashboard.Show();
         if (AutomaticUpdater.PublishedExecutable() is not null) dashboard.StartUpdates();
     }
