@@ -8,5 +8,6 @@
     <Compile Include="../../src/Spike.Desktop/Updates/UpdatePackage.cs" Link="Updates/UpdatePackage.cs" />
     <Compile Include="../../src/Spike.Desktop/Updates/UpdateStore.cs" Link="Updates/UpdateStore.cs" />
     <Compile Include="../../src/Spike.Desktop/Updates/UpdatePolling.cs" Link="Updates/UpdatePolling.cs" />
+    <Compile Include="../../src/Spike.Desktop/ActivityController.cs" Link="Activities/ActivityController.cs" />
   </ItemGroup>
 </Project>

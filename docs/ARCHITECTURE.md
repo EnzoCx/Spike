@@ -125,3 +125,13 @@ Contrat et publication : `docs/UPDATES.md`.
 Le contrat actif est JSON v2. Le v1 subsiste seulement dans les anciennes fixtures,
 sans chemin d’import dans l’interface. Le site futur devra utiliser des contrats
 validés côté serveur et ne jamais supposer qu’un import prouve un combat authentique.
+
+
+## Activités
+
+Le planning et la checklist sont indépendants des combats : modèles, horaires,
+resets et sauvegarde dans `Core/Activities.cs`, état partagé dans
+`Desktop/ActivityController.cs`, vues réutilisables `ActivitiesView` et notifications
+`ActivityToast`. Le timer de Dashboard est le seul ordonnanceur. L’overlay accède au
+même contrôleur et n’écrit pas de seconde copie. `activities.json` ne modifie ni
+`settings.json` ni le format de combat v2. Sources et limites : [ACTIVITIES.md](ACTIVITIES.md).

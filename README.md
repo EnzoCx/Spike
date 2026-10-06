@@ -12,7 +12,7 @@
 
 <p align="center">
   <strong>Your DPS meter for AION 2 Global.</strong><br>
-  Track damage and healing in game, explore your skills, and revisit your fights.
+  Track damage and healing, plan your next event, and keep your daily goals in view.
 </p>
 
 <p align="center">
@@ -23,6 +23,7 @@
   <a href="#installation">Install</a> ·
   <a href="#preview">See the interface</a> ·
   <a href="#skill-breakdown">Skill breakdown</a> ·
+  <a href="#events-and-checklist">Events & checklist</a> ·
   <a href="#feature-comparison">Compare meters</a> ·
   <a href="#your-first-fight">Your first fight</a> ·
   <a href="#frequently-asked-questions">FAQ</a> ·
@@ -88,6 +89,39 @@ The summary above the skills shows the player's damage, hits, critical rate, **L
 | **Discreet overlay** — compact, movable, with click-through mode | **History** — search by boss or player and filter boss fights |
 | **Three themes** — Graphite, Ivory, High contrast | **Import / export** — JSON v2 files, export without names |
 | **Automatic collapse** — title bar only after two minutes out of combat | **Copy** — a compact summary in the interface language, ready for game chat |
+
+## Events and checklist
+
+**Your session, at your pace.** Open **Activities** to see upcoming events and keep track of daily and weekly goals. The **✓** button in the overlay opens the same checklist; **DPS** returns to the meter while capture continues.
+
+### Be ready for the next event
+
+Choose **Activities → Events & reminders**, enable notifications and select your events. Set a reminder from **0 to 60 minutes before**, optionally add sound, then use **Test a notification**. Upcoming times display in your local time zone.
+
+![Interface illustration: Spike event schedules and a configurable Shugo reminder, using synthetic data](site/images/events-en-dark.png)
+
+*Interface illustration, not an application screenshot. Fictional notification and countdown values.*
+
+Shugo and Rift presets are included, alongside community schedules for Artifact Siege and siege bosses. Nahma, Kaira and Dimensional Invasion are marked **Confirm in game**, with reminders off by default. Edit any event’s times and weekdays, or add your own. Notifications start disabled; no account or network connection is needed.
+
+**Keep the main window open, even minimized.** Reminders work with capture stopped or the overlay hidden. Closing the main window stops them, including when Spike returns to waiting for the game. Use windowed/borderless mode: exclusive fullscreen may hide desktop notifications. A delayed or missed event is not replayed after a long sleep.
+
+### Make the checklist yours
+
+![Interface illustration: the same Spike daily checklist in the app and overlay, with fictional character progress](site/images/checklist-en-dark.png)
+
+*Interface illustration with synthetic data. Both views share one locally saved checklist.*
+
+- **Daily / Weekly:** check a goal to finish it, or use **− / +** for partial progress.
+- **Customize:** hide irrelevant tasks, adjust targets or add your own activities.
+- **Characters:** keep separate counters for your main and alts; task definitions are shared.
+- **Automatic resets:** completed tasks expire at the configured reset, even after days away. Tracking is manual; Spike does not infer completion from combat.
+
+The Global preset uses **UTC event schedules**, a **07:00 UTC daily reset** and a **Wednesday weekly reset**. Change the fixed UTC offset, reset time and weekday under **Events & reminders → Lead time, sound and reset times**. Local display accounts for daylight saving time. Changing the reference offset moves all entered schedules; changing the reset recalculates checklist periods.
+
+**Sources checked 6 October 2026:** checklist inspiration from [GuideMMO](https://guidemmo.com/checklist-aion-2/); schedules from [AION2 Hub](https://aion2hub.com/tools/event-timer) and [Shugo.GG](https://shugo.gg/timers), cross-checked against [Aion2 Guide](https://aion2.run/en/horaires). Sources disagree on some times, including the Global reset; presets are editable and are not an official or live boss tracker. See [schedule evidence and limitations](docs/ACTIVITIES.md).
+
+Activities are saved separately in `%LOCALAPPDATA%\Spike\activities.json`. Your combat history and existing preferences are preserved.
 
 ## Feature comparison
 
@@ -165,10 +199,11 @@ In **Settings**, choose your language, theme, and optionally your character name
 | See a player's skills | Click their row; **←** returns to the ranking |
 | Open the damage breakdown | From the skill list, click a row or **Report** |
 | Copy a fight summary | Click **Copy** in the overlay or report |
+| Check daily / weekly goals | Click **✓**, then **DPS** to return to combat; right-click **✓** to open Activities |
 
 Position and size are remembered. By default, the overlay fades to **15% opacity out of combat** when the fight goes idle after the 12-second timeout. It becomes readable again during combat or on hover when unlocked. Saved fights stay readable. Change this in **··· → Nearly transparent out of combat**.
 
-After **two minutes out of combat**, the overlay collapses to its title bar. Hovering does not expand it: use the arrow button for another two minutes of reading, or let the next fight restore its size. Saved fights remain expanded. You can also turn off **Discreet layout** in **···** to return to detailed rows.
+After **two minutes out of combat**, the overlay collapses to its title bar. Hovering does not expand it: use the arrow button for another two minutes of reading, or let the next fight restore its size. Saved fights and an open checklist remain expanded. You can also turn off **Discreet layout** in **···** to return to detailed rows.
 
 ## Understanding your numbers
 
@@ -194,7 +229,7 @@ If the meter starts mid-session, it may need to wait for the game to send their 
 
 ### Where are my fights stored?
 
-Existing DPSMeter preferences and fights are copied once to Spike storage, with the originals preserved. They stay on your PC in `%LOCALAPPDATA%\Spike\fights\`. Preferences are in `%LOCALAPPDATA%\Spike\settings.json`. Fights are not automatically deleted; a very large collection may take longer to load.
+Existing DPSMeter preferences and fights are copied once to Spike storage, with the originals preserved. They stay on your PC in `%LOCALAPPDATA%\Spike\fights\`. Preferences are in `%LOCALAPPDATA%\Spike\settings.json`; schedules and checklists are in `%LOCALAPPDATA%\Spike\activities.json`. Fights are not automatically deleted; a very large collection may take longer to load.
 
 ### Can I share a report?
 

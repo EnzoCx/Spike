@@ -52,7 +52,7 @@ public partial class Dashboard : Window
             using var stream = Application.GetResourceStream(new Uri($"pack://application:,,,/{path}"))!.Stream;
             using var reader = new StreamReader(stream); return reader.ReadToEnd();
         }));
-        ApplyTheme(); Translate(); RenderFight();
+        ApplyTheme(); InitializeActivities(); Translate(); RenderFight();
         timer.Tick += (_, _) => Tick();
         Loaded += (_, _) => { if (!verifying) StartSession(); };
         SourceInitialized += (_, _) =>
@@ -65,6 +65,8 @@ public partial class Dashboard : Window
         };
         Closing += (_, _) =>
         {
+            activityToast?.Close();
+            activitiesView.Detach();
             StopUpdates();
             timer.Stop();
             overlay?.Close();
@@ -112,6 +114,7 @@ public partial class Dashboard : Window
     private void Translate()
     {
         Title = Text.ProductName;
+        ActivitiesNav.Content = T("activities"); activitiesView.Translate(preferences.Language);
         TranslateUpdate();
         TranslateSupport();
         TranslateOpacity();
@@ -186,6 +189,7 @@ public partial class Dashboard : Window
 
     private void Tick()
     {
+        TickActivities();
         if (meter is not null)
         {
             meter.Poll();
@@ -305,8 +309,9 @@ public partial class Dashboard : Window
         FightPage.Visibility = value == "live" ? Visibility.Visible : Visibility.Collapsed;
         HistoryPage.Visibility = value == "history" ? Visibility.Visible : Visibility.Collapsed;
         ProgressPage.Visibility = value == "progress" ? Visibility.Visible : Visibility.Collapsed;
+        ActivitiesPage.Visibility = value == "activities" ? Visibility.Visible : Visibility.Collapsed;
         SettingsPage.Visibility = value == "settings" ? Visibility.Visible : Visibility.Collapsed;
-        foreach (var (button, name) in new[] { (LiveNav, "live"), (HistoryNav, "history"), (ProgressNav, "progress"), (SettingsNav, "settings") })
+        foreach (var (button, name) in new[] { (LiveNav, "live"), (HistoryNav, "history"), (ProgressNav, "progress"), (ActivitiesNav, "activities"), (SettingsNav, "settings") })
         {
             if (name == value) button.SetResourceReference(BackgroundProperty, "Surface");
             else button.Background = Brushes.Transparent;
@@ -416,6 +421,7 @@ public partial class Dashboard : Window
     {
         if (overlay is not null) return;
         overlay = new(preferences, (Style)FindResource(typeof(Button)), store);
+        overlay.AttachActivities(activities, () => ShowActivities(this, new RoutedEventArgs()));
         overlay.LayoutSaved += (left, top, width, height) =>
         {
             if (verifying) return;

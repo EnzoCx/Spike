@@ -55,3 +55,25 @@ mises à jour des installations existantes. Le bouton de téléchargement cible
 
 Les ressources AION 2 visibles dans les aperçus appartiennent à NCSOFT. Les notices
 MIT, tierces et OFL sont publiées avec le site et accessibles depuis son pied de page.
+
+## Activités et illustrations
+
+La section `#activites` présente les rappels et la checklist, en FR/EN/ES avec
+contenu français sans JavaScript. Les six nouvelles images `events-en-{thème}.png`
+et `checklist-en-{thème}.png` sont des **illustrations d’interface**, pas des captures
+WPF. Elles sont explicitement identifiées, utilisent des données fictives, et
+suivent les palettes de `Themes.cs` et la police Geist embarquée. Les captures
+historiques du rapport et du meter restent de vrais rendus WPF distincts.
+
+Source reproductible : `tools/Preview-Activities.html`. Servir ce fichier et seulement
+les polices Geist Regular/SemiBold et les deux symboles référencés dans un dossier
+temporaire dédié (ne pas servir le dépôt). Capturer avec Chromium à 1120 × 720,
+échelle 1, après chargement des polices, pour les paramètres `?theme=dark&view=events`,
+`?theme=light&view=checklist`, etc. Les thèmes sont `dark`, `light`, `contrast` et les
+vues `events`, `checklist`. Ne jamais présenter ces images comme des tests de WPF.
+
+Le script d’assemblage publie explicitement ces six fichiers. `app.js` adapte leurs
+URLs au thème et leurs textes alternatifs à la langue. Les horaires, sources,
+incertitudes et limites des rappels sont détaillés dans `docs/ACTIVITIES.md`.
+Publier la présentation des activités en même temps que la release Windows qui
+les contient ; la modification du site seule ne met pas à jour le logiciel.

@@ -30,7 +30,7 @@
      <TextBlock x:Name="SidebarFoot" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,8,0,0"/>
     </StackPanel>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,12">
-     <StackPanel><Button x:Name="LiveNav" Tag="M 1,9 L 4,9 L 6,3 L 9,14 L 12,6 L 15,6" Style="{StaticResource Nav}" Click="ShowLive"/><Button x:Name="HistoryNav" Tag="M 2,6 A 7,7 0 1 1 2,12 M 2,2 L 2,6 L 6,6 M 9,5 L 9,9 L 12,11" Style="{StaticResource Nav}" Click="ShowHistory"/><Button x:Name="ProgressNav" Tag="M 1,14 L 5,9 L 9,11 L 15,2 M 10,2 L 15,2 L 15,7" Style="{StaticResource Nav}" Click="ShowProgress"/><Button x:Name="SettingsNav" Tag="M 2,4 L 14,4 M 2,12 L 14,12 M 6,1 L 6,7 M 10,9 L 10,15" Style="{StaticResource Nav}" Click="ShowSettings"/>
+     <StackPanel><Button x:Name="LiveNav" Tag="M 1,9 L 4,9 L 6,3 L 9,14 L 12,6 L 15,6" Style="{StaticResource Nav}" Click="ShowLive"/><Button x:Name="HistoryNav" Tag="M 2,6 A 7,7 0 1 1 2,12 M 2,2 L 2,6 L 6,6 M 9,5 L 9,9 L 12,11" Style="{StaticResource Nav}" Click="ShowHistory"/><Button x:Name="ProgressNav" Tag="M 1,14 L 5,9 L 9,11 L 15,2 M 10,2 L 15,2 L 15,7" Style="{StaticResource Nav}" Click="ShowProgress"/><Button x:Name="ActivitiesNav" Tag="M 2,2 L 14,2 L 14,15 L 2,15 Z M 5,7 L 7,9 L 11,5 M 5,12 L 11,12" Style="{StaticResource Nav}" Click="ShowActivities"/><Button x:Name="SettingsNav" Tag="M 2,4 L 14,4 M 2,12 L 14,12 M 6,1 L 6,7 M 10,9 L 10,15" Style="{StaticResource Nav}" Click="ShowSettings"/>
       <TextBlock x:Name="SupportHint" TextWrapping="Wrap" Style="{StaticResource MutedText}" FontSize="12" Margin="0,20,0,10"/>
       <Button x:Name="RequestsButton" Click="OpenRequests" Margin="0,0,0,10" Padding="8,10" Background="{DynamicResource Accent}" Foreground="{DynamicResource Background}">
        <TextBlock x:Name="RequestsLabel" TextWrapping="Wrap" TextAlignment="Center" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
@@ -152,6 +152,7 @@
      </StackPanel>
     </StackPanel>
    </ScrollViewer>
+   <ContentControl x:Name="ActivitiesPage" Grid.Row="1" Visibility="Collapsed" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
    <ScrollViewer x:Name="SettingsPage" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
     <StackPanel MaxWidth="660" HorizontalAlignment="Left">
      <TextBlock x:Name="LanguageCaption" FontSize="16" FontWeight="Medium"/><StackPanel x:Name="LanguageChoices" Orientation="Horizontal" Margin="0,12,0,32"/>

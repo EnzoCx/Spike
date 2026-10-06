@@ -1,6 +1,6 @@
 namespace Spike.Desktop;
 
-public static class Text
+public static partial class Text
 {
     public const string ProductName = "Spike";
     public static readonly string[] Languages = ["fr", "en", "es"];
@@ -249,6 +249,6 @@ public static class Text
         ["licenses"] = ["Licences des polices", "Font licenses", "Licencias de fuentes"]
     };
 
-    public static string Get(string key, string language) => Strings.TryGetValue(key, out var values) ? values[Array.IndexOf(Languages, language) is var index && index >= 0 ? index : 0] : key;
-    public static bool IsComplete => Strings.Values.All(values => values.Length == 3 && values.All(value => !string.IsNullOrWhiteSpace(value)));
+    public static string Get(string key, string language) => (Strings.TryGetValue(key, out var values) || ActivityStrings.TryGetValue(key, out values)) ? values[Array.IndexOf(Languages, language) is var index && index >= 0 ? index : 0] : key;
+    public static bool IsComplete => Strings.Values.Concat(ActivityStrings.Values).All(values => values.Length == 3 && values.All(value => !string.IsNullOrWhiteSpace(value)));
 }

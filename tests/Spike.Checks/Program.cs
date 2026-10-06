@@ -9,6 +9,12 @@ void Check(bool condition, string label)
     Console.WriteLine($"PASS {label}");
     count++;
 }
+if (args.Contains("--activities-only"))
+{
+    ActivityChecks.Run(Check);
+    Console.WriteLine($"{count} activity checks passed.");
+    return;
+}
 void Reject(CombatLog invalid, string label)
 {
     try { Combat.Validate(invalid); }
@@ -149,6 +155,7 @@ foreach (var file in Directory.EnumerateFiles(testFolder)) File.Delete(file);
 Directory.Delete(testFolder);
 await UpdateChecks.Run(Check);
 ApplicationDataChecks.Run(Check);
+ActivityChecks.Run(Check);
 ProgressChecks.Run(Check);
 LegacyArchiveChecks.Run(Check);
 Console.WriteLine($"{count} checks passed.");

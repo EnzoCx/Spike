@@ -13,6 +13,7 @@ public sealed partial class OverlayWindow
 
     private void UpdateIdleLayout(DateTimeOffset now)
     {
+        if (activitiesOpen) { idleSince = now; SetIdleCollapsed(false); return; }
         if (captureStatus == "capturing") idleSince = null;
         else idleSince ??= now;
 
@@ -44,6 +45,7 @@ public sealed partial class OverlayWindow
         placement.SetHeight(value ? 44 : expandedHeight);
         if (!value) MinHeight = ExpandedMinHeight;
         if (value) collapsedTop = Top;
+        ApplyActivityVisibility();
     }
 
     private void ExpandIdle()

@@ -3,6 +3,12 @@
 État de référence : version 0.5.15, 5 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
 
+Ajout en cours de release, 6 octobre 2026 : page Activités (planning/rappels et
+checklist), checklist partagée dans l’overlay, stockage local séparé et modèles
+Global sourcés. Voir `docs/ACTIVITIES.md`. Les illustrations du site sont signalées
+comme telles. La compilation Windows et les tests temporels sont portables ; les
+vérifications WPF ajoutées nécessitent la CI Windows avant diffusion.
+
 Depuis 0.5.15, le mode expérimental de contribution des supports est retiré du moteur,
 de l'interface et des supports publics. Les métadonnées facultatives des anciennes
 archives restent validées et conservées à l'import/export, sans calcul ni affichage.

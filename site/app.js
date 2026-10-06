@@ -1,5 +1,21 @@
 const translations = {
   en: {
+    navActivities: "Activities",
+    activitiesEyebrow: "BETWEEN FIGHTS",
+    activitiesTitle: "The right moment.\nYour next goal.",
+    activitiesIntro: "Shugo, Rifts, today’s goals: plan your session in Spike, then keep your checklist one click away in the overlay.",
+    remindersTitle: "Ready for the next event.",
+    remindersBody: "Choose your events, reminder lead time and sound. See upcoming local times, adjust schedules or add your own event.",
+    activityIllustration: "Interface illustration · synthetic data · click to enlarge",
+    remindersNote: "Enable notifications in Activities → Events & reminders. Keep the main window open, even minimized. Community schedules are editable; unconfirmed boss reminders are off by default.",
+    checklistTitle: "Your routine, at your pace.",
+    checklistBody: "Check off daily and weekly tasks in the app or overlay. Track entries, customize goals and keep separate counters for each character.",
+    checklistNote: "Saved locally as you go. Automatic reset at your configured time, even after days away. Click ✓ in the overlay, then DPS to return to combat. Manual tracking, with no gameplay automation.",
+    activitySources: "Presets checked on 6 October 2026:",
+    activitySourcesNote: "Schedules vary by version and server: check in game and adjust the time zone and resets in Spike.",
+    eventsAlt: "Illustration of Spike’s schedule: Shugo, Rift and a configurable reminder, with synthetic data.",
+    checklistAlt: "Illustration of Spike’s checklist in the app and overlay: fictional character progress and counters.",
+
     compareDate: 'As of 5 October 2026', compareLegend: 'Not confirmed: not documented in the sources', compareMethod: 'Sources and comparison methodology',
     navCompare: 'Compare', compareEyebrow: 'CHOOSE YOUR METER', compareTitle: 'Features, side by side.',
     compareIntro: 'Spike focuses on in-game readability and local reports, in French, English and Spanish. Here is what NotMeter, A2Tools and Abyss Logs offer too.',
@@ -17,7 +33,7 @@ const translations = {
     compareLimits: 'This table compares features, not measurement accuracy or compliance with game rules. Report formats are not interchangeable: Spike only imports its own JSON v2. Its fights stay local, with no telemetry or automatic uploads.',
     skip: 'Skip to content', navPreview: 'Preview', navInstall: 'Installation', language: 'Language',
     eyebrow: 'COMBAT METER', headline1: 'Your combat,', headline2: 'clearly.',
-    intro: 'Keep an eye on your damage. Understand every skill. Revisit your fights, at your own pace.',
+    intro: 'Understand your fights. Track your goals. Be ready for the next event.',
     download: 'Download for Windows', downloadNote: 'Windows x64 · Free · No account', firstTime: 'First time? Read the installation guide',
     overlayLabel: 'THE MINI METER', demo: 'DEMO', overlayCaption: 'The essentials during combat.\nThe details, when you choose.',
     themeLegend: 'Same app. Your atmosphere.', dark: 'Graphite', light: 'Ivory', contrast: 'High contrast',
@@ -44,6 +60,22 @@ const translations = {
     description: 'Spike, the damage and healing meter for AION 2 Global. A discreet overlay, detailed reports and fights stored on your PC.'
   },
   es: {
+    navActivities: "Actividades",
+    activitiesEyebrow: "ENTRE COMBATES",
+    activitiesTitle: "El momento justo.\nTu próximo objetivo.",
+    activitiesIntro: "Shugo, grietas, objetivos del día: prepara tu sesión en Spike y ten tu lista a un clic en el overlay.",
+    remindersTitle: "Prepárate para el próximo evento.",
+    remindersBody: "Elige tus eventos, la antelación del aviso y el sonido. Consulta las próximas horas locales, ajusta los horarios o añade tu propio evento.",
+    activityIllustration: "Ilustración de la interfaz · datos ficticios · pulsa para ampliar",
+    remindersNote: "Activa los avisos en Actividades → Eventos y avisos. Mantén abierta la ventana principal, aunque esté minimizada. Horarios comunitarios editables; avisos de jefes sin confirmar desactivados por defecto.",
+    checklistTitle: "Tu rutina, a tu ritmo.",
+    checklistBody: "Marca las tareas diarias y semanales en la aplicación o el overlay. Sigue tus entradas, adapta tus objetivos y guarda contadores separados por personaje.",
+    checklistNote: "Guardado local inmediato. Reinicio automático a la hora configurada, incluso después de varios días. Pulsa ✓ en el overlay y DPS para volver al combate. Seguimiento manual, sin automatizar el juego.",
+    activitySources: "Preajustes consultados el 6 de octubre de 2026:",
+    activitySourcesNote: "Los horarios varían según la versión y el servidor: compruébalos en el juego y ajusta la zona horaria y los reinicios en Spike.",
+    eventsAlt: "Ilustración del horario de Spike: Shugo, grieta y aviso configurable, con datos ficticios.",
+    checklistAlt: "Ilustración de la lista de Spike en la aplicación y el overlay: progreso y contadores ficticios.",
+
     compareDate: 'A 5 de octubre de 2026', compareLegend: 'Sin confirmar: información no documentada', compareMethod: 'Fuentes y método de comparación',
     navCompare: 'Comparativa', compareEyebrow: 'ELIGE TU MEDIDOR', compareTitle: 'Las funciones, lado a lado.',
     compareIntro: 'Spike se centra en la legibilidad durante el juego y los informes locales, en francés, inglés y español. Esto es lo que también ofrecen NotMeter, A2Tools y Abyss Logs.',
@@ -61,7 +93,7 @@ const translations = {
     compareLimits: 'Esta tabla compara funciones, no la precisión de las medidas ni el cumplimiento de las reglas del juego. Los formatos no son intercambiables: Spike solo importa su propio JSON v2. Sus combates se guardan localmente, sin telemetría ni envíos automáticos.',
     skip: 'Ir al contenido', navPreview: 'Vista previa', navInstall: 'Instalación', language: 'Idioma',
     eyebrow: 'MEDIDOR DE COMBATE', headline1: 'Tu combate,', headline2: 'claro.',
-    intro: 'Sigue tu daño. Entiende cada habilidad. Revisa tus combates, a tu ritmo.',
+    intro: 'Entiende tus combates. Sigue tus objetivos. Prepárate para el próximo evento.',
     download: 'Descargar para Windows', downloadNote: 'Windows x64 · Gratis · Sin cuenta', firstTime: '¿Primera vez? Guía de instalación',
     overlayLabel: 'EL MINIMEDIDOR', demo: 'DEMO', overlayCaption: 'Lo esencial durante el combate.\nLos detalles, cuando tú decidas.',
     themeLegend: 'La misma app. Tu ambiente.', dark: 'Grafito', light: 'Marfil', contrast: 'Alto contraste',
@@ -95,7 +127,7 @@ const french = Object.fromEntries(textElements.map(element => {
   copy.querySelectorAll('br').forEach(lineBreak => lineBreak.replaceWith('\n'));
   return [element.dataset.i18n, copy.textContent];
 }));
-translations.fr = { ...french, overlayAlt: document.querySelector('#overlay-preview').alt, reportAlt: document.querySelector('#report-preview').alt, description: document.querySelector('meta[name="description"]').content };
+translations.fr = { ...french, overlayAlt: document.querySelector('#overlay-preview').alt, reportAlt: document.querySelector('#report-preview').alt, description: document.querySelector('meta[name="description"]').content, eventsAlt: document.querySelector('#events-preview').alt, checklistAlt: document.querySelector('#checklist-preview').alt };
 const languages = ['fr', 'en', 'es'];
 const themes = ['dark', 'light', 'contrast'];
 const readPreference = key => { try { return localStorage.getItem(key); } catch { return null; } };
@@ -106,6 +138,11 @@ let theme = [readPreference('spike-theme'), 'dark'].find(value => themes.include
 
 function updatePreviews() {
   const copy = translations[language];
+  for (const view of ['events', 'checklist']) {
+    document.querySelector(`#${view}-preview`).src = `assets/${view}-en-${theme}.png?v=activities-1`;
+    document.querySelector(`#${view}-preview`).alt = copy[`${view}Alt`];
+    document.querySelector(`#${view}-link`).href = `assets/${view}-en-${theme}.png?v=activities-1`;
+  }
   document.querySelector('#overlay-preview').src = `assets/overlay-en-${theme}.png?v=0.5.15`;
   document.querySelector('#overlay-preview').alt = copy.overlayAlt;
   document.querySelector('#report-preview').src = `assets/report-en-${theme}.png?v=0.5.15`;

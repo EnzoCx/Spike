@@ -17,7 +17,7 @@ public sealed partial class OverlayWindow
     private void UpdateSurface()
     {
         if (frame.Background is null) return;
-        var reading = !locked && (pointerInside || IsKeyboardFocusWithin || manipulating || openMenus > 0);
+        var reading = activitiesOpen || !locked && (pointerInside || IsKeyboardFocusWithin || manipulating || openMenus > 0);
         var factor = !preferences.OverlayDiscreet || preferences.Theme == "contrast" ? 1
             : preferences.Theme == "light" ? (reading ? 1 : .88) : reading ? .9 : .7;
         frame.Background.Opacity = Bounded(preferences.OverlayOpacity, .94, .65, 1) * factor;

@@ -18,7 +18,7 @@ foreach ($name in @('LICENSE', 'THIRD-PARTY-NOTICES.md')) {
     Copy-Item -LiteralPath (Join-Path $project $name) -Destination $assets -Force
 }
 foreach ($theme in @('dark', 'light', 'contrast')) {
-    foreach ($view in @('overlay', 'report')) {
+    foreach ($view in @('overlay', 'report', 'checklist', 'events')) {
         $name = "$view-en-$theme.png"
         Copy-Item -LiteralPath (Join-Path $project "site/images/$name") -Destination $assets -Force
     }

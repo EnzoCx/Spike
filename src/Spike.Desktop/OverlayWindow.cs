@@ -149,7 +149,7 @@ public sealed partial class OverlayWindow : Window
 
     private static double Bounded(double value, double fallback, double min, double max) => Math.Clamp(double.IsFinite(value) ? value : fallback, min, Math.Max(min, max));
     private void SaveLayout() => LayoutSaved?.Invoke(Left, idleCollapsed ? expandedTop + Top - collapsedTop : Top, Width,
-        idleCollapsed ? expandedHeight : Height);
+        activitiesOpen ? combatHeight : idleCollapsed ? expandedHeight : Height);
     private Button SmallButton(string text, Action action)
     {
         var button = new Button { Content = text, FontSize = 11, Padding = new Thickness(6, 3, 6, 3), Margin = new Thickness(0, 0, 4, 0), MinWidth = 24 };
@@ -172,6 +172,13 @@ public sealed partial class OverlayWindow : Window
         back.ToolTip = T("back"); historyPicker.ToolTip = T("fightPicker"); report.Content = T("fightDetails");
         System.Windows.Automation.AutomationProperties.SetName(historyPicker, T("fightPicker"));
         copy.Content = T("copy"); copy.ToolTip = T("copyHint");
+        activityChecklist?.Translate(value.Language);
+        if (activitiesButton is not null)
+        {
+            activitiesButton.ToolTip = T(activitiesOpen ? "returnToMeter" : "checklist");
+            System.Windows.Automation.AutomationProperties.SetName(activitiesButton, (string)activitiesButton.ToolTip);
+            if (activitiesButton.ContextMenu?.Items[0] is MenuItem item) item.Header = T("openActivities");
+        }
         damage.ToolTip = T("damage"); healing.ToolTip = T("heals"); Render();
     }
 
@@ -206,7 +213,7 @@ public sealed partial class OverlayWindow : Window
         // A retained last encounter is not proof that a fight is still active.
         var reading = !locked && (pointerInside || manipulating || openMenus > 0);
         var activeOpacity = Bounded(preferences.OverlayCombatOpacity, 1, .15, 1);
-        var opacity = archived is not null || reading ? 1
+        var opacity = activitiesOpen || archived is not null || reading ? 1
             : !preferences.OverlayFadeWhenIdle || captureStatus == "capturing" ? activeOpacity
             : Bounded(preferences.OverlayIdleOpacity, IdleOpacity, .05, 1);
         if (visibilityOpacity == opacity) return;
@@ -326,6 +333,11 @@ public sealed partial class OverlayWindow : Window
     private void Render()
     {
         UpdateVisibility();
+        if (activitiesOpen)
+        {
+            ApplyActivityVisibility(); heading.Text = T("checklist"); duration.Text = "";
+            activityChecklist?.Tick(); return;
+        }
         var fight = Selected; var target = Target;
         var boss = fight is null ? null : EncounterMath.PrimaryBoss(fight);
         heading.Text = actor is null ? (boss?.Name ?? (fight?.Title is { } title && title != "—" ? title : Text.ProductName)) : fight?.Participants.FirstOrDefault(p => p.Id == actor)?.Name ?? Text.ProductName;
