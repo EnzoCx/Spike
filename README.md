@@ -98,7 +98,7 @@ The summary above the skills shows the player's damage, hits, critical rate, **L
 
 Choose **Activities → Events & reminders**, enable notifications and select your events. Set a reminder from **0 to 60 minutes before**, optionally add sound, then use **Test a notification**. Upcoming times display in your local time zone. Compact reminders stack at the **top right** of the overlay’s monitor (or the main window’s monitor). Each card stays for 12 seconds; hovering pauses the stack. Additional events queue without replacing existing reminders.
 
-![Interface illustration: Spike event schedules and a configurable Shugo reminder, using synthetic data](site/images/events-en-dark.png)
+![Windows previews: compact event settings and stacked reminders, with demonstration data](site/images/events-en-dark.png)
 
 *Windows interface preview with synthetic event times.*
 
@@ -108,7 +108,7 @@ Shugo and Rift presets are included, alongside community schedules for Artifact 
 
 ### Make the checklist yours
 
-![Interface illustration: the same Spike daily checklist in the app and overlay, with fictional character progress](site/images/checklist-en-dark.png)
+![Windows previews: accumulating reserves in Spike and its overlay, with demonstration balances](site/images/checklist-en-dark.png)
 
 *Windows interface preview with synthetic balances. Both views share one local save.*
 
