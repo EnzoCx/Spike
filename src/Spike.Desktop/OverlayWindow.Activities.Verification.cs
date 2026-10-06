@@ -59,7 +59,7 @@ public sealed partial class OverlayWindow
             window.SavePreview(directory, $"header-timers-{preferences.Language}-{preferences.Theme}-{width}.png");
             var timerBounds = window.eventTimers.TransformToAncestor(header).TransformBounds(new Rect(window.eventTimers.RenderSize));
             var tabBounds = window.activitySwitch!.TransformToAncestor(header).TransformBounds(new Rect(window.activitySwitch.RenderSize));
-            if (!window.idleCollapsed || window.eventTimers.ActualWidth < 15 || timerBounds.Right > tabBounds.Left + 1
+            if (!window.idleCollapsed || !window.eventTimers.Text.Contains("[00:05]") || window.eventTimers.ActualWidth < 15 || timerBounds.Right > tabBounds.Left + 1
                 || window.Height < header.ActualHeight + window.frame.Padding.Top + window.frame.Padding.Bottom + 2)
                 throw new InvalidOperationException($"Collapsed header timers must fit: width={width}, collapsed={window.idleCollapsed}, timer={timerBounds}, tabs={tabBounds}, height={window.Height}, header={header.ActualHeight}.");
         }

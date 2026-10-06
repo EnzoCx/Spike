@@ -115,7 +115,8 @@ public sealed partial class OverlayWindow
                 new System.Windows.Media.Typeface(FontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal), eventTimers.FontSize,
                 System.Windows.Media.Brushes.Black, System.Windows.Media.VisualTreeHelper.GetDpi(this).PixelsPerDip).Width;
             for (var count = tokens.Length; count > 0 && Measure(text) > available; count--)
-                text = count == 1 ? "+" + tokens.Length : string.Join(" · ", tokens.Take(count - 1)) + " · +" + (tokens.Length - count + 1);
+                text = count == 1 ? (Measure(tokens[0]) <= available ? tokens[0] : "[" + HeaderCountdown(events[0].StartsAt - now) + "]")
+                    : string.Join(" · ", tokens.Take(count - 1)) + " · +" + (tokens.Length - count + 1);
         }
         eventTimers.Text = text;
         var details = events.Length == 0 ? T("noUpcomingEvents") : string.Join("\n", events.Select(e => Name(e) + " · " + e.StartsAt.ToLocalTime().ToString("ddd HH:mm", Culture) + " · [" + HeaderCountdown(e.StartsAt - now) + "]"));
