@@ -1,38 +1,60 @@
-# Activités : planning et checklist
+# Activités : objectifs, réserves et rappels
 
-Ajout préparé le 6 octobre 2026. Les horaires sont des préréglages **Global**,
-sans téléchargement à l’exécution. Ils ne certifient ni la présence d’un boss ni
-un calendrier officiel. Une nouvelle release Windows doit accompagner la mise en
-ligne des textes du site annonçant ces fonctions.
+La page **Activités** et les onglets **Compteur / Tâches** de l’overlay partagent
+la même sauvegarde. `Ctrl+Tab` change la vue de l’overlay. Trois périodes :
 
-## Utilisation
+- **Quotidien** : les cinq missions de devoir.
+- **Semaine** : entrées en donjon quotidien, Ascension, fabrications d’Odyle,
+  achats de contrats, boutiques et saison. Ludra est optionnel, masqué au départ.
+- **Réserves** : clés Shugo et Invasion, tentatives de Cauchemar, énergie d’Odyle.
+  Le nombre est un **stock restant saisi manuellement**, jamais une complétion.
+  Il ne recharge pas automatiquement et ne se réinitialise pas. La date du dernier
+  relevé reste visible ; un stock inconnu affiche « — », pas zéro.
 
-- **Activités → Checklist** : choisir un personnage, puis Quotidien ou Hebdomadaire.
-  Cocher termine l’objectif ; décocher remet son compteur à zéro. Les boutons −/+
-  permettent une progression partielle. « Personnaliser » masque des tâches,
-  ajuste les objectifs et ajoute des tâches ou des personnages. Les définitions
-  des tâches sont communes ; chaque personnage a ses propres compteurs.
-- **Overlay → ✓** : la même checklist, immédiatement synchronisée. **DPS** revient
-  au combat, qui continue d’être capturé pendant la consultation. La checklist
-  reste lisible et dépliée. Clic droit sur ✓ ouvre l’accès à la page Activités.
-  Déverrouiller d’abord l’overlay s’il laisse passer les clics.
-- **Activités → Événements & rappels** : activer les notifications, puis cocher les
-  événements souhaités. Le délai (0 à 60 minutes), le son, le décalage UTC, l’heure
-  quotidienne et le jour hebdomadaire sont configurables. « Tester une notification »
-  utilise les derniers réglages enregistrés, même si l’interrupteur principal est coupé.
-- Chaque événement peut recevoir des horaires `HH:mm` séparés par des virgules et
-  des jours de semaine. Une modification devient un horaire personnalisé. Les
-  événements personnalisés peuvent être supprimés. Les sources s’ouvrent uniquement
-  sur clic. Aucune complétion ni interaction avec le jeu n’est automatisée.
+Le bouton **i** explique l’activité, son accès et ses sources, au survol comme au clic.
+Les plafonds sont modifiables dans **Personnaliser**, notamment pour l’abonnement.
+Les personnages configurés représentent **un même serveur**. Les compteurs de serveur
+sont communs à ces personnages (stockés dans le premier profil) ; les autres restent
+indépendants. Le serveur de jeu n’est pas détecté automatiquement.
 
-Les notifications sont désactivées au premier lancement. Shugo et Rift sont
-présélectionnés ; les autres rappels demandent un choix explicite. Une petite fenêtre
-non modale apparaît pendant 12 secondes, sans activation ni vol de focus. Les
-événements simultanés sont groupés. Elle peut être fermée ou ouvrir Activités.
-Les rappels fonctionnent capture arrêtée, overlay masqué et fenêtre principale
-minimisée. **Fermer la fenêtre principale arrête les rappels**, y compris en mode
-« Lancer avec le jeu », lorsque Spike retourne à l’attente. Le plein écran exclusif
-peut cacher les fenêtres de bureau ; utiliser le mode fenêtré/sans bordures.
+Les rappels sont désactivés au départ. Leur configuration regroupe activation,
+son, anticipation et test sur une ligne ; l’horloge et les resets sont repliés.
+Les horaires détaillés et sources de chaque événement se déplient à la demande.
+
+Les notifications s’empilent **en haut à droite**, sur le moniteur de l’overlay
+visible ou de la fenêtre principale. Quatre cartes au maximum (moins sur petit écran),
+puis une file d’attente avec compteur. Chaque carte dispose de 12 secondes à partir
+de son affichage ; survoler la pile ou lui donner le focus suspend son expiration.
+Fermer une carte libère une place. Aucun lot ne remplace le précédent. Cliquer sur
+une carte ouvre Activités ; l’arrivée seule ne vole pas le focus.
+
+Les rappels fonctionnent capture arrêtée et fenêtre minimisée. Fermer la fenêtre
+principale les arrête. Le plein écran exclusif peut masquer les fenêtres de bureau.
+
+## Checklist Global : recoupement du 6 octobre 2026
+
+| Source | Ce qu’elle permet de vérifier |
+| --- | --- |
+| [Corpus, 4 octobre](https://corpus.gg/blog/aion-2/daily-weekly-checklist) | Distingue les vraies missions quotidiennes des ressources accumulables ; accès via Journal → Devoir ; contrats à acheter mais réalisables plus tard. Recoupe plusieurs créateurs. |
+| [MetaBot, actualisé le 6 octobre](https://metabot.gg/en/aion-2/guides/daily-weekly-checklist) | Tables du client Global, plafonds, cycles et portée serveur/personnage ; différence entre réserve quotidienne et entrées hebdomadaires. |
+| [Aion 2 Maps, 4 octobre](https://aion2maps.com/guides/daily-and-weekly/) | Corrobore les stocks Shugo, Cauchemar, Odyle, les 14 entrées hebdomadaires et les trois Ascensions ; distingue données extraites, observations et conseils. |
+| [Atelier Gaming, 5 octobre](https://www.ateliergaming.fr/aion-2-guide-festival-des-shugos-invasion-dimensionnelle/) | Accès au Festival près de la mini-carte, distinction entrée et récompense, clés Shugo et Invasion accumulables. |
+| [GuideMMO, 5 octobre](https://guidemmo.com/checklist-aion-2/) | Source initiale, conservée comme comparaison. Ses « deux Shugo quotidiens » ne sont plus un objectif imposé. Les suggestions non recoupées restent masquées après migration. |
+
+Valeurs retenues, toutes ajustables : Shugo +3/jour, plafond 12 (21 avec abonnement) ;
+Invasion +1/jour, plafond 7 ; Cauchemar +2/jour, plafond 14 ; Odyle +15/3 h,
+plafond 560 (840 avec abonnement). Les quatre sont des réserves, pas des obligations
+journalières. Le « 7 » apparaît pour l’Invasion et pour le nombre de jours stockables
+avec certains bonus, mais n’est pas un plafond Shugo Global corroboré par ces sources.
+Les sources partagent parfois les mêmes données extraites : leur accord n’est pas
+une validation officielle ni une lecture du compte du joueur.
+
+La checklist ne prétend pas épuiser tous les plafonds du jeu. Les raids, difficultés,
+versions et boutiques peuvent varier. Les fabrications sont séparées en 4 personnelles
+et 16 partagées ; les contrats suivent les achats, sans inventer une expiration des
+parchemins. Les anciens objectifs « 11 000 trophées », « 7 tickets instantanés » et
+« 20 achats d’Odyle » restent consultables mais masqués après migration, faute de
+recoupement suffisant comme objectifs universels Global.
 
 ## Sources et choix des préréglages
 
@@ -74,7 +96,7 @@ les calculs temporels purs, la déduplication et le stockage atomique.
 `ActivityController` possède l’état partagé et le seul ordonnanceur. Il est appelé
 par le timer de Dashboard, sans dépendance au moteur de capture. `ActivitiesView`
 sert la page complète et l’overlay ; ses libellés viennent de `Text.Activities.cs`.
-`ActivityToast` présente les alertes ; aucun service cloud, compte ni API externe.
+`ActivityToast` présente la pile et sa file d’attente ; aucun service cloud, compte ni API externe.
 
 `%LOCALAPPDATA%\Spike\activities.json` est distinct des préférences et des combats.
 Chaque compteur conserve son horodatage de modification. Le début de période est
@@ -95,7 +117,7 @@ dernière minute de retard est tolérée. Il n’y a ni rappel différé ni synt
 dotnet run --project tests/Spike.Checks -c Release -- --activities-only
 ```
 
-Ces 49 contrôles sont portables : frontières exactes, changements d’heure et de
+Ces contrôles sont portables : frontières exactes, changements d’heure et de
 jour, semaines d’absence, personnages séparés, modifications d’objectif, notifications
 simultanées, veille, désactivation, redémarrage, fichier invalide et sauvegarde atomique.
 
@@ -104,5 +126,15 @@ coches, synchronisation overlay, notifications sans affichage réel et rendus ho
 écran FR/EN/ES × trois thèmes, aux tailles habituelles et minimales. Les résultats
 sont écrits dans `artifacts/verification/activities-result.txt` et les images
 `activities-*`, `schedule-*`, `checklist-overlay-*`. Aucun jeu ni Npcap n’est requis.
-Le toast réel et son son demandent encore une vérification Windows avec le bouton
-« Tester une notification ». L’environnement Linux ne peut pas exécuter WPF.
+La pile de notifications est également rendue et sa file testée sous Windows. Le bouton
+« Tester une notification » permet de vérifier placement réel et son sur le poste du joueur.
+
+## Migration de la première checklist
+
+Le schéma 2 ajoute la période Réserve, la portée partagée et les notes. Le chargement
+du schéma 1 migre les modèles connus en mémoire, conserve les tâches personnelles,
+les événements, les personnages et leurs préférences. Les anciens nombres de
+réalisations dont l’unité change sont effacés pour éviter de les présenter comme des
+stocks restants. Les objectifs explicitement personnalisés restent conservés.
+Au premier enregistrement, le fichier original est copié dans `activities.json.v1.bak`
+avant remplacement atomique. Charger seul ne modifie aucun fichier.

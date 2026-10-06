@@ -92,15 +92,15 @@ The summary above the skills shows the player's damage, hits, critical rate, **L
 
 ## Events and checklist
 
-**Your session, at your pace.** Open **Activities** to see upcoming events and keep track of daily and weekly goals. The **✓** button in the overlay opens the same checklist; **DPS** returns to the meter while capture continues.
+**Your session, at your pace.** Open **Activities** to see upcoming events and keep track of daily and weekly goals. The overlay’s **Meter / Tasks** tabs switch views without interrupting capture (**Ctrl+Tab** also works).
 
 ### Be ready for the next event
 
-Choose **Activities → Events & reminders**, enable notifications and select your events. Set a reminder from **0 to 60 minutes before**, optionally add sound, then use **Test a notification**. Upcoming times display in your local time zone.
+Choose **Activities → Events & reminders**, enable notifications and select your events. Set a reminder from **0 to 60 minutes before**, optionally add sound, then use **Test a notification**. Upcoming times display in your local time zone. Compact reminders stack at the **top right** of the overlay’s monitor (or the main window’s monitor). Each card stays for 12 seconds; hovering pauses the stack. Additional events queue without replacing existing reminders.
 
 ![Interface illustration: Spike event schedules and a configurable Shugo reminder, using synthetic data](site/images/events-en-dark.png)
 
-*Interface illustration, not an application screenshot. Fictional notification and countdown values.*
+*Windows interface preview with synthetic event times.*
 
 Shugo and Rift presets are included, alongside community schedules for Artifact Siege and siege bosses. Nahma, Kaira and Dimensional Invasion are marked **Confirm in game**, with reminders off by default. Edit any event’s times and weekdays, or add your own. Notifications start disabled; no account or network connection is needed.
 
@@ -110,18 +110,22 @@ Shugo and Rift presets are included, alongside community schedules for Artifact 
 
 ![Interface illustration: the same Spike daily checklist in the app and overlay, with fictional character progress](site/images/checklist-en-dark.png)
 
-*Interface illustration with synthetic data. Both views share one locally saved checklist.*
+*Windows interface preview with synthetic balances. Both views share one local save.*
 
 - **Daily / Weekly:** check a goal to finish it, or use **− / +** for partial progress.
-- **Customize:** hide irrelevant tasks, adjust targets or add your own activities.
-- **Characters:** keep separate counters for your main and alts; task definitions are shared.
+- **Reserves:** Shugo keys, Invasion keys, Nightmare attempts and Odyle accumulate. Record the in-game balance; Spike never resets or estimates it. Unknown balances start as **—**, not zero.
+- **Help:** hover over **i**, or click it, for an explanation, where to go and the research sources.
+- **Customize:** hide irrelevant tasks, adjust goals and reserve caps, or add activities with your own notes.
+- **Characters on the same server:** character limits stay separate; server limits stay synchronized across alts.
 - **Automatic resets:** completed tasks expire at the configured reset, even after days away. Tracking is manual; Spike does not infer completion from combat.
 
-The Global preset uses **UTC event schedules**, a **07:00 UTC daily reset** and a **Wednesday weekly reset**. Change the fixed UTC offset, reset time and weekday under **Events & reminders → Lead time, sound and reset times**. Local display accounts for daylight saving time. Changing the reference offset moves all entered schedules; changing the reset recalculates checklist periods.
+The Global preset uses **UTC event schedules**, a **07:00 UTC daily reset** and a **Wednesday weekly reset**. Change the fixed UTC offset, reset time and weekday under **Events & reminders → Clock and resets**. Local display accounts for daylight saving time. Changing the reference offset moves all entered schedules; changing the reset recalculates checklist periods.
 
-**Sources checked 6 October 2026:** checklist inspiration from [GuideMMO](https://guidemmo.com/checklist-aion-2/); schedules from [AION2 Hub](https://aion2hub.com/tools/event-timer) and [Shugo.GG](https://shugo.gg/timers), cross-checked against [Aion2 Guide](https://aion2.run/en/horaires). Sources disagree on some times, including the Global reset; presets are editable and are not an official or live boss tracker. See [schedule evidence and limitations](docs/ACTIVITIES.md).
+**Sources checked 6 October 2026:** Global checklist cross-checked against [Corpus](https://corpus.gg/blog/aion-2/daily-weekly-checklist), [MetaBot](https://metabot.gg/en/aion-2/guides/daily-weekly-checklist) and [Aion 2 Maps](https://aion2maps.com/guides/daily-and-weekly/), correcting the initial [GuideMMO](https://guidemmo.com/checklist-aion-2/) suggestions; schedules from [AION2 Hub](https://aion2hub.com/tools/event-timer) and [Shugo.GG](https://shugo.gg/timers), cross-checked against [Aion2 Guide](https://aion2.run/en/horaires). Sources disagree on some times, including the Global reset; presets are editable and are not an official or live boss tracker. See [schedule evidence and limitations](docs/ACTIVITIES.md).
 
-Activities are saved separately in `%LOCALAPPDATA%\Spike\activities.json`. Your combat history and existing preferences are preserved.
+Global sources currently agree on Shugo **+3 keys/day, cap 12 (21 with membership)**; 7 is the reported Invasion key cap. All caps remain editable. Duty missions are the true daily; the “daily dungeon” has a weekly pool. Shopping tasks track purchases, not completion of bankable contracts.
+
+Activities are saved separately in `%LOCALAPPDATA%\Spike\activities.json`. Your combat history and existing preferences are preserved. The first save after upgrading backs up the old checklist as `activities.json.v1.bak`; old completed Shugo runs are never treated as remaining keys.
 
 ## Feature comparison
 
@@ -199,7 +203,7 @@ In **Settings**, choose your language, theme, and optionally your character name
 | See a player's skills | Click their row; **←** returns to the ranking |
 | Open the damage breakdown | From the skill list, click a row or **Report** |
 | Copy a fight summary | Click **Copy** in the overlay or report |
-| Check daily / weekly goals | Click **✓**, then **DPS** to return to combat; right-click **✓** to open Activities |
+| Check daily / weekly goals | Use **Meter / Tasks** or **Ctrl+Tab**; right-click the checklist to open Activities |
 
 Position and size are remembered. By default, the overlay fades to **15% opacity out of combat** when the fight goes idle after the 12-second timeout. It becomes readable again during combat or on hover when unlocked. Saved fights stay readable. Change this in **··· → Nearly transparent out of combat**.
 

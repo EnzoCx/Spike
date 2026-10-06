@@ -3,18 +3,18 @@ const translations = {
     navActivities: "Activities",
     activitiesEyebrow: "BETWEEN FIGHTS",
     activitiesTitle: "The right moment.\nYour next goal.",
-    activitiesIntro: "Shugo, Rifts, today’s goals: plan your session in Spike, then keep your checklist one click away in the overlay.",
+    activitiesIntro: "Goals that expire. Resources that accumulate. Events coming up. Your session, together in Spike.",
     remindersTitle: "Ready for the next event.",
-    remindersBody: "Choose your events, reminder lead time and sound. See upcoming local times, adjust schedules or add your own event.",
-    activityIllustration: "Interface illustration · synthetic data · click to enlarge",
+    remindersBody: "Discreet reminders at the top right, without interrupting combat. Several events? Cards stack and the rest wait their turn. Set lead time and sound in seconds.",
+    activityIllustration: "Windows interface · demonstration data · click to enlarge",
     remindersNote: "Enable notifications in Activities → Events & reminders. Keep the main window open, even minimized. Community schedules are editable; unconfirmed boss reminders are off by default.",
     checklistTitle: "Your routine, at your pace.",
-    checklistBody: "Check off daily and weekly tasks in the app or overlay. Track entries, customize goals and keep separate counters for each character.",
-    checklistNote: "Saved locally as you go. Automatic reset at your configured time, even after days away. Click ✓ in the overlay, then DPS to return to combat. Manual tracking, with no gameplay automation.",
+    checklistBody: "Daily, Weekly, Reserves: everything in its place. Track Shugo keys without turning them into a daily chore. Click “i” to learn what each activity is and where to find it.",
+    checklistNote: "Meter / Tasks tabs in the overlay. Local saves, shared server limits, editable caps. Goals reset; reserves stay at your last manual reading.",
     activitySources: "Presets checked on 6 October 2026:",
-    activitySourcesNote: "Schedules vary by version and server: check in game and adjust the time zone and resets in Spike.",
-    eventsAlt: "Illustration of Spike’s schedule: Shugo, Rift and a configurable reminder, with synthetic data.",
-    checklistAlt: "Illustration of Spike’s checklist in the app and overlay: fictional character progress and counters.",
+    activitySourcesNote: "Global checklist cross-checked; counters and schedules remain adjustable to match your game.",
+    eventsAlt: "Spike interface: compact settings and stacked reminders, demonstration data.",
+    checklistAlt: "Spike interface: Shugo, Nightmare and Odyle reserves in the app and overlay, demonstration balances.",
 
     compareDate: 'As of 5 October 2026', compareLegend: 'Not confirmed: not documented in the sources', compareMethod: 'Sources and comparison methodology',
     navCompare: 'Compare', compareEyebrow: 'CHOOSE YOUR METER', compareTitle: 'Features, side by side.',
@@ -63,18 +63,18 @@ const translations = {
     navActivities: "Actividades",
     activitiesEyebrow: "ENTRE COMBATES",
     activitiesTitle: "El momento justo.\nTu próximo objetivo.",
-    activitiesIntro: "Shugo, grietas, objetivos del día: prepara tu sesión en Spike y ten tu lista a un clic en el overlay.",
+    activitiesIntro: "Objetivos que caducan. Recursos que se acumulan. Eventos que se acercan. Tu sesión, reunida en Spike.",
     remindersTitle: "Prepárate para el próximo evento.",
-    remindersBody: "Elige tus eventos, la antelación del aviso y el sonido. Consulta las próximas horas locales, ajusta los horarios o añade tu propio evento.",
-    activityIllustration: "Ilustración de la interfaz · datos ficticios · pulsa para ampliar",
+    remindersBody: "Avisos discretos arriba a la derecha, sin interrumpir el combate. ¿Varios eventos? Las tarjetas se apilan y el resto espera su turno. Ajusta antelación y sonido en segundos.",
+    activityIllustration: "Interfaz Windows · datos de demostración · pulsa para ampliar",
     remindersNote: "Activa los avisos en Actividades → Eventos y avisos. Mantén abierta la ventana principal, aunque esté minimizada. Horarios comunitarios editables; avisos de jefes sin confirmar desactivados por defecto.",
     checklistTitle: "Tu rutina, a tu ritmo.",
-    checklistBody: "Marca las tareas diarias y semanales en la aplicación o el overlay. Sigue tus entradas, adapta tus objetivos y guarda contadores separados por personaje.",
-    checklistNote: "Guardado local inmediato. Reinicio automático a la hora configurada, incluso después de varios días. Pulsa ✓ en el overlay y DPS para volver al combate. Seguimiento manual, sin automatizar el juego.",
+    checklistBody: "Diario, Semana, Reservas: cada actividad en su sitio. Sigue tus llaves Shugo sin convertirlas en una obligación diaria. Pulsa «i» para saber qué hacer y dónde encontrarlo.",
+    checklistNote: "Pestañas Medidor / Tareas en el overlay. Guardado local, límites compartidos por servidor y ajustables. Los objetivos se reinician; las reservas conservan tu último registro manual.",
     activitySources: "Preajustes consultados el 6 de octubre de 2026:",
-    activitySourcesNote: "Los horarios varían según la versión y el servidor: compruébalos en el juego y ajusta la zona horaria y los reinicios en Spike.",
-    eventsAlt: "Ilustración del horario de Spike: Shugo, grieta y aviso configurable, con datos ficticios.",
-    checklistAlt: "Ilustración de la lista de Spike en la aplicación y el overlay: progreso y contadores ficticios.",
+    activitySourcesNote: "Lista Global contrastada; contadores y horarios ajustables según tu juego.",
+    eventsAlt: "Interfaz Spike: configuración compacta y avisos apilados, datos de demostración.",
+    checklistAlt: "Interfaz Spike: reservas de Shugo, Pesadilla y Odyle en la aplicación y el overlay, saldos de demostración.",
 
     compareDate: 'A 5 de octubre de 2026', compareLegend: 'Sin confirmar: información no documentada', compareMethod: 'Fuentes y método de comparación',
     navCompare: 'Comparativa', compareEyebrow: 'ELIGE TU MEDIDOR', compareTitle: 'Las funciones, lado a lado.',
@@ -139,9 +139,9 @@ let theme = [readPreference('spike-theme'), 'dark'].find(value => themes.include
 function updatePreviews() {
   const copy = translations[language];
   for (const view of ['events', 'checklist']) {
-    document.querySelector(`#${view}-preview`).src = `assets/${view}-en-${theme}.png?v=activities-1`;
+    document.querySelector(`#${view}-preview`).src = `assets/${view}-en-${theme}.png?v=activities-2`;
     document.querySelector(`#${view}-preview`).alt = copy[`${view}Alt`];
-    document.querySelector(`#${view}-link`).href = `assets/${view}-en-${theme}.png?v=activities-1`;
+    document.querySelector(`#${view}-link`).href = `assets/${view}-en-${theme}.png?v=activities-2`;
   }
   document.querySelector('#overlay-preview').src = `assets/overlay-en-${theme}.png?v=0.5.15`;
   document.querySelector('#overlay-preview').alt = copy.overlayAlt;

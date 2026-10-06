@@ -84,6 +84,22 @@ internal sealed partial class OverlayPlacement
         var y = corner.StartsWith("top", StringComparison.Ordinal) ? work.Top : corner.StartsWith("bottom", StringComparison.Ordinal) ? work.Bottom - bounds.Height : work.Top + (work.Height - bounds.Height) / 2;
         Move(KeepVisible(new Rect(x, y, bounds.Width, bounds.Height), work)); save();
     }
+    public double NotificationHeight(Window? reference)
+    {
+        var work = Area(Bounds);
+        if (reference is not null && GetWindowRect(new WindowInteropHelper(reference).Handle, out var ownerBounds)) work = WorkArea(ownerBounds);
+        var scale = reference is not null && new WindowInteropHelper(reference).Handle is var owner && owner != 0
+            ? Math.Max(96, GetDpiForWindow(owner)) / 96d : Scale;
+        return work.Height / scale;
+    }
+    public void PlaceNotification(Window? reference)
+    {
+        var bounds = Bounds; var work = Area(bounds);
+        if (reference is not null && GetWindowRect(new WindowInteropHelper(reference).Handle, out var ownerBounds)) work = WorkArea(ownerBounds);
+        var margin = 16 * Scale;
+        Move(KeepVisible(new Rect(work.Right - bounds.Width - margin, work.Top + margin, bounds.Width, bounds.Height), work));
+    }
+
     public void SetHeight(double desired)
     {
         if (closed || moving) return; // Do not resize under the mouse during a native drag.

@@ -3,12 +3,12 @@ using System.Text.Json;
 
 namespace Spike.Core;
 
-public enum ActivityPeriod { Daily, Weekly }
+public enum ActivityPeriod { Daily, Weekly, Reserve }
 
 public sealed record ScheduledActivity(string Id, string NameKey, string CustomName, int[] Minutes,
     DayOfWeek[] Days, bool Notify, string Reliability = "community", string Source = "https://shugo.gg/timers");
 public sealed record ChecklistActivity(string Id, string NameKey, string CustomName, ActivityPeriod Period,
-    int Goal = 1, bool Visible = true);
+    int Goal = 1, bool Visible = true, bool Shared = false, string Notes = "");
 public sealed record ActivityCompletion(int Count, DateTimeOffset UpdatedAt);
 public sealed record ActivityProfile(string Id, string Name, Dictionary<string, ActivityCompletion> Completed);
 public sealed record ActivitySettings(bool Notifications = false, bool Sound = false, int LeadMinutes = 5,
@@ -27,7 +27,7 @@ public static class ActivityCatalog
     public static ActivityData Create()
     {
         DayOfWeek[] daily = Enum.GetValues<DayOfWeek>();
-        return new(1, new(),
+        return new(2, new(),
         [
             new("shugo", "eventShugo", "", Enumerable.Range(0, 24).Select(h => h * 60).ToArray(), daily, true),
             new("rift", "eventRift", "", Enumerable.Range(0, 8).Select(h => h * 180).ToArray(), daily, true,
@@ -39,19 +39,20 @@ public static class ActivityCatalog
             new("invasion", "eventInvasion", "", Enumerable.Range(0, 24).Select(h => 30 + h * 60).ToArray(), daily, false, "uncertain")
         ],
         [
-            new("quests", "taskQuests", "", ActivityPeriod.Daily),
-            new("shugo", "taskShugo", "", ActivityPeriod.Daily, 2),
-            new("nightmare", "taskNightmare", "", ActivityPeriod.Daily, 2),
-            new("odyle", "taskOdyle", "", ActivityPeriod.Daily),
-            new("abyss", "taskAbyss", "", ActivityPeriod.Weekly),
-            new("altgard", "taskAltgard", "", ActivityPeriod.Weekly),
-            new("craft", "taskCraft", "", ActivityPeriod.Weekly, 20),
-            new("buy", "taskBuy", "", ActivityPeriod.Weekly, 20),
-            new("dungeons", "taskDungeons", "", ActivityPeriod.Weekly, 14),
-            new("tickets", "taskTickets", "", ActivityPeriod.Weekly, 7),
+            new("quests", "taskQuests", "", ActivityPeriod.Daily, 5, Shared: true),
+            new("shugo", "taskShugo", "", ActivityPeriod.Reserve, 12, Shared: true),
+            new("invasion-keys", "taskInvasionKeys", "", ActivityPeriod.Reserve, 7, Shared: true),
+            new("nightmare", "taskNightmare", "", ActivityPeriod.Reserve, 14),
+            new("odyle", "taskOdyle", "", ActivityPeriod.Reserve, 560),
+            new("dungeons", "taskDungeons", "", ActivityPeriod.Weekly, 14, Shared: true),
+            new("ascension", "taskAscension", "", ActivityPeriod.Weekly, 3),
+            new("craft", "taskCraft", "", ActivityPeriod.Weekly, 4),
+            new("craft-shared", "taskCraftShared", "", ActivityPeriod.Weekly, 16, Shared: true),
+            new("altgard", "taskAltgard", "", ActivityPeriod.Weekly, Shared: true),
+            new("abyss", "taskAbyss", "", ActivityPeriod.Weekly, Shared: true),
             new("season", "taskSeason", "", ActivityPeriod.Weekly),
-            new("trophies", "taskTrophies", "", ActivityPeriod.Weekly),
-            new("ascension", "taskAscension", "", ActivityPeriod.Weekly)
+            new("shops", "taskShops", "", ActivityPeriod.Weekly),
+            new("ludra", "taskLudra", "", ActivityPeriod.Weekly, Visible: false)
         ], [new("main", "", new())], "main", new());
     }
 }
@@ -62,6 +63,7 @@ public static class ActivitySchedule
 
     public static DateTimeOffset Boundary(DateTimeOffset now, ActivitySettings settings, ActivityPeriod period)
     {
+        if (period == ActivityPeriod.Reserve) throw new ArgumentException("Reserves never reset.", nameof(period));
         var local = now.ToOffset(Offset(settings));
         var reset = new DateTimeOffset(local.Date.AddMinutes(settings.ResetMinute), local.Offset);
         if (reset > now) reset = reset.AddDays(-1);
@@ -89,13 +91,16 @@ public static class ActivitySchedule
         throw new InvalidDataException("Event has no valid occurrence.");
     }
 
-    public static int Count(ActivityData data, ChecklistActivity task, DateTimeOffset now)
-    {
-        var profile = data.Profiles.Single(p => p.Id == data.ActiveProfile);
-        return profile.Completed.TryGetValue(task.Id, out var value)
-            && value.UpdatedAt >= Boundary(now, data.Settings, task.Period) && value.UpdatedAt <= now
-                ? Math.Clamp(value.Count, 0, task.Goal) : 0;
-    }
+    // All configured characters belong to one tracked server. Shared limits use its first profile.
+    public static ActivityProfile Owner(ActivityData data, ChecklistActivity task) => task.Shared
+        ? data.Profiles[0] : data.Profiles.Single(p => p.Id == data.ActiveProfile);
+
+    public static ActivityCompletion? Recorded(ActivityData data, ChecklistActivity task, DateTimeOffset now) =>
+        Owner(data, task).Completed.TryGetValue(task.Id, out var value) && value.UpdatedAt <= now
+            && (task.Period == ActivityPeriod.Reserve || value.UpdatedAt >= Boundary(now, data.Settings, task.Period))
+                ? value with { Count = Math.Clamp(value.Count, 0, task.Goal) } : null;
+
+    public static int Count(ActivityData data, ChecklistActivity task, DateTimeOffset now) => Recorded(data, task, now)?.Count ?? 0;
 
     public static bool TryMinutes(string input, out int[] minutes)
     {
@@ -133,6 +138,7 @@ public sealed class ActivityReminders
 
 public sealed class ActivityStore(string path)
 {
+    private bool backupLegacy;
     private const int MaximumBytes = 2 * 1024 * 1024;
     private static readonly JsonSerializerOptions Json = new() { WriteIndented = true };
 
@@ -143,7 +149,34 @@ public sealed class ActivityStore(string path)
         var data = JsonSerializer.Deserialize<ActivityData>(File.ReadAllText(path), Json)
             ?? throw new InvalidDataException("Missing activities.");
         Validate(data);
+        backupLegacy = data.Version == 1;
+        data = Migrate(data);
+        Validate(data);
         return data;
+    }
+
+    /// <summary>Upgrade built-in presets without discarding user tasks, settings or unrelated progress.</summary>
+    public static ActivityData Migrate(ActivityData data)
+    {
+        if (data.Version != 1) return data;
+        var presets = ActivityCatalog.Create().Tasks;
+        var changedUnits = new HashSet<string>();
+        var tasks = data.Tasks.Select(task =>
+        {
+            if (task.CustomName.Length > 0 || task.NameKey.Length == 0) return task;
+            var preset = presets.FirstOrDefault(p => p.Id == task.Id && p.NameKey == task.NameKey);
+            if (preset is null) return task with { Visible = false }; // Legacy suggestions remain available.
+            if (task.Period != preset.Period || task.Id is "craft" or "quests" or "ascension") changedUnits.Add(task.Id);
+            var oldGoal = task.Id switch { "shugo" or "nightmare" => 2, "craft" or "buy" => 20, "dungeons" => 14, "tickets" => 7, _ => 1 };
+            return preset with { Visible = task.Visible, Notes = task.Notes, Goal = task.Goal == oldGoal ? preset.Goal : task.Goal };
+        }).ToList();
+        tasks.AddRange(presets.Where(p => tasks.All(t => t.Id != p.Id)).Take(Math.Max(0, 100 - tasks.Count)));
+        return data with
+        {
+            Version = 2, Tasks = tasks.ToArray(),
+            Profiles = data.Profiles.Select(p => p with
+            { Completed = p.Completed.Where(c => !changedUnits.Contains(c.Key)).ToDictionary(c => c.Key, c => c.Value) }).ToArray()
+        };
     }
 
     public void Save(ActivityData data)
@@ -153,7 +186,12 @@ public sealed class ActivityStore(string path)
         if (System.Text.Encoding.UTF8.GetByteCount(json) > MaximumBytes) throw new InvalidDataException("Activities file too large.");
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
         var temporary = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
-        try { File.WriteAllText(temporary, json); File.Move(temporary, path, overwrite: true); }
+        try
+        {
+            File.WriteAllText(temporary, json);
+            if (backupLegacy && File.Exists(path) && !File.Exists(path + ".v1.bak")) File.Copy(path, path + ".v1.bak");
+            File.Move(temporary, path, overwrite: true); backupLegacy = false;
+        }
         finally { if (File.Exists(temporary)) File.Delete(temporary); }
     }
 
@@ -162,7 +200,7 @@ public sealed class ActivityStore(string path)
         static bool Id(string? value) => !string.IsNullOrWhiteSpace(value) && value.Length <= 80;
         static bool Label(string? value) => value is not null && value.Length <= 120 && !value.Any(char.IsControl);
         var s = data.Settings;
-        if (data.Version != 1 || s is null || s.UtcOffsetMinutes is < -720 or > 840 || s.UtcOffsetMinutes % 15 != 0
+        if (data.Version is not (1 or 2) || s is null || s.UtcOffsetMinutes is < -720 or > 840 || s.UtcOffsetMinutes % 15 != 0
             || s.ResetMinute is < 0 or >= 1440 || s.LeadMinutes is < 0 or > 60 || !Enum.IsDefined(s.WeeklyResetDay)
             || data.Events is null || data.Tasks is null || data.Profiles is null || data.Delivered is null
             || data.Events.Length > 100 || data.Tasks.Length > 100 || data.Profiles.Length is < 1 or > 20)
@@ -175,7 +213,8 @@ public sealed class ActivityStore(string path)
                 throw new InvalidDataException("Invalid event.");
         foreach (var t in data.Tasks)
             if (t is null || !Id(t.Id) || !Label(t.NameKey) || !Label(t.CustomName) || (t.NameKey == "" && string.IsNullOrWhiteSpace(t.CustomName))
-                || !Enum.IsDefined(t.Period) || t.Goal is < 1 or > 999)
+                || !Enum.IsDefined(t.Period) || t.Goal is < 1 or > 999
+                || t.Notes is null || t.Notes.Length > 1000 || t.Notes.Any(c => char.IsControl(c) && c != '\n'))
                 throw new InvalidDataException("Invalid checklist item.");
         foreach (var p in data.Profiles)
             if (p is null || !Id(p.Id) || !Label(p.Name) || p.Completed is null || p.Completed.Count > 100

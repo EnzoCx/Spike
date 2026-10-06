@@ -22,7 +22,7 @@ public partial class Dashboard
         var original = activities.Data;
         var now = DateTimeOffset.Parse("2026-10-06T11:54:59Z");
         activities.Clock = () => now;
-        var task = activities.Data.Tasks.Single(t => t.Id == "shugo");
+        var task = activities.Data.Tasks.Single(t => t.Id == "quests");
         activities.SetCount(task, 1);
         var reminders = 0;
         void Notification(ActivityOccurrence[] values) => reminders += values.Length;
@@ -40,17 +40,32 @@ public partial class Dashboard
                     throw new InvalidOperationException("Activities navigation must hide the combat report.");
                 var daily = ActivityControls<Button>(activitiesView).Single(b => Equals(b.Content, T("daily")));
                 daily.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                var check = ActivityControls<CheckBox>(activitiesView).First(c => AutomationProperties.GetName(c) == T("taskShugo"));
+                var check = ActivityControls<CheckBox>(activitiesView).First(c => AutomationProperties.GetName(c) == T("taskQuests"));
                 check.IsChecked = true; check.RaiseEvent(new RoutedEventArgs(CheckBox.ClickEvent));
-                if (ActivitySchedule.Count(activities.Data, task, now) != 2) throw new InvalidOperationException("Checklist checkbox did not persist.");
+                if (ActivitySchedule.Count(activities.Data, task, now) != 5) throw new InvalidOperationException("Checklist checkbox did not persist.");
                 SaveDashboard(directory, $"activities-{language}-{theme}.png", 1100, 780);
                 SaveDashboard(directory, $"activities-{language}-{theme}-minimum.png", 884, 600);
+                ActivityControls<Button>(activitiesView).Single(b => Equals(b.Content, T("reserves"))).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                activities.SetCount(activities.Data.Tasks.Single(t => t.Id == "shugo"), 10);
+                activities.SetCount(activities.Data.Tasks.Single(t => t.Id == "nightmare"), 12);
+                activities.SetCount(activities.Data.Tasks.Single(t => t.Id == "odyle"), 480);
+                if (ActivityControls<CheckBox>(activitiesView).Any(c => AutomationProperties.GetName(c) == T("taskShugo")))
+                    throw new InvalidOperationException("Reserves must never be presented as daily completion checkboxes.");
+                SaveDashboard(directory, $"reserves-{language}-{theme}.png", 1100, 780);
+                SaveDashboard(directory, $"reserves-{language}-{theme}-minimum.png", 884, 600);
+                ActivityControls<Button>(activitiesView).Single(b => Equals(b.Content, T("weekly"))).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                SaveDashboard(directory, $"weekly-{language}-{theme}.png", 1100, 780);
                 var schedule = ActivityControls<Button>(activitiesView).Single(b => Equals(b.Content, T("schedule")));
                 schedule.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 var reminderChoices = ActivityControls<CheckBox>(activitiesView).Where(c => AutomationProperties.GetName(c).StartsWith(T("notifyMe") + " · ", StringComparison.Ordinal)).ToArray();
                 if (reminderChoices.Length != 7) throw new InvalidOperationException("Every event needs its own reminder control.");
                 SaveDashboard(directory, $"schedule-{language}-{theme}.png", 1100, 780);
                 SaveDashboard(directory, $"schedule-{language}-{theme}-minimum.png", 884, 600);
+                var settings = ActivityControls<Expander>(activitiesView).Single(e => Equals(e.Header, T("reminderSettings")));
+                settings.IsExpanded = true;
+                SaveDashboard(directory, $"activity-settings-{language}-{theme}.png", 884, 600);
+                settings.IsExpanded = false;
+                ActivityToast.Verify(preferences, this, directory);
                 OverlayWindow.VerifyActivities(activities, preferences, directory, (Style)FindResource(typeof(Button)));
                 ActivityControls<Button>(activitiesView).Single(b => Equals(b.Content, T("checklist"))).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }

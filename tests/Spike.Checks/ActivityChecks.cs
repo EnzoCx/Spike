@@ -10,8 +10,8 @@ internal static class ActivityChecks
         ActivityStore.Validate(data);
         var settings = data.Settings;
         var tuesday = DateTimeOffset.Parse("2026-10-06T06:59:59Z");
-        var daily = data.Tasks.Single(t => t.Id == "shugo");
-        var weekly = data.Tasks.Single(t => t.Id == "dungeons");
+        var daily = data.Tasks.Single(t => t.Id == "quests") with { Shared = false };
+        var weekly = data.Tasks.Single(t => t.Id == "dungeons") with { Shared = false };
         check(ActivitySchedule.NextReset(tuesday, settings, ActivityPeriod.Daily) == DateTimeOffset.Parse("2026-10-06T07:00:00Z"), "Global daily reset uses the configured UTC time, not PC midnight");
         var wednesday = DateTimeOffset.Parse("2026-10-07T07:00:00Z");
         check(ActivitySchedule.Boundary(wednesday, settings, ActivityPeriod.Weekly) == wednesday
@@ -81,12 +81,36 @@ internal static class ActivityChecks
         check(ActivitySchedule.Count(controller.Data, daily, wednesday) == 0 && firstView == beforeDelivery + 1,
             "Controller refreshes checklist views once when the reset period changes");
 
+        var reserve = controller.Data.Tasks.Single(t => t.Id == "shugo");
+        check(ActivitySchedule.Recorded(controller.Data, reserve, controller.Clock()) is null, "An unrecorded reserve is unknown, not zero or full");
+        controller.SetCount(reserve, 7);
+        var recordedAt = controller.Clock();
+        controller.Change(controller.Data with { Profiles = [.. controller.Data.Profiles, new("alt", "Alt", new())], ActiveProfile = "alt" });
+        check(ActivitySchedule.Count(controller.Data, reserve, recordedAt.AddDays(30)) == 7, "Shared Shugo stock survives daily and weekly resets and switching characters");
+        controller.SetCount(reserve, 6);
+        controller.Change(controller.Data with { ActiveProfile = "main" });
+        check(ActivitySchedule.Count(controller.Data, reserve, recordedAt) == 6, "Updating a server reserve from an alt updates the main's same balance");
+        var nightmare = controller.Data.Tasks.Single(t => t.Id == "nightmare");
+        controller.SetCount(nightmare, 9);
+        check(ActivitySchedule.Count(controller.Data with { ActiveProfile = "alt" }, nightmare, recordedAt) == 0, "Nightmare balances remain character-specific");
+        check(ActivitySchedule.Recorded(controller.Data, reserve, recordedAt.AddSeconds(-1)) is null, "Future reserve readings are not shown after clock rollback");
+        var legacy = ActivityCatalog.Create() with { Version = 1, Tasks = [new("shugo", "taskShugo", "", ActivityPeriod.Daily, 2), new("custom", "", "My routine", ActivityPeriod.Weekly, 3)],
+            Profiles = [new("main", "", new() { ["shugo"] = new(2, recordedAt), ["custom"] = new(1, recordedAt) })] };
+        var migrated = ActivityStore.Migrate(legacy);
+        check(migrated.Version == 2 && migrated.Tasks.Single(t => t.Id == "shugo").Period == ActivityPeriod.Reserve,
+            "Legacy Shugo completions migrate to accumulating reserves");
+        check(!migrated.Profiles[0].Completed.ContainsKey("shugo") && migrated.Profiles[0].Completed["custom"].Count == 1,
+            "Migration never interprets completed runs as remaining keys; unrelated user progress survives");
+        check(migrated.Tasks.Single(t => t.Id == "custom").Goal == 3 && ReferenceEquals(ActivityStore.Migrate(migrated), migrated),
+            "Migration keeps custom tasks and is idempotent");
+        ActivityStore.Validate(migrated);
+
         var directory = Path.Combine(Path.GetTempPath(), "spike-activities-" + Guid.NewGuid().ToString("N"));
         var path = Path.Combine(directory, "activities.json");
         var store = new ActivityStore(path);
         try
         {
-            check(store.Load().Tasks.Length == 13, "First use creates daily and weekly templates without writing a file");
+            check(store.Load().Tasks.Length == 14, "First use creates daily and weekly templates without writing a file");
             store.Save(data);
             var reopened = store.Load();
             check(reopened.Profiles.Length == 2 && reopened.Delivered.Count == 2 && reopened.Profiles[0].Completed[weekly.Id].Count == 8, "Atomic storage retains profiles, partial progress, schedules and reminder history");
@@ -94,10 +118,10 @@ internal static class ActivityChecks
             void Reject(ActivityData invalid, string label)
             {
                 try { store.Save(invalid); }
-                catch (InvalidDataException) { check(store.Load().Tasks.Length == 13, label); return; }
+                catch (InvalidDataException) { check(store.Load().Tasks.Length == 14, label); return; }
                 throw new Exception("Accepted invalid activities: " + label);
             }
-            Reject(data with { Version = 2 }, "Unsupported schema cannot overwrite a valid save");
+            Reject(data with { Version = 99 }, "Unsupported schema cannot overwrite a valid save");
             Reject(data with { Settings = settings with { UtcOffsetMinutes = 900 } }, "Reject out-of-range time zone");
             Reject(data with { Settings = settings with { ResetMinute = 1440 } }, "Reject invalid reset hour");
             Reject(data with { Settings = settings with { LeadMinutes = -1 } }, "Reject negative notification lead");

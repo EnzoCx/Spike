@@ -36,16 +36,24 @@ public partial class Dashboard
     {
         if (verifying) return;
         var now = activities.Clock();
-        var message = occurrences.Length == 0 ? T("testNotificationBody") : string.Join("\n", occurrences.Take(3).Select(o =>
+        if (activityToast is null)
         {
-            var name = o.Activity.CustomName.Length > 0 ? o.Activity.CustomName : T(o.Activity.NameKey);
-            return name + " · " + o.StartsAt.ToLocalTime().ToString("HH:mm", Culture)
-                + " · " + string.Format(Culture, T("startsIn"), Math.Max(0, (int)Math.Ceiling((o.StartsAt - now).TotalMinutes)));
-        }));
-        if (occurrences.Length > 3) message += "\n" + string.Format(Culture, T("moreEvents"), occurrences.Length - 3);
-        activityToast?.Close();
-        activityToast = new(preferences, message, () => ShowActivities(this, new RoutedEventArgs()));
-        activityToast.Show();
+            activityToast = new(preferences, () => ShowActivities(this, new RoutedEventArgs()), overlay is { IsVisible: true } ? overlay : this);
+            activityToast.Closed += (_, _) => activityToast = null;
+        }
+        if (occurrences.Length == 0)
+        {
+            // Preview a simultaneous batch, including a long event name.
+            foreach (var key in new[] { "eventShugo", "eventRift", "eventSiegeBosses" })
+                activityToast.Enqueue(T(key), T("testNotificationBody"));
+        }
+        else foreach (var occurrence in occurrences)
+        {
+            var name = occurrence.Activity.CustomName.Length > 0 ? occurrence.Activity.CustomName : T(occurrence.Activity.NameKey);
+            activityToast.Enqueue(name, occurrence.StartsAt.ToLocalTime().ToString("HH:mm", Culture)
+                + "  ·  " + string.Format(Culture, T("startsIn"), Math.Max(0, (int)Math.Ceiling((occurrence.StartsAt - now).TotalMinutes))));
+        }
+        if (!activityToast.IsVisible) activityToast.Show();
         if (activities.Data.Settings.Sound) System.Media.SystemSounds.Asterisk.Play();
     }
 }

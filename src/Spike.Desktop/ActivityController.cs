@@ -45,7 +45,7 @@ internal sealed class ActivityController
 
     public bool SetCount(ChecklistActivity task, int count)
     {
-        var profile = Data.Profiles.Single(p => p.Id == Data.ActiveProfile);
+        var profile = ActivitySchedule.Owner(Data, task);
         var completed = new Dictionary<string, ActivityCompletion>(profile.Completed)
         { [task.Id] = new(Math.Clamp(count, 0, task.Goal), Clock()) };
         return Change(Data with { Profiles = Data.Profiles.Select(p => p.Id == profile.Id ? p with { Completed = completed } : p).ToArray() });

@@ -154,24 +154,24 @@
    </ScrollViewer>
    <ContentControl x:Name="ActivitiesPage" Grid.Row="1" Visibility="Collapsed" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
    <ScrollViewer x:Name="SettingsPage" Grid.Row="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
-    <StackPanel MaxWidth="660" HorizontalAlignment="Left">
-     <TextBlock x:Name="LanguageCaption" FontSize="16" FontWeight="Medium"/><StackPanel x:Name="LanguageChoices" Orientation="Horizontal" Margin="0,12,0,32"/>
-     <TextBlock x:Name="ThemeCaption" FontSize="16" FontWeight="Medium"/><StackPanel x:Name="ThemeChoices" Orientation="Horizontal" Margin="0,12,0,32"/>
-     <TextBlock x:Name="OpacityCaption" FontSize="16" FontWeight="Medium"/>
-     <Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
+    <StackPanel MaxWidth="660" HorizontalAlignment="Stretch">
+     <TextBlock x:Name="LanguageCaption" FontSize="13" FontWeight="Medium"/><StackPanel x:Name="LanguageChoices" Orientation="Horizontal" Margin="0,8,0,18"/>
+     <TextBlock x:Name="ThemeCaption" FontSize="13" FontWeight="Medium"/><StackPanel x:Name="ThemeChoices" Orientation="Horizontal" Margin="0,8,0,18"/>
+     <TextBlock x:Name="OpacityCaption" ToolTip="{Binding Text, ElementName=OpacityHint}" AutomationProperties.HelpText="{Binding Text, ElementName=OpacityHint}" FontSize="13" FontWeight="Medium"/>
+     <Grid Margin="0,8,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
       <StackPanel><TextBlock x:Name="CombatOpacityLabel" TextWrapping="Wrap" Margin="0,0,0,8"/><ComboBox x:Name="CombatOpacityChoice" DisplayMemberPath="Name" SelectionChanged="OpacitySelected"/></StackPanel>
       <StackPanel Grid.Column="2"><TextBlock x:Name="IdleOpacityLabel" TextWrapping="Wrap" Margin="0,0,0,8"/><ComboBox x:Name="IdleOpacityChoice" DisplayMemberPath="Name" SelectionChanged="OpacitySelected"/></StackPanel>
      </Grid>
-     <CheckBox x:Name="IdleOpacityCheck" Checked="IdleOpacityToggled" Unchecked="IdleOpacityToggled"/>
-     <TextBlock x:Name="OpacityHint" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,4,0,28"/>
-     <TextBlock x:Name="NameCaption" FontSize="16" FontWeight="Medium"/><TextBox x:Name="CharacterName" MaxLength="80" Margin="0,12,0,0"/><TextBlock x:Name="NameHint" Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,8,0,6"/>
-     <CheckBox x:Name="AutoStartCheck"/><CheckBox x:Name="OverlayStartupCheck"/><CheckBox x:Name="OnTopCheck"/>
-     <CheckBox x:Name="LaunchWithGameCheck"/>
-     <TextBlock x:Name="LaunchWithGameHint" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,4,0,0"/>
-     <WrapPanel Margin="0,20,0,18"><Button x:Name="SaveSettingsButton" Click="SaveSettings"/><Button x:Name="RecoverOverlayButton" Click="RecoverOverlay"/></WrapPanel>
-     <TextBlock x:Name="OverlayHint" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,0,0,24"/>
+     <CheckBox x:Name="IdleOpacityCheck" Margin="0,8,0,0" Checked="IdleOpacityToggled" Unchecked="IdleOpacityToggled"/>
+     <TextBlock x:Name="OpacityHint" Visibility="Collapsed" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,4,0,28"/>
+     <TextBlock Margin="0,18,0,0" x:Name="NameCaption" FontSize="13" FontWeight="Medium"/><TextBox x:Name="CharacterName" ToolTip="{Binding Text, ElementName=NameHint}" AutomationProperties.HelpText="{Binding Text, ElementName=NameHint}" MaxLength="80" Margin="0,8,0,0"/><TextBlock x:Name="NameHint" Visibility="Collapsed" Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,8,0,6"/>
+     <CheckBox x:Name="AutoStartCheck" Margin="0,8,0,0"/><CheckBox x:Name="OverlayStartupCheck" Margin="0,8,0,0"/><CheckBox x:Name="OnTopCheck" Margin="0,8,0,0"/>
+     <CheckBox x:Name="LaunchWithGameCheck" ToolTip="{Binding Text, ElementName=LaunchWithGameHint}" AutomationProperties.HelpText="{Binding Text, ElementName=LaunchWithGameHint}" Margin="0,8,0,0"/>
+     <TextBlock x:Name="LaunchWithGameHint" Visibility="Collapsed" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,4,0,0"/>
+     <WrapPanel Margin="0,14,0,12"><Button x:Name="SaveSettingsButton" Click="SaveSettings"/><Button x:Name="RecoverOverlayButton" ToolTip="{Binding Text, ElementName=OverlayHint}" AutomationProperties.HelpText="{Binding Text, ElementName=OverlayHint}" Click="RecoverOverlay"/></WrapPanel>
+     <TextBlock x:Name="OverlayHint" Visibility="Collapsed" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,0,0,24"/>
      <Expander x:Name="DiagnosticsExpander" Foreground="{DynamicResource Foreground}"><StackPanel><TextBlock x:Name="DiagnosticsText" FontSize="13" TextWrapping="Wrap" Margin="0,12"/><TextBlock x:Name="RulesNote" TextWrapping="Wrap" Style="{StaticResource MutedText}"/></StackPanel></Expander>
-     <TextBlock x:Name="LicenseNote" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,24,0,10"/>
+     <TextBlock x:Name="LicenseNote" TextWrapping="Wrap" Style="{StaticResource MutedText}" Margin="0,12,0,8"/>
      <Expander x:Name="LicensesExpander" Foreground="{DynamicResource Foreground}"><TextBox x:Name="LicensesText" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="280" VerticalScrollBarVisibility="Auto" FontSize="11"/></Expander>
     </StackPanel>
    </ScrollViewer>

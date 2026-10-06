@@ -173,12 +173,7 @@ public sealed partial class OverlayWindow : Window
         System.Windows.Automation.AutomationProperties.SetName(historyPicker, T("fightPicker"));
         copy.Content = T("copy"); copy.ToolTip = T("copyHint");
         activityChecklist?.Translate(value.Language);
-        if (activitiesButton is not null)
-        {
-            activitiesButton.ToolTip = T(activitiesOpen ? "returnToMeter" : "checklist");
-            System.Windows.Automation.AutomationProperties.SetName(activitiesButton, (string)activitiesButton.ToolTip);
-            if (activitiesButton.ContextMenu?.Items[0] is MenuItem item) item.Header = T("openActivities");
-        }
+        RefreshActivitySwitch();
         damage.ToolTip = T("damage"); healing.ToolTip = T("heals"); Render();
     }
 
@@ -432,11 +427,11 @@ public sealed partial class OverlayWindow : Window
         {
             var rowsHeight = (wanted.Count == 0 ? 64 : Math.Min(8, wanted.Count) * (preferences.OverlayCompact ? 26 : 32)) + (showSources ? 28 : 0);
             scroll.MaxHeight = rowsHeight + 1;
-            placement.SetHeight(100 + (healthArea.Visibility == Visibility.Visible ? 16 : 0) + rowsHeight);
+            placement.SetHeight((activitySwitch is null ? 100 : 142) + (healthArea.Visibility == Visibility.Visible ? 16 : 0) + rowsHeight);
         }
         else if (preferences.OverlayAutoFit && !idleCollapsed)
         {
-            var desired = 144 + Math.Max(1, Math.Min(8, wanted.Count)) * (preferences.OverlayCompact ? 30 : 44) + (showSources ? 24 : 0);
+            var desired = (activitySwitch is null ? 144 : 186) + Math.Max(1, Math.Min(8, wanted.Count)) * (preferences.OverlayCompact ? 30 : 44) + (showSources ? 24 : 0);
             placement.SetHeight(desired);
         }
     }
