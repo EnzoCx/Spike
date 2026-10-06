@@ -69,6 +69,12 @@ en cas de régression fonctionnelle de la nouvelle version.
 La première version équipée de ce système doit être téléchargée manuellement depuis
 GitHub Releases. Les versions 0.4.5 et antérieures ne peuvent pas découvrir ce mécanisme.
 
+Les notes de version listent uniquement les modifications ; les instructions d’utilisation
+restent dans le README et les détails de validation dans la documentation technique.
+Pour corriger les notes de la version courante déjà publiée, modifier son fichier
+`docs/RELEASE-X.Y.Z.md` sur `main`. Le workflow `release-notes.yml` synchronise le texte
+de la release GitHub existante, sans recréer de tag ni remplacer l’exécutable.
+
 ## Vérifications hors ligne
 
 `tools/Verify.ps1` inclut les tests de téléchargement simulé et `tools/Verify-Updates.ps1`.

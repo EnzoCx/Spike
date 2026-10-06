@@ -1,0 +1,35 @@
+name: Sync release notes
+on:
+  push:
+    branches: [main]
+    paths: ['docs/RELEASE-*.md']
+permissions:
+  contents: write
+concurrency:
+  group: release-notes
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Update existing release notes
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          [xml]$project = Get-Content src/Spike.Desktop/Spike.Desktop.csproj
+          $version = [string]$project.Project.PropertyGroup.Version
+          if ($version -notmatch '^\d+\.\d+\.\d+$') { throw 'Invalid stable version.' }
+          $notes = "docs/RELEASE-$version.md"
+          if (!(Test-Path $notes)) { throw 'Missing release notes.' }
+          $tags = gh api "repos/$env:GH_REPO/releases" --paginate --jq '.[] | select(.draft == false) | .tag_name'
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to list releases.' }
+          if (@($tags) -cnotcontains "v$version") {
+            Write-Host "No published v$version release yet; the tag workflow will publish its notes."
+            exit 0
+          }
+          gh release edit "v$version" --notes-file $notes
+          if ($LASTEXITCODE -ne 0) { throw 'Release notes update failed.' }

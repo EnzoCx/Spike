@@ -90,6 +90,9 @@ The summary above the skills shows the player's damage, hits, critical rate, **L
 | **Three themes** — Graphite, Ivory, High contrast | **Import / export** — JSON v2 files, export without names |
 | **Automatic collapse** — title bar only after two minutes out of combat | **Copy** — a compact summary in the interface language, ready for game chat |
 
+- **Checklist & reserves** — daily and weekly goals, keys and Odyle, shared between the app and overlay.
+- **Event timers & alerts** — Shugo / Rift countdowns in the overlay header and configurable, stacked reminders.
+
 ## Events and checklist
 
 **Your session, at your pace.** Open **Activities** to see upcoming events and keep track of daily and weekly goals. The overlay’s **Meter / Tasks** tabs switch views without interrupting capture (**Ctrl+Tab** also works).
@@ -135,7 +138,7 @@ Activities are saved separately in `%LOCALAPPDATA%\Spike\activities.json`. Your 
 
 Spike focuses on in-game readability and local reports, in French, English and Spanish. Here is what NotMeter, A2Tools and Abyss Logs offer too.
 
-**Sources checked on 5 October 2026.** Features documented or visible in official sources; the other apps have not been tested. **Not confirmed** does not mean absent. **Website** identifies a web feature, without assuming it is available in the desktop app.
+**Sources checked on 6 October 2026.** Features documented or visible in official sources; the other apps have not been tested. **Not confirmed** does not mean absent. **Website** identifies a web feature, without assuming it is available in the desktop app.
 
 | Feature | Spike | [NotMeter](https://notmeter.com/) | [A2Tools](https://github.com/taengu/A2Tools-DPS-Meter#features) | [Abyss Logs](https://github.com/karim-mo/aion2-abysslogs-dps-meter#what-it-does) |
 | --- | --- | --- | --- | --- |
@@ -143,6 +146,9 @@ Spike focuses on in-game readability and local reports, in French, English and S
 | Damage by skill | Yes | Website | Yes | Yes |
 | Healing analysis | Raw healing and HPS | Website | Not confirmed | Yes |
 | Local fight history | Yes | Not confirmed | Boss fights auto-saved | Yes |
+| Daily/weekly checklist & reserves | App and overlay | Not confirmed | Not confirmed | Not confirmed |
+| Shugo / Rift countdowns | Compact overlay header | Not confirmed | Not confirmed | Not confirmed |
+| Configurable event alerts | Stacked notifications, optional sound | Not confirmed | Not confirmed | Not confirmed |
 | Documented languages | FR / EN / ES | Website: 9, including FR / EN / ES | EN / KO / Traditional and Simplified Chinese | 9 languages announced |
 | Report sharing | Text copy / JSON v2, export without names | Reports on the website | Web links | Web links |
 | Buff duration | Not available | Website | Not confirmed | Buff timeline |
