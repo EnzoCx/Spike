@@ -187,6 +187,7 @@ internal sealed class ActivitiesView : ScrollViewer
             var summary = Label(string.Format(Culture, T("checklistProgress"), done, tasks.Length), size: compact ? 13 : 20);
             summary.FontWeight = FontWeights.SemiBold; root.Children.Add(summary);
             var progress = new ProgressBar { Minimum = 0, Maximum = Math.Max(1, tasks.Length), Value = done, Height = 3, Margin = new Thickness(0, 0, 0, 10) };
+            progress.SetResourceReference(Control.StyleProperty, "ActivityProgress");
             progress.SetResourceReference(Control.ForegroundProperty, "Accent"); root.Children.Add(progress);
             var reset = Label("", true, 11); root.Children.Add(reset);
             clocks.Add(now => reset.Text = string.Format(Culture, T("nextReset"),
@@ -257,7 +258,8 @@ internal sealed class ActivitiesView : ScrollViewer
         body.Children.Add(Label(T(task.Shared ? "sharedScope" : "characterScope") + " · " + (recorded is null ? T("reserveUnknown")
             : string.Format(Culture, T("reserveUpdated"), recorded.UpdatedAt.ToLocalTime().ToString("g", Culture))), true, 10));
         var bar = new ProgressBar { Maximum = task.Goal, Value = recorded?.Count ?? 0, Height = 3 };
-        bar.SetResourceReference(Control.ForegroundProperty, recorded?.Count == task.Goal ? "Accent" : "Muted"); body.Children.Add(bar);
+        bar.SetResourceReference(Control.StyleProperty, "ActivityProgress");
+        bar.SetResourceReference(Control.ForegroundProperty, "Accent"); body.Children.Add(bar);
         if (recorded?.Count == task.Goal) { var cap = Label(T("reserveCapacity"), true, 10); cap.Margin = new Thickness(0, 5, 0, 0); body.Children.Add(cap); }
         root.Children.Add(Card(body));
     }
@@ -270,16 +272,19 @@ internal sealed class ActivitiesView : ScrollViewer
         foreach (var task in controller.Data.Tasks.Where(t => t.Period == period))
         {
             var row = new DockPanel();
+            var description = task.NameKey.Length == 0 ? Input(T("activityNotes"), task.Notes, 1000) : null;
+            if (description is not null) { description.AcceptsReturn = true; description.TextWrapping = TextWrapping.Wrap; description.MinHeight = 48; }
             var goal = Input(T(task.Period == ActivityPeriod.Reserve ? "reserveCap" : "goal"), task.Goal.ToString(CultureInfo.InvariantCulture), 3); goal.MinWidth = 54; goal.Width = 54;
             var save = Button(T("apply"), () =>
             {
                 if (!int.TryParse(goal.Text, out var value) || value is < 1 or > 999) { error.Text = T("goalError"); goal.Focus(); return; }
-                controller.Change(controller.Data with { Tasks = controller.Data.Tasks.Select(t => t.Id == task.Id ? t with { Goal = value } : t).ToArray() });
+                controller.Change(controller.Data with { Tasks = controller.Data.Tasks.Select(t => t.Id == task.Id ? t with { Goal = value, Notes = description?.Text.Trim() ?? t.Notes } : t).ToArray() });
             });
             DockPanel.SetDock(save, Dock.Right); row.Children.Add(save); DockPanel.SetDock(goal, Dock.Right); row.Children.Add(goal);
             var visible = new CheckBox { Content = new TextBlock { Text = ActivityName(task), TextWrapping = TextWrapping.Wrap }, IsChecked = task.Visible, Margin = new Thickness(0, 6, 8, 8) };
             visible.Click += (_, _) => controller.Change(controller.Data with { Tasks = controller.Data.Tasks.Select(t => t.Id == task.Id ? t with { Visible = visible.IsChecked == true } : t).ToArray() });
             row.Children.Add(visible); editor.Children.Add(row);
+            if (description is not null) editor.Children.Add(description);
         }
         editor.Children.Add(Label(T("addTask")));
         var name = Input(T("taskName"), ""); editor.Children.Add(name);

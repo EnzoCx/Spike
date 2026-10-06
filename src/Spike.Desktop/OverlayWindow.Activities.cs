@@ -55,7 +55,7 @@ public sealed partial class OverlayWindow
         SetIdleCollapsed(false);
         activitiesOpen = !activitiesOpen;
         idleSince = DateTimeOffset.UtcNow;
-        if (activitiesOpen) { combatHeight = Height; placement.SetHeight(Math.Max(Height, 460)); }
+        if (activitiesOpen) { combatHeight = Height; placement.SetHeight(Math.Max(Height, 560)); }
         else placement.SetHeight(combatHeight);
         RefreshActivitySwitch(); ApplyActivityVisibility(); Render();
     }

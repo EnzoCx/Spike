@@ -214,7 +214,7 @@ public sealed class ActivityStore(string path)
         foreach (var t in data.Tasks)
             if (t is null || !Id(t.Id) || !Label(t.NameKey) || !Label(t.CustomName) || (t.NameKey == "" && string.IsNullOrWhiteSpace(t.CustomName))
                 || !Enum.IsDefined(t.Period) || t.Goal is < 1 or > 999
-                || t.Notes is null || t.Notes.Length > 1000 || t.Notes.Any(c => char.IsControl(c) && c != '\n'))
+                || t.Notes is null || t.Notes.Length > 1000 || t.Notes.Any(c => char.IsControl(c) && c is not ('\n' or '\r' or '\t')))
                 throw new InvalidDataException("Invalid checklist item.");
         foreach (var p in data.Profiles)
             if (p is null || !Id(p.Id) || !Label(p.Name) || p.Completed is null || p.Completed.Count > 100

@@ -10,7 +10,7 @@ internal sealed partial class ActivityToast
     internal static void Verify(Preferences preferences, Window reference, string directory)
     {
         var toast = new ActivityToast(preferences, () => { }, reference);
-        for (var i = 0; i < 6; i++) toast.Enqueue(Text.Get(i % 2 == 0 ? "eventShugo" : "eventRift", preferences.Language), "12:00 · " + string.Format(Text.Get("startsIn", preferences.Language), 5));
+        for (var i = 0; i < 6; i++) toast.Enqueue(Text.Get(new[] { "eventShugo", "eventRift", "eventSiege", "eventSiegeBosses", "eventNahma", "eventKaira" }[i], preferences.Language), "12:00 · " + string.Format(Text.Get("startsIn", preferences.Language), 5));
         if (toast.VisibleCount is < 1 or > 4 || toast.VisibleCount + toast.PendingCount != 6)
             throw new InvalidOperationException("Every simultaneous notification must be visible or queued.");
         var count = toast.VisibleCount;

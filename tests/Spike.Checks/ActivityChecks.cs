@@ -129,6 +129,19 @@ internal static class ActivityChecks
             Reject(data with { Events = [rift, rift] }, "Reject duplicate event identifiers");
             Reject(data with { Tasks = [daily with { Goal = 0 }] }, "Reject empty checklist goals");
             Reject(data with { ActiveProfile = "missing" }, "Reject a nonexistent active character");
+            Reject(data with { Tasks = [daily with { Notes = new string('x', 1001) }] }, "Reject oversized activity notes");
+            var legacyJson = JsonSerializer.Serialize(legacy);
+            File.WriteAllText(path, legacyJson);
+            var upgraded = store.Load();
+            check(upgraded.Version == 2 && File.ReadAllText(path) == legacyJson && !File.Exists(path + ".v1.bak"),
+                "Loading legacy state migrates in memory without changing the user's original file");
+            store.Save(upgraded);
+            check(File.ReadAllText(path + ".v1.bak") == legacyJson && store.Load().Version == 2,
+                "First migrated save retains an exact backup of the original checklist");
+            var withNotes = upgraded with { Tasks = upgraded.Tasks.Select(t => t.Id == "custom" ? t with { Notes = "Where\r\nMy route" } : t).ToArray() };
+            store.Save(withNotes);
+            check(store.Load().Tasks.Single(t => t.Id == "custom").Notes.Contains("\r\n", StringComparison.Ordinal)
+                && File.ReadAllText(path + ".v1.bak") == legacyJson, "Multiline personal notes persist and later saves leave the migration backup untouched");
             File.WriteAllText(path, "{broken");
             try { store.Load(); throw new Exception("Corrupt activities accepted"); }
             catch (JsonException) { check(File.ReadAllText(path) == "{broken", "Loading corrupt data preserves the original file"); }

@@ -36,6 +36,7 @@ public partial class Dashboard
             {
                 preferences = new(language, theme, AutoStart: false);
                 ApplyTheme(); Translate(); SwitchPage("activities");
+                StatusLabel.Text = T("stopped"); Notice.Text = "";
                 if (ActivitiesPage.Visibility != Visibility.Visible || FightPage.Visibility != Visibility.Collapsed)
                     throw new InvalidOperationException("Activities navigation must hide the combat report.");
                 var daily = ActivityControls<Button>(activitiesView).Single(b => Equals(b.Content, T("daily")));
@@ -52,6 +53,19 @@ public partial class Dashboard
                 if (ActivityControls<CheckBox>(activitiesView).Any(c => AutomationProperties.GetName(c) == T("taskShugo")))
                     throw new InvalidOperationException("Reserves must never be presented as daily completion checkboxes.");
                 SaveDashboard(directory, $"reserves-{language}-{theme}.png", 1100, 780);
+                foreach (var bar in ActivityControls<ProgressBar>(activitiesView))
+                {
+                    if (bar.Template.FindName("PART_Indicator", bar) is not FrameworkElement indicator
+                        || bar.Template.FindName("PART_Track", bar) is not FrameworkElement track
+                        || Math.Abs(indicator.ActualWidth - track.ActualWidth * bar.Value / bar.Maximum) > 2)
+                        throw new InvalidOperationException("Reserve fill must represent its recorded balance, including an empty unknown stock.");
+                }
+                foreach (var item in activities.Data.Tasks.Where(t => t.Visible && t.Period == ActivityPeriod.Reserve))
+                {
+                    var help = ActivityControls<Button>(activitiesView).Single(b => Equals(b.Tag, item.Id + "-info"));
+                    if (help.ToolTip is not TextBlock text || text.Text.Length < 30 || text.Text.Contains("Help", StringComparison.Ordinal))
+                        throw new InvalidOperationException("Every reserve needs translated, accessible help.");
+                }
                 SaveDashboard(directory, $"reserves-{language}-{theme}-minimum.png", 884, 600);
                 ActivityControls<Button>(activitiesView).Single(b => Equals(b.Content, T("weekly"))).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 SaveDashboard(directory, $"weekly-{language}-{theme}.png", 1100, 780);
