@@ -35,7 +35,7 @@ public sealed partial class OverlayWindow
         window.ToggleActivities(); window.Update(null, "stopped");
         if (window.activitiesOpen || window.scroll.Visibility != Visibility.Visible || window.eventTimers.Visibility != Visibility.Visible)
             throw new InvalidOperationException("Header timers must preserve the meter outside combat.");
-        window.Width = 520;
+        window.Width = 520; window.Update(null, "stopped");
         window.SavePreview(directory, $"header-timers-{preferences.Language}-{preferences.Theme}.png");
         if (!window.eventTimers.Text.Contains("Shugo [00:05]") || !window.eventTimers.Text.Contains("Rift [00:05]"))
             throw new InvalidOperationException("A normal header must show both compact Shugo and Rift countdowns in hours:minutes.");
@@ -53,7 +53,7 @@ public sealed partial class OverlayWindow
         window.ToggleActivities(); window.Update(null, "stopped");
         foreach (var width in new[] { 320, 460, 640 })
         {
-            window.Width = width;
+            window.Width = width; window.Update(null, "stopped");
             window.UpdateIdleLayout(DateTimeOffset.UtcNow.AddHours(1));
             window.RaiseEvent(new System.Windows.Input.MouseEventArgs(System.Windows.Input.Mouse.PrimaryDevice, 0) { RoutedEvent = MouseEnterEvent });
             window.SavePreview(directory, $"header-timers-{preferences.Language}-{preferences.Theme}-{width}.png");
@@ -61,9 +61,9 @@ public sealed partial class OverlayWindow
             var tabBounds = window.activitySwitch!.TransformToAncestor(header).TransformBounds(new Rect(window.activitySwitch.RenderSize));
             if (!window.idleCollapsed || window.eventTimers.ActualWidth < 15 || timerBounds.Right > tabBounds.Left + 1
                 || window.Height < header.ActualHeight + window.frame.Padding.Top + window.frame.Padding.Bottom + 2)
-                throw new InvalidOperationException("Collapsed header timers must fit on one line beside the title, tabs and controls.");
+                throw new InvalidOperationException($"Collapsed header timers must fit: width={width}, collapsed={window.idleCollapsed}, timer={timerBounds}, tabs={tabBounds}, height={window.Height}, header={header.ActualHeight}.");
         }
-        window.Width = 460;
+        window.Width = 460; window.Update(null, "stopped");
         window.SavePreview(directory, $"upcoming-overlay-{preferences.Language}-{preferences.Theme}.png");
         var original = controller.Data;
         controller.Change(original with { Events = original.Events.Select(e => e with { Notify = false }).ToArray() });

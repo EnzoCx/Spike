@@ -74,14 +74,14 @@ public sealed partial class OverlayWindow
         for (var i = 0; i < buttons.Length; i++)
         {
             var label = T(i == 0 ? "meterTab" : "checklistTab");
-            if (compactHeader)
+            if (compactHeader && buttons[i].Content is not System.Windows.Shapes.Path)
             {
                 var icon = new System.Windows.Shapes.Path { Width = 13, Height = 13, Stretch = System.Windows.Media.Stretch.Uniform,
                     StrokeThickness = 1.3, Data = System.Windows.Media.Geometry.Parse(i == 0 ? "M1,12 L1,8 M6,12 L6,4 M11,12 L11,0" : "M0,0 L12,0 12,12 0,12 Z M3,6 L5,8 9,3") };
                 icon.SetBinding(System.Windows.Shapes.Shape.StrokeProperty, new System.Windows.Data.Binding("Foreground") { Source = buttons[i] });
                 buttons[i].Content = icon;
             }
-            else buttons[i].Content = label;
+            else if (!compactHeader) buttons[i].Content = label;
             buttons[i].ToolTip = label + " · Ctrl + Tab";
         }
         eventTimers.Visibility = preferences.OverlayIdleEvents ? Visibility.Visible : Visibility.Collapsed;

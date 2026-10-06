@@ -331,6 +331,7 @@ public sealed partial class OverlayWindow : Window
 
     private void Render()
     {
+        RefreshHeaderDensity();
         UpdateVisibility();
         RefreshEventTimers();
         if (activitiesOpen)
