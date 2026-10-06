@@ -13,7 +13,7 @@ public sealed partial class OverlayWindow
 
     private void UpdateIdleLayout(DateTimeOffset now)
     {
-        if (activitiesOpen || WantsUpcoming) { idleSince = now; SetIdleCollapsed(false); return; }
+        if (activitiesOpen) { idleSince = now; SetIdleCollapsed(false); return; }
         if (captureStatus == "capturing") idleSince = null;
         else idleSince ??= now;
 

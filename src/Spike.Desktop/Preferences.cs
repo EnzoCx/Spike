@@ -10,6 +10,7 @@ public sealed record Preferences(string Language = "fr", string Theme = "dark", 
     bool OverlayFadeWhenIdle = true, bool OverlayDiscreet = true,
     double OverlayCombatOpacity = 1, double OverlayIdleOpacity = .15, bool LaunchWithGame = false, bool OverlayIdleEvents = true)
 {
+    // OverlayIdleEvents is the persisted legacy name for the header event timers option.
     private static string FilePath => Path.Combine(Spike.Core.ApplicationData.Root, "settings.json");
 
     public static Preferences Load()

@@ -114,7 +114,7 @@ Shugo and Rift presets are included, alongside community schedules for Artifact 
 
 Reserve controls use **±1** for keys/attempts and **±40** for Odyle. Click the balance to enter an exact value. Weekly Wind Breeze purchases are tracked separately: **4 per character + 16 per server**, with help and the [Global item source](https://aion2.gaming.tools/items/503700031).
 
-The overlay starts enabled. Its Meter / Tasks switch shares the title row. **Outside combat, the meter automatically becomes a compact list of the next three enabled events**, with live countdowns; combat restores the meter immediately. Click Meter to review the last fight while idle. An explicitly opened Tasks view stays open. Disable this behavior in the overlay’s **··· → Events outside combat** menu. Combat and idle opacity use sliders in Settings and the overlay menu. Event reminders have a subtle entrance animation and an original soft chime, which can be muted.
+Spike starts with **only the overlay visible**; open the main window by double-clicking its system tray icon. The header includes compact event countdowns such as **Shugo [00:42] · Rift [02:42]** (hours:minutes), alongside the combat controls. Toggle them with **··· → Show event timers**. They never replace the damage view, including outside combat. Narrow headers use accessible icons for Meter / Tasks and a **+N** overflow indicator; hover the timers for full names and local times. The existing automatic idle collapse keeps this single header visible. Combat and idle opacity use sliders in Settings and the overlay menu. Event reminders have a subtle entrance animation and an original soft chime, which can be muted.
 
 - **Daily / Weekly:** check a goal to finish it, or use **− / +** for partial progress.
 - **Reserves:** Shugo keys, Invasion keys, Nightmare attempts and Odyle accumulate. Record the in-game balance; Spike never resets or estimates it. Unknown balances start as **—**, not zero.
@@ -167,7 +167,7 @@ The executable is self-contained: **you do not need to install .NET to use it**.
 ### Download and launch
 
 1. Download **Spike.exe** from the [latest release](https://github.com/EnzoCx/Spike/releases/latest) and save it in a personal folder.
-2. Open the executable. If Npcap is missing, setup asks you to close the game and download the installer from the official website.
+2. Open the executable: only the overlay appears. Double-click Spike’s system tray icon to open the main window. If Npcap is missing, its setup guides you to close the game and download the official installer.
 3. Install Npcap, return to Spike, click **Check installation**, then **Continue**. Launch the game afterward.
 
 Already have Npcap? Setup is skipped. **Later** lets you browse saved fights and settings without capture; **Start** reopens setup if Npcap is still missing. Detecting the driver alone does not guarantee that combat events are being received.

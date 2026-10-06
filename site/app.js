@@ -10,7 +10,7 @@ const translations = {
     remindersNote: "Enable notifications in Activities → Events & reminders. Close the main window: Spike and its reminders stay in the system tray. Community schedules are editable; unconfirmed boss reminders are off by default.",
     checklistTitle: "Your routine, at your pace.",
     checklistBody: "Daily, Weekly, Reserves: everything in its place. Track Shugo keys without turning them into a daily chore. Click “i” to learn what each activity is and where to find it.",
-    checklistNote: "One compact overlay header. Upcoming event countdowns outside combat, live meter when combat resumes. Quick ±1 keys / ±40 Odyle controls; Wind Breeze purchases by character and server. Goals reset; reserves stay at your last manual reading.",
+    checklistNote: "One compact overlay header. Shugo and Rift countdowns beside the title, with the damage meter always available. Quick ±1 keys / ±40 Odyle controls; Wind Breeze purchases by character and server. Goals reset; reserves stay at your last manual reading.",
     activitySources: "Presets checked on 6 October 2026:",
     activitySourcesNote: "Global checklist cross-checked; counters and schedules remain adjustable to match your game.",
     eventsAlt: "Spike interface: compact settings and stacked reminders, demonstration data.",
@@ -45,7 +45,7 @@ const translations = {
     feature3Title: 'Your next improvement.', feature3: 'Review saved fights while capture continues. Copy a summary to share yourself.',
     quietEyebrow: 'THERE WHEN IT MATTERS', quietTitle: 'In your line of sight.\nOut of your way.', quietBody: 'Move the overlay, lock clicks and stay in control of your game. Out of combat, it fades, then collapses. The next fight brings it back.',
     shortcut: 'Show / hide', installEyebrow: 'YOUR NEXT FIGHT', installTitle: 'Three steps.\nThen you play.', installIntro: 'A standalone executable for Windows x64. No account to create, no .NET runtime to install.',
-    release: 'See the latest release', step1Title: 'Download Spike.', step1: 'Save Spike.exe in a personal folder, then open it.', downloadFile: 'Download the executable ↓',
+    release: 'See the latest release', step1Title: 'Download Spike.', step1: 'Open Spike.exe: only the overlay appears. Double-click its system tray icon to open the main window.', downloadFile: 'Download the executable ↓',
     step2Title: 'Set up Npcap, just once.', step2: 'If it is missing, Spike guides you. Close the game before installing Npcap from its official website, then return to check the installation.', npcap: 'Official Npcap website ↗',
     step3Title: 'Launch the game. Join the fight.', step3: 'Use windowed or borderless mode to see the overlay. With default settings, capture starts automatically.',
     faqEyebrow: 'GOOD TO KNOW', faqTitle: 'Before you jump in.',
@@ -70,7 +70,7 @@ const translations = {
     remindersNote: "Activa los avisos en Actividades → Eventos y avisos. Cierra la ventana principal: Spike y sus avisos siguen en la bandeja del sistema. Horarios comunitarios editables; avisos de jefes sin confirmar desactivados por defecto.",
     checklistTitle: "Tu rutina, a tu ritmo.",
     checklistBody: "Diario, Semana, Reservas: cada actividad en su sitio. Sigue tus llaves Shugo sin convertirlas en una obligación diaria. Pulsa «i» para saber qué hacer y dónde encontrarlo.",
-    checklistNote: "Overlay compacto: cuentas atrás fuera de combate y medidor al combatir. Controles ±1 llaves / ±40 Odyle; compras por personaje y servidor. Los objetivos se reinician; las reservas conservan tu último registro manual.",
+    checklistNote: "Overlay compacto: cuentas atrás junto al título, sin sustituir el medidor. Controles ±1 llaves / ±40 Odyle; compras por personaje y servidor. Los objetivos se reinician; las reservas conservan tu último registro manual.",
     activitySources: "Preajustes consultados el 6 de octubre de 2026:",
     activitySourcesNote: "Lista Global contrastada; contadores y horarios ajustables según tu juego.",
     eventsAlt: "Interfaz Spike: configuración compacta y avisos apilados, datos de demostración.",
@@ -105,7 +105,7 @@ const translations = {
     feature3Title: 'Tu próxima mejora.', feature3: 'Revisa combates guardados mientras la captura continúa. Copia un resumen para compartirlo tú mismo.',
     quietEyebrow: 'PRESENTE CUANDO IMPORTA', quietTitle: 'A la vista.\nSin estorbar.', quietBody: 'Mueve el overlay, bloquea los clics y mantén el control del juego. Fuera de combate, se atenúa y luego se reduce. El siguiente combate lo restaura.',
     shortcut: 'Mostrar / ocultar', installEyebrow: 'TU PRÓXIMO COMBATE', installTitle: 'Tres pasos.\nY a jugar.', installIntro: 'Un ejecutable autónomo para Windows x64. Sin crear una cuenta ni instalar el runtime de .NET.',
-    release: 'Ver la última versión', step1Title: 'Descarga Spike.', step1: 'Guarda Spike.exe en una carpeta personal y ábrelo.', downloadFile: 'Descargar el ejecutable ↓',
+    release: 'Ver la última versión', step1Title: 'Descarga Spike.', step1: 'Abre Spike.exe: solo aparece el overlay. Haz doble clic en su icono de la bandeja para abrir la ventana principal.', downloadFile: 'Descargar el ejecutable ↓',
     step2Title: 'Prepara Npcap, solo una vez.', step2: 'Si falta, Spike te guía. Cierra el juego antes de instalar Npcap desde su web oficial y vuelve para comprobar la instalación.', npcap: 'Web oficial de Npcap ↗',
     step3Title: 'Abre el juego. Entra en combate.', step3: 'Usa el modo ventana o sin bordes para ver el overlay. Con los ajustes predeterminados, la captura comienza automáticamente.',
     faqEyebrow: 'CONVIENE SABERLO', faqTitle: 'Antes de empezar.',
@@ -139,9 +139,9 @@ let theme = [readPreference('spike-theme'), 'dark'].find(value => themes.include
 function updatePreviews() {
   const copy = translations[language];
   for (const view of ['events', 'checklist']) {
-    document.querySelector(`#${view}-preview`).src = `assets/${view}-en-${theme}.png?v=activities-3`;
+    document.querySelector(`#${view}-preview`).src = `assets/${view}-en-${theme}.png?v=activities-4`;
     document.querySelector(`#${view}-preview`).alt = copy[`${view}Alt`];
-    document.querySelector(`#${view}-link`).href = `assets/${view}-en-${theme}.png?v=activities-3`;
+    document.querySelector(`#${view}-link`).href = `assets/${view}-en-${theme}.png?v=activities-4`;
   }
   document.querySelector('#overlay-preview').src = `assets/overlay-en-${theme}.png?v=0.5.15`;
   document.querySelector('#overlay-preview').alt = copy.overlayAlt;

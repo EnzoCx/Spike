@@ -33,32 +33,49 @@ public sealed partial class OverlayWindow
         if (switchBounds.Y < 0 || switchBounds.Bottom > header.ActualHeight + 1 || switchBounds.Right > closeBounds.Left)
             throw new InvalidOperationException("Tabs must share the title row without overlapping close at minimum width.");
         window.ToggleActivities(); window.Update(null, "stopped");
-        if (window.activitiesOpen || !window.showingUpcoming || window.upcomingPanel.Visibility != Visibility.Visible || window.scroll.Visibility != Visibility.Collapsed)
-            throw new InvalidOperationException("Outside combat the meter must show upcoming events automatically.");
-        window.UpdateIdleLayout(DateTimeOffset.UtcNow.AddHours(1));
-        if (window.idleCollapsed) throw new InvalidOperationException("Upcoming events must remain visible during extended idle time.");
-        window.RaiseEvent(new System.Windows.Input.MouseEventArgs(System.Windows.Input.Mouse.PrimaryDevice, 0) { RoutedEvent = MouseEnterEvent });
-        window.SavePreview(directory, $"upcoming-overlay-{preferences.Language}-{preferences.Theme}.png");
-        Dashboard.ActivityControls<Button>(window.activitySwitch!).Single(b => Equals(b.Content, Text.Get("meterTab", preferences.Language))).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        if (window.showingUpcoming || window.scroll.Visibility != Visibility.Visible)
-            throw new InvalidOperationException("Choosing Meter must let the player review the last fight while idle.");
-        window.Update(null, "capturing");
-        if (window.showingUpcoming || window.scroll.Visibility != Visibility.Visible || window.upcomingPanel.Visibility != Visibility.Collapsed)
-            throw new InvalidOperationException("Combat must immediately restore meter controls.");
-        window.ToggleActivities(); window.Update(null, "capturing");
-        if (!window.activitiesOpen || window.activityChecklist.Visibility != Visibility.Visible)
-            throw new InvalidOperationException("Automatic switching must respect an explicitly opened checklist.");
-        window.ToggleActivities(); window.Update(null, "stopped");
+        if (window.activitiesOpen || window.scroll.Visibility != Visibility.Visible || window.eventTimers.Visibility != Visibility.Visible)
+            throw new InvalidOperationException("Header timers must preserve the meter outside combat.");
+        window.Width = 520;
+        window.SavePreview(directory, $"header-timers-{preferences.Language}-{preferences.Theme}.png");
+        if (!window.eventTimers.Text.Contains("Shugo [00:05]") || !window.eventTimers.Text.Contains("Rift [00:05]"))
+            throw new InvalidOperationException("A normal header must show both compact Shugo and Rift countdowns in hours:minutes.");
+        var beforeHeight = window.Height;
+        var beforeRows = window.rows.Children.Count;
         window.ToggleIdleEvents();
-        if (window.showingUpcoming || window.scroll.Visibility != Visibility.Visible)
-            throw new InvalidOperationException("The automatic events view must be optional.");
-        window.UpdateIdleLayout(DateTimeOffset.UtcNow.AddHours(1));
-        window.SavePreview(directory, $"collapsed-tabs-{preferences.Language}-{preferences.Theme}.png");
-        if (!window.idleCollapsed || window.Height < header.ActualHeight + window.frame.Padding.Top + window.frame.Padding.Bottom + 2)
-            throw new InvalidOperationException("Collapsed overlays must retain the complete single-row header and tabs.");
+        if (window.eventTimers.Visibility != Visibility.Collapsed || window.Height != beforeHeight || window.rows.Children.Count != beforeRows || window.scroll.Visibility != Visibility.Visible)
+            throw new InvalidOperationException("Hiding event timers must not change the damage view or overlay height.");
+        window.ToggleIdleEvents(); window.Update(null, "capturing");
+        if (window.eventTimers.Visibility != Visibility.Visible || window.scroll.Visibility != Visibility.Visible)
+            throw new InvalidOperationException("Timers and combat must coexist.");
+        window.ToggleActivities();
+        if (!window.activitiesOpen || window.activityChecklist.Visibility != Visibility.Visible || window.eventTimers.Visibility != Visibility.Visible)
+            throw new InvalidOperationException("Timers must coexist with the checklist too.");
+        window.ToggleActivities(); window.Update(null, "stopped");
+        foreach (var width in new[] { 320, 460, 640 })
+        {
+            window.Width = width;
+            window.UpdateIdleLayout(DateTimeOffset.UtcNow.AddHours(1));
+            window.RaiseEvent(new System.Windows.Input.MouseEventArgs(System.Windows.Input.Mouse.PrimaryDevice, 0) { RoutedEvent = MouseEnterEvent });
+            window.SavePreview(directory, $"header-timers-{preferences.Language}-{preferences.Theme}-{width}.png");
+            var timerBounds = window.eventTimers.TransformToAncestor(header).TransformBounds(new Rect(window.eventTimers.RenderSize));
+            var tabBounds = window.activitySwitch!.TransformToAncestor(header).TransformBounds(new Rect(window.activitySwitch.RenderSize));
+            if (!window.idleCollapsed || window.eventTimers.ActualWidth < 15 || timerBounds.Right > tabBounds.Left + 1
+                || window.Height < header.ActualHeight + window.frame.Padding.Top + window.frame.Padding.Bottom + 2)
+                throw new InvalidOperationException("Collapsed header timers must fit on one line beside the title, tabs and controls.");
+        }
+        window.Width = 460;
+        window.SavePreview(directory, $"upcoming-overlay-{preferences.Language}-{preferences.Theme}.png");
+        var original = controller.Data;
+        controller.Change(original with { Events = original.Events.Select(e => e with { Notify = false }).ToArray() });
+        window.TickActivities();
+        if (window.eventTimers.Text != "—") throw new InvalidOperationException("An empty schedule must remain explicit.");
+        controller.Change(original); window.TickActivities();
+        if (HeaderCountdown(TimeSpan.FromSeconds(1)) != "00:01" || HeaderCountdown(TimeSpan.FromHours(27)) != "27:00"
+            || HeaderCountdown(TimeSpan.Zero) != "00:00") throw new InvalidOperationException("Compact countdowns must round up and retain hours beyond midnight.");
+        window.ToggleIdleEvents();
         var restored = System.Text.Json.JsonSerializer.Deserialize<Preferences>(System.Text.Json.JsonSerializer.Serialize(window.preferences))!;
         if (restored.OverlayIdleEvents || !new Preferences().OverlayIdleEvents || !new Preferences().ShowOverlayOnStartup)
-            throw new InvalidOperationException("Idle events and startup overlay must default on and preserve user choices.");
+            throw new InvalidOperationException("Header timers and startup overlay must default on and preserve user choices.");
         window.Close();
     }
 }

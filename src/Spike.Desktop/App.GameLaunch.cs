@@ -27,7 +27,7 @@ public partial class App
             if (!background) openRequest.Set();
             return false;
         }
-        openWait = ThreadPool.RegisterWaitForSingleObject(openRequest, (_, _) => Dispatcher.BeginInvoke(() => OpenDashboard(false)), null, Timeout.Infinite, false);
+        openWait = ThreadPool.RegisterWaitForSingleObject(openRequest, (_, _) => Dispatcher.BeginInvoke(() => { OpenDashboard(true); dashboard?.SetOverlayVisible(true); }), null, Timeout.Infinite, false);
         return true;
     }
 
@@ -79,10 +79,10 @@ public partial class App
             return;
         }
         dashboard = new Dashboard();
-        if (fromGame) { dashboard.ShowActivated = false; dashboard.WindowState = WindowState.Minimized; }
         MainWindow = dashboard;
         dashboard.Closed += (_, _) => dashboard = null;
-        dashboard.Show();
+        dashboard.StartInTray();
+        if (!fromGame) { dashboard.Show(); dashboard.Activate(); }
         if (AutomaticUpdater.PublishedExecutable() is not null) dashboard.StartUpdates();
     }
 

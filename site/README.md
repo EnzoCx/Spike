@@ -78,5 +78,5 @@ URLs au thème et leurs textes alternatifs à la langue. Recherche Global et lim
 le site seul ne met pas à jour les exécutables déjà téléchargés.
 
 Les nouveaux aperçus Activités montrent les contrôles ±1 / ±40, les onglets dans
-l’en-tête et les prochains événements hors combat. `upcoming-overlay-en-{thème}.png`
+l’en-tête et les compteurs d’événements sur une seule ligne. `upcoming-overlay-en-{thème}.png`
 complète la composition des rappels ; ces captures représentent des données fictives.

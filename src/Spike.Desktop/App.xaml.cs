@@ -51,7 +51,7 @@ public partial class App : Application
         ShutdownMode = ShutdownMode.OnExplicitShutdown;
         var preferences = Preferences.Load();
         ConfigureGameLaunch(preferences);
-        if (!e.Args.Contains("--watch-game")) OpenDashboard(false);
+        if (!e.Args.Contains("--watch-game")) OpenDashboard(true);
         else if (!preferences.LaunchWithGame) Shutdown(0);
     }
 }

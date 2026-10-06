@@ -38,15 +38,22 @@ arrête réellement le logiciel. Les rappels fonctionnent aussi capture arrêté
 Le son est un carillon original intégré ; l’animation respecte la préférence Windows
 de réduction des animations. Le plein écran exclusif peut masquer les fenêtres de bureau.
 
-L’overlay est activé par défaut, y compris avant l’installation de Npcap. Les onglets
-Compteur / Tâches sont dans son en-tête. Hors combat, la vue Compteur affiche les
-**trois prochains événements activés**, triés par heure, avec un compte à rebours.
-Cliquer sur Compteur permet de revoir le dernier combat jusqu’au prochain combat.
-Elle revient automatiquement au compteur à la reprise du combat ; une liste de tâches ouverte
-volontairement ou un rapport archivé ne sont pas remplacés. L’option est activée
-par défaut et se désactive via **··· → Événements hors combat**. Ce planning fonctionne
-même si les notifications sonores/visuelles sont coupées. Les opacités se règlent par
-curseurs ; une vue Tâches ou le survol garde sa lisibilité habituelle.
+Au lancement, **seul l’overlay s’affiche**. La fenêtre principale est initialisée
+sans être affichée ni minimisée ; capture, raccourci global et rappels démarrent
+normalement. Double-cliquez sur l’icône système pour ouvrir la fenêtre principale,
+y compris l’assistant Npcap si nécessaire. Le choix existant de désactiver l’overlay
+au démarrage reste respecté.
+
+Les compteurs d’événements restent dans **l’en-tête**, par exemple
+**Shugo [00:42] · Rift [02:42]**, en heures:minutes arrondies à la minute supérieure.
+Ils ne remplacent jamais la vue dégâts, même hors combat. L’option
+**··· → Afficher les compteurs d’événements** les masque ou les affiche sans changer
+le combat consulté. Les noms complets et horaires locaux restent au survol ;
+les événements activés qui ne tiennent pas sur la ligne sont regroupés sous **+N**.
+Sur un overlay étroit, Compteur / Tâches deviennent des icônes avec libellés au survol
+et noms accessibles. Le repli habituel après inactivité conserve l’en-tête et ses timers.
+Le réglage conserve la clé historique `OverlayIdleEvents`, donc les choix précédents
+restent respectés. Les opacités continuent de se régler par curseurs.
 
 ## Checklist Global : recoupement du 6 octobre 2026
 

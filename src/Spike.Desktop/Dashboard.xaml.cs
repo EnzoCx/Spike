@@ -54,8 +54,7 @@ public partial class Dashboard : Window
         }));
         ApplyTheme(); InitializeActivities(); Translate(); RenderFight();
         timer.Tick += (_, _) => Tick();
-        var sessionStarted = false;
-        Loaded += (_, _) => { if (!verifying && !sessionStarted) { sessionStarted = true; StartSession(); } };
+        Loaded += (_, _) => { if (!verifying) EnsureSessionStarted(); };
         SourceInitialized += (_, _) =>
         {
             if (verifying) return;
@@ -93,6 +92,20 @@ public partial class Dashboard : Window
 
     internal bool OverlayOpen => overlay is not null;
     internal void SetOverlayVisible(bool visible) { if (visible) OpenOverlay(); else overlay?.Close(); }
+
+    private bool sessionStarted;
+    private void EnsureSessionStarted()
+    {
+        if (sessionStarted) return;
+        sessionStarted = true; StartSession();
+    }
+
+    internal void StartInTray()
+    {
+        // Create a hidden HWND for hotkeys; never show/minimize the dashboard just to initialize it.
+        if (!verifying) new WindowInteropHelper(this).EnsureHandle();
+        EnsureSessionStarted();
+    }
 
     private void StartSession()
     {

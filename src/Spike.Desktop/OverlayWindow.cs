@@ -149,7 +149,7 @@ public sealed partial class OverlayWindow : Window
 
     private static double Bounded(double value, double fallback, double min, double max) => Math.Clamp(double.IsFinite(value) ? value : fallback, min, Math.Max(min, max));
     private void SaveLayout() => LayoutSaved?.Invoke(Left, idleCollapsed ? expandedTop + Top - collapsedTop : Top, Width,
-        activitiesOpen ? combatHeight : showingUpcoming ? beforeUpcomingHeight : idleCollapsed ? expandedHeight : Height);
+        activitiesOpen ? combatHeight : idleCollapsed ? expandedHeight : Height);
     private Button SmallButton(string text, Action action)
     {
         var button = new Button { Content = text, FontSize = 11, Padding = new Thickness(6, 3, 6, 3), Margin = new Thickness(0, 0, 4, 0), MinWidth = 24 };
@@ -243,7 +243,7 @@ public sealed partial class OverlayWindow : Window
         Item(T("discreetOverlay"), ToggleDiscreet, preferences.OverlayDiscreet);
         Item(T("autoFit"), () => ChangeAppearance(!preferences.OverlayAutoFit, preferences.OverlayCompact, preferences.OverlayOpacity), preferences.OverlayAutoFit);
         Item(T("compactRows"), () => ChangeAppearance(preferences.OverlayAutoFit, !preferences.OverlayCompact, preferences.OverlayOpacity), preferences.OverlayCompact);
-        Item(T("idleEvents"), ToggleIdleEvents, preferences.OverlayIdleEvents);
+        Item(T("showEventTimers"), ToggleIdleEvents, preferences.OverlayIdleEvents);
         Item(T("fadeWhenIdle"), ToggleIdleFade, preferences.OverlayFadeWhenIdle);
         menu.Items.Add(OpacityMenu("combatOpacity", preferences.OverlayCombatOpacity, false));
         menu.Items.Add(OpacityMenu("idleOpacity", preferences.OverlayIdleOpacity, true));
@@ -331,9 +331,8 @@ public sealed partial class OverlayWindow : Window
 
     private void Render()
     {
-        UpdateUpcomingMode();
         UpdateVisibility();
-        if (showingUpcoming) { RenderUpcoming(); return; }
+        RefreshEventTimers();
         if (activitiesOpen)
         {
             ApplyActivityVisibility(); heading.Text = Text.ProductName;

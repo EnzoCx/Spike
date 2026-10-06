@@ -8,6 +8,15 @@ public partial class Dashboard
 {
     private void VerifySupportAndStartup(string directory)
     {
+        var background = new Dashboard(verification: true);
+        background.StartInTray();
+        var startupOverlay = background.overlay;
+        if (background.IsVisible || !background.sessionStarted || startupOverlay is null)
+            throw new InvalidOperationException("Starting in the tray must initialize the overlay without displaying the dashboard.");
+        background.StartInTray();
+        if (!ReferenceEquals(startupOverlay, background.overlay))
+            throw new InvalidOperationException("Opening the dashboard later must not restart its session or duplicate the overlay.");
+        background.Close();
         var legacy = JsonSerializer.Deserialize<Preferences>("{\"Language\":\"fr\"}")!;
         if (legacy.LaunchWithGame || legacy.OverlayCombatOpacity != 1 || legacy.OverlayIdleOpacity != .15)
             throw new InvalidOperationException("New preferences must preserve defaults and keep startup opt-in.");
