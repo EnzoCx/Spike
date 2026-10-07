@@ -22,6 +22,7 @@ internal static class EvidenceChecks
         using var source = new Aion2PacketCombatSource(protocol);
         using var meter = new LiveMeter(source, protocol);
         var directory = (Aion2EntityDirectory)source.Entities;
+        directory.RegisterNpc(100, 2300171);
         directory.SetLocalCharacter(new(1, "Synthetic A", 1, 1, [], start, ServerId: 1));
         directory.Register(2, "Synthetic B");
         directory.NoteClass(1, "Sorcerer"); directory.NoteClass(2, "Sorcerer");
@@ -85,9 +86,10 @@ internal static class EvidenceChecks
         using var boundedSource = new Aion2PacketCombatSource(protocol);
         using var bounded = new LiveMeter(boundedSource, protocol);
         ((Aion2EntityDirectory)boundedSource.Entities).SetLocalCharacter(new(1, "Synthetic bounded", 1, 1, [], start));
+        ((Aion2EntityDirectory)boundedSource.Entities).RegisterNpc(100, 2300171);
         var segments = new List<Encounter>(); bounded.Completed += segments.Add;
         bounded.Process(Enumerable.Range(0, 4100).Select(i => Hit(0) with
-            { OriginalSource = 1000 + i, Attribution = "owner-id", AttributionCaptured = true }).ToArray(), start);
+        { OriginalSource = 1000 + i, Attribution = "owner-id", AttributionCaptured = true }).ToArray(), start);
         segments.Add(bounded.Snapshot()!);
         foreach (var segment in segments) EncounterFile.Validate(segment);
         Check(segments.Count == 2 && segments.Sum(s => s.Events.Length) == 4100,

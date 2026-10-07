@@ -10,6 +10,7 @@ public sealed class LiveMeter : IDisposable
 {
     private readonly Aion2PacketCombatSource source;
     private readonly List<DamageEvent> events = new();
+    private readonly BossEventBuffer pendingBossEvents = new();
     private readonly HashSet<int> participantIds = new();
     private readonly Aion2Protocol protocol;
     private DateTime first, last, lastActivity;
@@ -60,33 +61,19 @@ public sealed class LiveMeter : IDisposable
         directory.AdvanceTime(now);
         if (contextVersion != directory.ContextVersion) Finish("context");
         contextVersion = directory.ContextVersion;
-        if (events.Count > 0 && encounterZone != source.CurrentZone) Finish("zone");
+        if (encounterZone != source.CurrentZone) Finish("zone");
+        encounterZone = source.CurrentZone;
         var localPlayer = directory.LocalPlayerId;
         if (activityPlayer >= 0 && localPlayer != activityPlayer) Finish("identity");
         if (boss is not null && directory.BossNpcIdOf(boss.EntityId) != boss.NpcId) Finish("boss-changed");
         if (defeated && boss is not null && !directory.EvidenceApplies(boss.EntityId, boss.StartedAt)) Finish("boss-respawned");
-        if (localPlayer != activityPlayer)
-        {
-            activityPlayer = localPlayer;
-            if (HasCombat)
-            {
-                // Identity can arrive after the first hits. Rebuild the clock from retained events.
-                var activity = events.Where(hit => KeepsCombatActive(hit, directory) || boss?.Includes(hit) == true).ToArray();
-                if (activity.Length == 0) Finish("idle");
-                else lastActivity = activity.Max(hit => hit.Timestamp);
-            }
-        }
-        // A boss spawn/name can be decoded after its first damage frame.
-        if (boss is null && HasCombat)
-        {
-            boss = events.Select(hit => EngagedBoss(hit, directory)).FirstOrDefault(candidate => candidate is not null);
-            if (boss is not null)
-                lastActivity = events.Where(hit => boss.Includes(hit)).Select(hit => hit.Timestamp).Append(lastActivity).Max();
-        }
+        activityPlayer = localPlayer;
         boss?.Observe(directory, now);
-        foreach (var received in damage)
+        foreach (var player in assistedPlayers.Where(entry => (now - entry.Value).TotalSeconds >= 30).Select(entry => entry.Key).ToArray())
+            assistedPlayers.Remove(player);
+        var attributed = damage.Select(hit => CaptureAttribution(hit, directory));
+        foreach (var hit in pendingBossEvents.Drain(attributed, directory, now))
         {
-            var hit = CaptureAttribution(received, directory);
             observedUntil = hit.Timestamp;
             if (hit.Amount < 0 || hit.Amount > 1_000_000_000_000) continue;
             if (events.Count > 0 && hit.Timestamp < first) continue;
@@ -95,29 +82,32 @@ public sealed class LiveMeter : IDisposable
                 if (ended == "boss-defeated") defeated = true;
                 else Finish(ended);
             }
+            if (hit.IsHeal && !hit.IsTick && hit.SourceObjectId == activityPlayer && hit.TargetObjectId != activityPlayer)
+                assistedPlayers[hit.TargetObjectId] = hit.Timestamp;
             var engaged = EngagedBoss(hit, directory);
             if (boss is not null && engaged is not null
                 && (boss.EntityId != engaged.EntityId || boss.NpcId != engaged.NpcId)) Finish("boss-changed");
+            // Only this boss's damage belongs to the attempt. Healing cannot start one.
+            if (hit.IsHeal ? boss is null : boss?.Includes(hit) != true && engaged is null) continue;
             var hitIds = new[] { hit.SourceObjectId, hit.TargetObjectId, hit.OriginalSource ?? hit.SourceObjectId };
             if (events.Count >= 250_000 || participantIds.Count + hitIds.Distinct().Count(actor => !participantIds.Contains(actor)) > 4096
                 || (events.Count > 0 && (hit.Timestamp - first).TotalHours >= 23)) Finish("limit");
-            var active = KeepsCombatActive(hit, directory);
             var sameBoss = boss?.Includes(hit) == true;
             if (defeated && (!sameBoss || boss!.HasRespawnedAt(hit.Timestamp)))
             {
-                if (!active && engaged is null) continue;
+                if (engaged is null) continue;
                 Finish("boss-defeated");
                 sameBoss = false;
             }
             if (HasCombat && !sameBoss && (hit.Timestamp - lastActivity).TotalSeconds >= 12) EndIdle();
             if (dormant && !defeated)
             {
-                if (sameBoss || active) dormant = false;
+                if (sameBoss) dormant = false;
                 else continue;
             }
             if (events.Count == 0)
             {
-                if (!active && engaged is null) continue;
+                if (engaged is null) continue;
                 first = last = lastActivity = hit.Timestamp;
                 id = Guid.NewGuid();
                 encounterZone = source.CurrentZone;
@@ -127,9 +117,8 @@ public sealed class LiveMeter : IDisposable
                 boss = engaged;
                 boss.Observe(directory, now);
             }
-            if (active && hit.IsHeal) assistedPlayers[hit.TargetObjectId] = hit.Timestamp;
             last = hit.Timestamp > last ? hit.Timestamp : last;
-            if ((active || boss?.Includes(hit) == true) && hit.Timestamp > lastActivity) lastActivity = hit.Timestamp;
+            if (boss?.Includes(hit) == true && hit.Timestamp > lastActivity) lastActivity = hit.Timestamp;
             events.Add(hit);
             participantIds.UnionWith(hitIds);
         }
@@ -189,18 +178,6 @@ public sealed class LiveMeter : IDisposable
         if (snapshot is not null) Completed?.Invoke(snapshot with { EndReason = "idle" });
     }
 
-    private bool KeepsCombatActive(DamageEvent hit, Aion2EntityDirectory directory)
-    {
-        // Without a local identity retain the observation mode; never guess a party or pet owner.
-        if (activityPlayer < 0) return true;
-        if (hit.Amount <= 0) return false;
-        var actor = hit.SourceObjectId;
-        if (hit.IsHeal)
-            return actor == activityPlayer && hit.TargetObjectId != activityPlayer && !hit.IsTick;
-        var target = directory.SummonOwnerOf(hit.TargetObjectId) ?? hit.TargetObjectId;
-        return actor == activityPlayer || target == activityPlayer;
-    }
-
     public void TogglePause()
     {
         Poll();
@@ -252,6 +229,7 @@ public sealed class LiveMeter : IDisposable
         if (defeated) reason = "boss-defeated";
         var snapshot = BuildSnapshot();
         events.Clear();
+        pendingBossEvents.Clear();
         participantIds.Clear();
         assistedPlayers.Clear();
         boss = null;

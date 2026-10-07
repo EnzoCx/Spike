@@ -21,20 +21,26 @@ Npcap existant → TCP serveur → réassemblage → décodeur AION 2
 `EncounterSources.cs` distingue les sources anonymes suspectées d’être des effets.
 
 La capture alimente une file bornée ; le timer de présentation appelle `LiveMeter.Poll`
-chaque seconde. Si le personnage est identifié, un segment commence et se prolonge
-avec ses dégâts infligés/reçus (invocations au propriétaire connu incluses) et ses soins
-directs vers autrui. Hors boss identifié, il finit après 12 secondes sans cette activité.
-Les événements alentour sont conservés pendant le segment mais ne prolongent pas le délai.
-Les soins reçus, personnels et périodiques ne le relancent pas. Sans identité locale,
-le délai global de 12 secondes sans événement reste le recours.
+chaque seconde. Depuis 0.5.17, seuls les boss reconnus par le catalogue peuvent démarrer
+un segment, même sans identité locale. Les dégâts sans lien avec le boss engagé sont
+exclus du rapport et de l'historique, y compris les adds et le farm personnel.
+Les soins sont conservés pendant le combat de boss, mais seuls les dégâts impliquant
+ce boss prolongent son activité ou reprennent une phase au repos.
+
+`BossEventBuffer` attend une identification tardive pendant au plus 30 secondes et
+4 096 dégâts non confirmés, uniquement en mémoire. La source et son attribution sont
+figées dès réception. Les dégâts confirmés sont restitués une seule fois, par date,
+sans reprendre ceux d'une entité réapparue depuis. Les frontières de contexte, zone,
+personnage, pause et fin manuelle effacent le tampon. Un boss absent du catalogue ou
+dont l'annonce n'est pas reçue ne crée pas de combat ; le tampon ne constitue pas une archive.
 
 `BossAttempt` suit le boss engagé par son identifiant d’entité et son identifiant PNJ,
 jamais par son nom seul. L’engagement provient d’un échange de dégâts personnel ou du
 combat observé d’un joueur soigné directement dans les 12 secondes précédentes.
 Tous les dégâts impliquant ce boss maintiennent ensuite le combat, même si le joueur
 local est mort ou inactif. Après 12 secondes de silence, le segment est sauvegardé et
-mis au repos : `HasCombat` est faux et `Snapshot` est nul. Une reprise du même boss
-ou de l’activité personnelle (adds, soins) complète le même identifiant d’archive.
+mis au repos : `HasCombat` est faux et `Snapshot` est nul. Une reprise des dégâts
+impliquant ce boss complète le même identifiant d’archive.
 Le farm des autres cibles ne réactive pas cette continuation.
 
 La mort observée (PV à zéro), un reset de PV, un autre boss engagé, un changement de
@@ -50,8 +56,8 @@ Depuis 0.5.15, la mort clôture immédiatement l'affichage actif, mais conserve 
 tentative en mémoire pour rattacher les derniers dégâts de cette même entité à
 l'archive terminée. Les PV à zéro peuvent précéder ces événements. Ces ajouts ne
 rouvrent pas le combat et ne remplacent pas le résultat par un segment de quelques
-coups. Les PV redevenus positifs, une réapparition explicite, un autre combat
-personnel ou les frontières de contexte existantes libèrent cette continuation.
+coups. Les PV redevenus positifs, une réapparition explicite, un autre boss
+engagé ou les frontières de contexte existantes libèrent cette continuation.
 Le maximum de taille/durée reste applicable. Sans preuve de réapparition reçue,
 des dégâts sur la même entité restent associés à la tentative terminée.
 

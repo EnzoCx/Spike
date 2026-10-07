@@ -105,8 +105,8 @@ internal static class BossAttemptChecks
             Check(fight.Completed.Count == 1 && fight.Completed[0].Events.Length == 3 && !fight.Meter.HasCombat,
                 "Death before the final damage in one batch retains every hit in one completed attempt");
             fight.Feed(fight.Hit(5, target: 999));
-            Check(fight.Current.Id != fight.Completed[0].Id && fight.Current.Events.Single().Target == 999,
-                "New personal combat on another target does not extend the defeated boss");
+            Check(!fight.Meter.HasCombat && fight.Completed.Count == 1,
+                "Personal farming after a defeated boss does not start or extend a fight");
         }
 
         using (var fight = new Fixture(protocol))
@@ -163,7 +163,8 @@ internal static class BossAttemptChecks
             var id = fight.Current.Id;
             fight.Poll(19);
             fight.Feed(fight.Hit(25, target: 999), fight.Hit(30));
-            Check(fight.Current.Id == id && fight.Current.Events.Length == 5, "Personal add combat during a boss phase stays in the attempt");
+            Check(fight.Current.Id == id && fight.Current.Events.Length == 4
+                && fight.Current.Events.All(hit => hit.Target == 100), "Personal add damage is excluded during a boss phase");
             fight.Meter.Finish();
             fight.Feed(fight.Hit(31));
             Check(fight.Current.Id != id, "Manual finish prevents later phase resumption");
@@ -200,10 +201,35 @@ internal static class BossAttemptChecks
         using (var fight = new Fixture(protocol, registerBoss: false))
         {
             fight.Feed(fight.Hit(0), fight.Hit(8, actor: 2));
-            var id = fight.Current.Id;
+            Check(!fight.Meter.HasCombat && !fight.Meter.CanFinish && fight.Completed.Count == 0,
+                "Unidentified targets do not display or save a fight before boss confirmation");
+            fight.Directory.NoteSpawned(100, fight.At(0));
             fight.Directory.RegisterNpc(100, 2300171);
             fight.Poll(15);
-            Check(fight.Meter.HasCombat && fight.Current.Id == id, "Late boss identification adopts previously observed boss activity");
+            Check(fight.Meter.HasCombat && fight.Current.Events.Length == 2 && fight.Current.StartedAt == fight.At(0),
+                "Late boss identification recovers initial damage without displaying trash fights");
+            fight.Poll(16);
+            Check(fight.Current.Events.Length == 2, "Recovered boss damage is consumed only once");
+        }
+
+        using (var fight = new Fixture(protocol, registerBoss: false))
+        {
+            fight.Feed(fight.Hit(0));
+            fight.Meter.Finish();
+            fight.Directory.RegisterNpc(100, 2300171);
+            fight.Poll(1);
+            Check(!fight.Meter.HasCombat && fight.Completed.Count == 0,
+                "Manual finish discards unconfirmed damage without saving it");
+        }
+
+        using (var fight = new Fixture(protocol, registerBoss: false))
+        {
+            fight.Feed(fight.Hit(0));
+            fight.Directory.ResetContext(fight.At(1));
+            fight.Directory.RegisterNpc(100, 2300171);
+            fight.Poll(2);
+            Check(!fight.Meter.HasCombat && fight.Completed.Count == 0,
+                "A new context never imports buffered damage from the previous context");
         }
     }
 

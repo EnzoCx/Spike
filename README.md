@@ -194,9 +194,9 @@ Users of version 0.4.5 or earlier must update manually once, as those versions h
 ## Your first fight
 
 1. **Launch Spike.** Capture and the overlay start automatically with the default settings. You do not need to restart the game.
-2. **Play normally.** Data appears as combat events arrive. Choose **DPS** or **HPS**, and **Boss** or **All** targets in the overlay.
+2. **Fight a boss.** Data appears when a recognized boss is engaged. Ordinary monsters are ignored, including during boss fights. Choose **DPS** or **HPS** in the overlay; the target filters remain available for older reports.
 3. **Explore a row.** Hover for a summary; click to see the player's skills. Click a skill or **Report** to open the detailed analysis.
-4. **Revisit your fight.** When combat goes idle, the fight is saved in **History**. In the open world, the timeout is 12 seconds without relevant personal activity when your character is identified; nearby farming does not extend it. For an engaged boss, participants' damage to that boss keeps the fight active, and resuming after a quiet phase updates the same saved fight. Capture continues while you read an older report.
+4. **Revisit your fight.** When the boss fight goes idle after 12 seconds without relevant activity, it is saved in **History**. Damage involving that boss keeps the fight active, and resuming after a quiet phase updates the same saved fight. Farming creates no reports and never wakes an idle boss fight. Capture continues while you read an older report.
 
 In **Settings**, choose your language, theme, and optionally your character name. The name takes effect the next time capture starts.
 
@@ -229,13 +229,13 @@ After **two minutes out of combat**, the overlay collapses to its title bar. Hov
 - **Participants:** players identified in received traffic, not a confirmed party roster. Names or HP may be missing.
 - **Unidentified sources:** some anonymous sources remain separate from players. Their damage still counts, and their details remain available; ownership is never guessed.
 
-Buffs, buff uptime, back/front attacks, double hits, and perfect hits are not yet exposed. Without an identified boss, 12 seconds without relevant activity may split an encounter into separate fights. For a boss, a missed death or reset event may instead merge attempts; a full HP recovery mechanic may be mistaken for a reset. Boss continuation does not survive restarting the meter. Game updates may require decoder changes.
+Buffs, buff uptime, back/front attacks, double hits, and perfect hits are not yet exposed. An unrecognized boss is not recorded: recognition depends on the bundled catalog and the game's identity announcements. Initial damage can be recovered within 30 seconds, up to 4,096 pending events. A missed death or reset event may merge attempts; a full HP recovery mechanic may be mistaken for a reset. Boss continuation does not survive restarting the meter. Game updates may require decoder changes.
 
 ## Frequently asked questions
 
 ### No damage appears. What should I check?
 
-Check that Npcap is installed, capture is not paused, and combat events are occurring. Look at the capture status in the app. If the problem persists, [report an issue](https://github.com/EnzoCx/Spike/issues/new?template=bug_report.md) with your app version and the displayed message, without private data.
+Check that Npcap is installed, capture is not paused, and you are fighting a recognized boss. Ordinary monsters no longer start the meter. Look at the capture status in the app. If the problem persists, [report an issue](https://github.com/EnzoCx/Spike/issues/new?template=bug_report.md) with your app version and the displayed message, without private data.
 
 ### Why are some player or boss names missing?
 

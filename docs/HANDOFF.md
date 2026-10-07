@@ -1,7 +1,14 @@
 # Reprendre le projet
 
-État de référence : version 0.5.15, 5 octobre 2026.
+État de référence : version 0.5.17, 7 octobre 2026.
 Voir `CONTRIBUTING.md` pour les prérequis et les vérifications de développement.
+
+Depuis 0.5.17, seuls les combats de boss reconnus sont enregistrés. Les dégâts sur
+les petits monstres sont exclus, y compris pendant un boss, et ne réveillent pas
+l'overlay. Les soins pendant le combat et les sources anonymes sur le boss restent
+conservés. `BossEventBuffer` attend au plus 30 secondes / 4 096 dégâts en mémoire pour
+une identification tardive ; sans reconnaissance, aucun combat n'est créé. Les
+anciennes archives et leurs filtres restent disponibles.
 
 Ajout en cours de release, 6 octobre 2026 : page Activités (planning/rappels et
 checklist), checklist partagée dans l’overlay, stockage local séparé et modèles
@@ -113,17 +120,13 @@ Le prochain combat restaure la taille précédente. Les archives restent dépli�
 menus et déplacements en cours retardent la réduction. La taille réduite n’est pas
 enregistrée comme préférence ; la transparence hors combat reste indépendante.
 
-## Clôture des combats en monde ouvert
+## Enregistrement des combats de boss
 
-Si le personnage local est identifié, `LiveMeter` clôture après 12 secondes sans
-dégâts infligés/reçus ni soin direct vers autrui. Les invocations ne comptent pour
-ce délai que si leur propriétaire est connu. Le farm alentour ne relance pas le délai
-et ne démarre pas de nouveau segment à lui seul. Les soins reçus, personnels et
-périodiques ne maintiennent pas le combat actif.
-Les événements observés pendant le segment restent conservés, sources anonymes comprises :
-ce changement ne filtre pas le classement en groupe confirmé.
-Sans identité locale, le mode d’observation conserve le délai global précédent.
-Une identification tardive recalcule le délai depuis les événements conservés.
+`LiveMeter` attend un échange de dégâts avec un boss reconnu, impliquant le joueur
+local, son invocation au propriétaire connu ou un joueur soigné directement dans
+les 12 secondes précédentes. Sans identité locale, l'observation reste limitée aux
+boss reconnus. Les dégâts sur le boss sont conservés, sources anonymes comprises :
+ce changement ne filtre pas le classement en groupe confirmé. Le farm est ignoré.
 
 Pour un boss identifié et engagé, les dégâts de tous les participants sur cette
 même entité maintiennent désormais le parse. Une phase silencieuse met le meter au
@@ -133,7 +136,8 @@ et les PV à zéro pour sceller une tentative. Un autre boss engagé, même du m
 démarre un nouveau parse ; le changement de zone/personnage, la pause et Terminer
 effacent aussi la continuation. Terminer reste disponible pendant le repos d’un boss.
 Les soins directs lient le soigneur au combat observé de leur destinataire, sans
-déduire un roster. Les adds et soins personnels pendant les phases restent dans le parse.
+déduire un roster. Les soins seuls ne prolongent ni ne reprennent une phase ; les
+dégâts sur les adds sont exclus.
 
 ## Sources supplémentaires
 
@@ -183,8 +187,8 @@ Voir `EncounterProgress.cs`, `Dashboard.Progress.cs`, `Dashboard.Progress.Verifi
 
 - Les critiques des autres joueurs peuvent être incomplets.
 - Buff uptime, dos/face, doubles et coups parfaits ne sont pas exposés.
-- Sans boss identifié, une phase sans activité personnelle de 12 secondes peut découper
-  un combat. Pour un boss, un reset/mort non reçu peut fusionner des tentatives sur la
+- Sans boss identifié, aucun combat n'est enregistré. Pour un boss, un reset/mort
+  non reçu peut fusionner des tentatives sur la
   même entité ; une mécanique de retour complet des PV peut être prise pour un reset.
   La reprise ne traverse pas le redémarrage du meter. Voir `docs/ARCHITECTURE.md`.
 - Les joueurs observés ne sont pas un groupe confirmé ; noms et PV peuvent manquer.
